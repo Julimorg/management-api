@@ -18,4 +18,6 @@ public class ResGetUser {
     private LocalDate birthDate;
     private String address;
     private String isActive;
+
+
 }

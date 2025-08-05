@@ -1,5 +1,6 @@
 package com.example.managementapi.Controller.UserController;
 
+import com.example.managementapi.Dto.ApiResponse;
 import com.example.managementapi.Entity.User;
 import com.example.managementapi.Service.UserService.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,10 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/get-user")
-    List<User> getUser(){
+    ApiResponse<List<User>> getUser(){
 //        System.out.println("data: "+userService.getUser());
-    return userService.getUser();
+        ApiResponse apiResponse  = new ApiResponse();
+        apiResponse.setData(userService.getUser());
+    return apiResponse;
     }
 }
