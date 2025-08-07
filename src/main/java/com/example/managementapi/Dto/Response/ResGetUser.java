@@ -1,12 +1,13 @@
 package com.example.managementapi.Dto.Response;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ResGetUser {
     private String firstName;
     private String lastName;
