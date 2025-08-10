@@ -9,6 +9,8 @@ public enum ErrorCode {
     USERLASTNAME_INVALID(1005, "UserLastName must be at least 3 characters"),
     EMAIL_INVALID(1006, "Invalid Email Format"),
     PHONE_INVALID(1007, "Invalid Phone Number"),
+    USER_NOT_EXISTED (1008, "User Not Existed"),
+    UNAUTHENTICAED(1009, "Unauthenticated"),
 
     ;
 
