@@ -32,6 +32,15 @@ public class AuthController {
 
     @PostMapping("/sign-up")
     ApiResponse<User> signUp(@RequestBody @Valid ReqCreateUser request){
+        // 1. Nhận và validate request (ở đây dùng @Valid)
+
+        // 2. Gọi service để tạo user
+
+        // 3. Service tạo Entity, lưu DB, convert sang DTO
+
+        // 4. Nhận DTO từ service
+
+        // 5. Trả về response
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setData(userService.createUser(request));
         return apiResponse;
