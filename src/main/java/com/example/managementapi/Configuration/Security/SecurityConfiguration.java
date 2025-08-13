@@ -18,8 +18,8 @@ import javax.crypto.spec.SecretKeySpec;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-    private final String[] PUBLIC_POST_ENDPOINTS = {"/users/create-users", "/auth/log-in"};
-    private final String[] PUBLIC_GET_ENPOINTS = {"users/get-user "};
+    private final String[] PUBLIC_POST_ENDPOINTS = {"/auth/create-users", "/auth/log-in"};
+    private final String[] PUBLIC_GET_ENPOINTS = {"users/get-user"};
     private final String[] PUBLIC_SWAGGER = {"/swagger-ui/**","/v3/api-docs/**", "/webjars/**"};
 
     @NonFinal
@@ -56,4 +56,6 @@ public class SecurityConfiguration {
                 .macAlgorithm(MacAlgorithm.HS512)
                 .build();
     }
+
+
 }
