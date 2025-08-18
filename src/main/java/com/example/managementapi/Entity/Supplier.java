@@ -25,4 +25,5 @@ public class Supplier {
     private Date create_at;
     private Date update_at;
 
+
 }

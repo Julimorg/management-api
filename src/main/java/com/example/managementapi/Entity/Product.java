@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -23,12 +24,22 @@ public class Product {
     private String product_unit;
     private String product_code;
 
+    private int product_quantity;
+
     private double discount;
     private double product_price;
 
-    private int product_quantity;
 
     private Date create_at;
     private Date update_at;
+
+    @ManyToOne
+    Supplier suppliers;
+
+    @ManyToOne
+    Color colors;
+
+    @ManyToOne
+    Category category;
 
 }
