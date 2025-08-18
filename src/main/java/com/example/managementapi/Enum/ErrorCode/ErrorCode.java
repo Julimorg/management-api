@@ -12,6 +12,7 @@ public enum ErrorCode {
     USER_NOT_EXISTED (1008, "User Not Existed"),
     UNAUTHENTICAED(1009, "Unauthenticated"),
 
+    PRODUCT_EXISTED(1001, "Product Existed"),
     ;
 
     private int code;
