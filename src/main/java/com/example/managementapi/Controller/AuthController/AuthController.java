@@ -7,6 +7,7 @@ import com.example.managementapi.Dto.Request.ReqCreateUser;
 import com.example.managementapi.Dto.Response.AuthenticationResponse;
 import com.example.managementapi.Dto.Response.IntrospectResponse;
 import com.example.managementapi.Entity.User;
+import com.example.managementapi.Repository.UserRepository;
 import com.example.managementapi.Service.AuthenticateService.AuthenticateService;
 import com.example.managementapi.Service.UserService.UserService;
 import com.nimbusds.jose.JOSEException;
@@ -29,6 +30,8 @@ public class AuthController {
     private UserService userService;
 
     private final AuthenticateService authenticationService;
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/sign-up")
     ApiResponse<User> signUp(@RequestBody @Valid ReqCreateUser request){
@@ -41,9 +44,10 @@ public class AuthController {
         // 4. Nhận DTO từ service
 
         // 5. Trả về response
-        ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setData(userService.createUser(request));
-        return apiResponse;
+
+        return ApiResponse.<User>builder()
+                .data(userService.createUser(request))
+                .build();
     }
 
     @PostMapping("/log-in")
