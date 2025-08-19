@@ -1,4 +1,4 @@
-package com.example.managementapi.Mapper.UserMapper;
+package com.example.managementapi.Mapper;
 
 import com.example.managementapi.Dto.Request.ReqCreateUser;
 import com.example.managementapi.Dto.Request.ReqUpdateUser;

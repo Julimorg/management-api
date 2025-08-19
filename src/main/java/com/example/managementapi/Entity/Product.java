@@ -3,7 +3,10 @@ package com.example.managementapi.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -30,16 +33,20 @@ public class Product {
     private double product_price;
 
 
-    private Date create_at;
-    private Date update_at;
+    private LocalDateTime create_at;
+    private LocalDateTime update_at;
 
     @ManyToOne
-    Supplier suppliers;
+    @JoinColumn(name = "supplier_id")
+    private Supplier suppliers;
 
     @ManyToOne
-    Color colors;
+    @JoinColumn(name = "color_id")
+    private Color colors;
 
     @ManyToOne
-    Category category;
+    @JoinColumn(name = "category_id")
+    private Category category;
+
 
 }

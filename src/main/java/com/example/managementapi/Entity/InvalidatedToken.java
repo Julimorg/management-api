@@ -1,5 +1,6 @@
 package com.example.managementapi.Entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -16,6 +17,7 @@ import java.util.Date;
 @Table(name = "InvalidatedToken")
 public class InvalidatedToken {
     @Id
+    @Column(unique = true)
     private String id;
-    private Date expirDate;
+    private Date expiryDate;
 }

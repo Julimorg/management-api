@@ -1,14 +1,10 @@
 package com.example.managementapi.Controller.UserController;
 
 import com.example.managementapi.Dto.ApiResponse;
-import com.example.managementapi.Dto.Request.ReqCreateUser;
 import com.example.managementapi.Dto.Request.ReqUpdateUser;
 import com.example.managementapi.Dto.Response.ResGetUser;
 import com.example.managementapi.Dto.Response.ResUpdateUser;
-import com.example.managementapi.Entity.User;
-import com.example.managementapi.Mapper.UserMapper.UserMapper;
-import com.example.managementapi.Repository.UserRepository;
-import com.example.managementapi.Service.UserService.UserService;
+import com.example.managementapi.Service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

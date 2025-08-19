@@ -4,7 +4,9 @@ package com.example.managementapi.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,6 +23,9 @@ public class Category {
     private String category_description;
     private String category_image;
 
-    private Date create_at;
-    private Date update_at;
+    private LocalDateTime create_at;
+    private LocalDateTime update_at;
+
+    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Product> products;
 }

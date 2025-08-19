@@ -1,4 +1,4 @@
-package com.example.managementapi.Service.UserService;
+package com.example.managementapi.Service;
 
 import com.example.managementapi.Dto.Request.ReqCreateUser;
 import com.example.managementapi.Dto.Request.ReqUpdateUser;
@@ -7,7 +7,7 @@ import com.example.managementapi.Dto.Response.ResUpdateUser;
 import com.example.managementapi.Entity.User;
 import com.example.managementapi.Enum.ErrorCode.ErrorCode;
 import com.example.managementapi.Exception.AppException;
-import com.example.managementapi.Mapper.UserMapper.UserMapper;
+import com.example.managementapi.Mapper.UserMapper;
 import com.example.managementapi.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

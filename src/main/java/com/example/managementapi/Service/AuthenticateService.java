@@ -1,4 +1,4 @@
-package com.example.managementapi.Service.AuthenticateService;
+package com.example.managementapi.Service;
 
 import com.example.managementapi.Dto.Request.AuthenticationRequest;
 import com.example.managementapi.Dto.Request.IntrospectRequest;

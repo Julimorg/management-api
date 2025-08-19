@@ -3,7 +3,9 @@ package com.example.managementapi.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -11,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Order")
+@Table(name = "Orders ")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -21,9 +23,18 @@ public class Order {
 
     private double order_amount;
 
+    private LocalDateTime created_at;
+    private LocalDateTime updated_at;
+    private LocalDateTime deleted_at;
+    private LocalDateTime complete_at;
 
-    private Date created_at;
-    private Date updated_at;
-    private Date deleted_at;
-    private Date complete_at;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "order",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<OrderItem> orderItems;
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Payment payment;
 }

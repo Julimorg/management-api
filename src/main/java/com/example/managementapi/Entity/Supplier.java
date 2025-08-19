@@ -3,7 +3,10 @@ package com.example.managementapi.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,8 +25,13 @@ public class Supplier {
     private String supplier_email;
     private String supplier_img;
 
-    private Date create_at;
-    private Date update_at;
+    private LocalDateTime update_at;
+    private LocalDateTime create_at;
 
+    @OneToMany(mappedBy = "suppliers",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Product> products;
+
+    @OneToMany(mappedBy = "supplier",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Color> colors;
 
 }

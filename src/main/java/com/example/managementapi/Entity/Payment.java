@@ -3,6 +3,7 @@ package com.example.managementapi.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -31,7 +32,11 @@ public class Payment {
 
     private double amount;
 
-    private Date pay_date;
-    private Date create_at;
-    private Date update_at;
+    private LocalDateTime pay_date;
+    private LocalDateTime create_at;
+    private LocalDateTime update_at;
+
+    @OneToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
 }

@@ -1,10 +1,12 @@
 package com.example.managementapi.Entity;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,6 +17,13 @@ import lombok.*;
 @Table(name = "Permission")
 public class Permission {
     @Id
+    @Column(unique = true)
     private String permission_name;
     private String permission_description;
+
+    private LocalDateTime create_at;
+    private LocalDateTime update_at;
+
+    @ManyToMany
+    private List<Role> roles;
 }
