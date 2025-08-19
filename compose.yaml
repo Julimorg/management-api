@@ -20,11 +20,12 @@ services:
     environment:
       DB_HOST: postgres
       DB_PORT: 5432
-
       DB_NAME: ${DB_NAME}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_SSL: disable
+      TZ: Asia/Ho_Chi_Minh
+    command: ["postgres", "-c", "timezone=Asia/Ho_Chi_Minh"]
     ports:
       - "8080:8080"
     restart: always

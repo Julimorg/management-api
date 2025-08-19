@@ -1,9 +1,9 @@
 package com.example.managementapi.Mapper;
 
-import com.example.managementapi.Dto.Request.ReqCreateUser;
-import com.example.managementapi.Dto.Request.ReqUpdateUser;
-import com.example.managementapi.Dto.Response.ResGetUser;
-import com.example.managementapi.Dto.Response.ResUpdateUser;
+import com.example.managementapi.Dto.Request.SignUpReq;
+import com.example.managementapi.Dto.Request.UpdateUseReq;
+import com.example.managementapi.Dto.Response.GetUserRes;
+import com.example.managementapi.Dto.Response.UpdateUserRes;
 import com.example.managementapi.Entity.User;
 
 import org.mapstruct.Mapper;
@@ -12,12 +12,12 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    User toUser(ReqCreateUser request);
+    User toUser(SignUpReq request);
 
-    ResUpdateUser toResUpdateUser(User user);
+    UpdateUserRes toResUpdateUser(User user);
 
-    ResGetUser toGetUser(User user);
+    GetUserRes toGetUser(User user);
 
-    void updateUser(@MappingTarget User user, ReqUpdateUser request);
+    void updateUser(@MappingTarget User user, UpdateUseReq request);
 
 }

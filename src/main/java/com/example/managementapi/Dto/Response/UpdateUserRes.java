@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResUpdateUser {
+public class UpdateUserRes {
     private String firstName;
     private String lastName;
     private String userName;

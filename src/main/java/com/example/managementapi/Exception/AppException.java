@@ -1,6 +1,6 @@
 package com.example.managementapi.Exception;
 
-import com.example.managementapi.Enum.ErrorCode.ErrorCode;
+import com.example.managementapi.Enum.ErrorCode;
 
 public class AppException extends RuntimeException{
 

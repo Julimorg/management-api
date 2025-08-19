@@ -2,7 +2,6 @@ package com.example.managementapi.Dto.Request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -13,7 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ReqCreateUser {
+public class SignUpReq {
 
     @Size(min = 2, message = "USERFIRSTNAME_INVALID")
     private String firstName;

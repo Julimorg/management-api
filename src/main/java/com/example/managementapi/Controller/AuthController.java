@@ -1,10 +1,10 @@
-package com.example.managementapi.Controller.AuthController;
+package com.example.managementapi.Controller;
 
 import com.example.managementapi.Dto.ApiResponse;
-import com.example.managementapi.Dto.Request.AuthenticationRequest;
+import com.example.managementapi.Dto.Request.LoginReq;
 import com.example.managementapi.Dto.Request.IntrospectRequest;
-import com.example.managementapi.Dto.Request.ReqCreateUser;
-import com.example.managementapi.Dto.Response.AuthenticationResponse;
+import com.example.managementapi.Dto.Request.SignUpReq;
+import com.example.managementapi.Dto.Response.LoginRes;
 import com.example.managementapi.Dto.Response.IntrospectResponse;
 import com.example.managementapi.Entity.User;
 import com.example.managementapi.Repository.UserRepository;
@@ -34,7 +34,7 @@ public class AuthController {
     private UserRepository userRepository;
 
     @PostMapping("/sign-up")
-    ApiResponse<User> signUp(@RequestBody @Valid ReqCreateUser request){
+    ApiResponse<User> signUp(@RequestBody @Valid SignUpReq request){
         // 1. Nhận và validate request (ở đây dùng @Valid)
 
         // 2. Gọi service để tạo user
@@ -51,10 +51,10 @@ public class AuthController {
     }
 
     @PostMapping("/log-in")
-    ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request){
+    ApiResponse<LoginRes> authenticate(@RequestBody LoginReq request){
         var result = authenticationService.authenticate(request);
 
-        return ApiResponse.<AuthenticationResponse>builder()
+        return ApiResponse.<LoginRes>builder()
                 .data(result)
                 .build();
     }

@@ -1,11 +1,11 @@
 package com.example.managementapi.Service;
 
-import com.example.managementapi.Dto.Request.ReqCreateUser;
-import com.example.managementapi.Dto.Request.ReqUpdateUser;
-import com.example.managementapi.Dto.Response.ResGetUser;
-import com.example.managementapi.Dto.Response.ResUpdateUser;
+import com.example.managementapi.Dto.Request.SignUpReq;
+import com.example.managementapi.Dto.Request.UpdateUseReq;
+import com.example.managementapi.Dto.Response.GetUserRes;
+import com.example.managementapi.Dto.Response.UpdateUserRes;
 import com.example.managementapi.Entity.User;
-import com.example.managementapi.Enum.ErrorCode.ErrorCode;
+import com.example.managementapi.Enum.ErrorCode;
 import com.example.managementapi.Exception.AppException;
 import com.example.managementapi.Mapper.UserMapper;
 import com.example.managementapi.Repository.UserRepository;
@@ -16,38 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-//Dù là GET / POST / PUT / DELETE thì Service thường có 5 bước:
-//Nhận dữ liệu từ Controller
-//
-//Là DTO request hoặc tham số như userId.
-//
-//Không validate sâu ở đây (validation thường ở Controller với @Valid), nhưng có thể check thêm các điều kiện nghiệp vụ.
-//
-//Kiểm tra ràng buộc nghiệp vụ (Business validation)
-//
-//Ví dụ: user đã tồn tại chưa, email có trùng không, tài khoản đã bị khóa chưa, v.v.
-//
-//Nếu vi phạm, ném exception (AppException, RuntimeException, ...).
-//
-//Xử lý dữ liệu
-//
-//Convert DTO → Entity (dùng Mapper hoặc thủ công).
-//
-//Nếu cần mã hóa mật khẩu (BCrypt), format dữ liệu, tính toán, v.v.
-//
-//Gọi Repository để làm việc với DB
-//
-//save() → thêm mới hoặc update.
-//
-//findById() → tìm kiếm.
-//
-//deleteById() → xóa.
-//
-//Chuẩn bị dữ liệu trả về
-//
-//Convert Entity → DTO response (dùng Mapper hoặc thủ công).
-//
-//Trả về DTO hoặc giá trị đơn giản (String, boolean, ...).
 
 @Service
 public class UserService {
@@ -57,12 +25,12 @@ public class UserService {
     private UserMapper userMapper;
 
 
-    public List<ResGetUser> getUser(){
+    public List<GetUserRes> getUser(){
         return userRepository.findAll().stream()
                 .map(userMapper::toGetUser).toList();
     }
 
-    public User createUser(ReqCreateUser request){
+    public User createUser(SignUpReq request){
 
         if(userRepository.existsByUserName(request.getUserName()))
             throw  new AppException((ErrorCode.USER_EXISTED));
@@ -93,7 +61,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public ResUpdateUser updateUser(String userId, ReqUpdateUser request){
+    public UpdateUserRes updateUser(String userId, UpdateUseReq request){
 
         if(userRepository.existsByUserName(request.getUserName()))
             throw  new AppException((ErrorCode.USER_EXISTED));

@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReqUpdateUser {
+public class UpdateUseReq {
 
     @Size(min = 2, message = "USERFIRSTNAME_INVALID")
     private String firstName;

@@ -1,10 +1,10 @@
 package com.example.managementapi.Service;
 
-import com.example.managementapi.Dto.Request.AuthenticationRequest;
+import com.example.managementapi.Dto.Request.LoginReq;
 import com.example.managementapi.Dto.Request.IntrospectRequest;
-import com.example.managementapi.Dto.Response.AuthenticationResponse;
+import com.example.managementapi.Dto.Response.LoginRes;
 import com.example.managementapi.Dto.Response.IntrospectResponse;
-import com.example.managementapi.Enum.ErrorCode.ErrorCode;
+import com.example.managementapi.Enum.ErrorCode;
 import com.example.managementapi.Exception.AppException;
 import com.example.managementapi.Repository.UserRepository;
 import com.nimbusds.jose.*;
@@ -52,7 +52,7 @@ public class AuthenticateService {
 
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public LoginRes authenticate(LoginReq request) {
         var user = userRepository.findByUserName(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
@@ -65,7 +65,7 @@ public class AuthenticateService {
 
         var token = generateToken(request.getUsername());
 
-        return AuthenticationResponse.builder()
+        return LoginRes.builder()
                 .token(token)
                 .authenticated(true)
                 .build();
