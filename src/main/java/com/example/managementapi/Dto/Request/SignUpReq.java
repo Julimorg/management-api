@@ -26,7 +26,6 @@ public class SignUpReq {
     private String email;
     @Size(min = 2, max = 10, message = "PHONE_INVALID")
     private String phoneNumber;
-    private String role;
     private LocalDate birthDate;
     private String address;
     private String isActive;

@@ -5,6 +5,7 @@ import com.example.managementapi.Service.AuthenticateService;
 import com.nimbusds.jose.JOSEException;
 import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -20,7 +21,8 @@ import java.util.Objects;
 public class CustomJwtDecoder implements JwtDecoder {
 
     @NonFinal
-    protected  static final String SIGNER_KEY = "7aW5J8WZ0ck0TEg+OnxjCfK8dBqTkOjcKEEVM1UWufP3XZNfXTIcF/CBL+DyYJ52";
+    @Value("${signer.key}")
+    protected String SIGNER_KEY;
 
     @Autowired
     private AuthenticateService authenticateService;

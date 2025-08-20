@@ -52,7 +52,7 @@ public class AuthenticateService {
     protected long EXPIRY_DATE;
 
     @NonFinal
-    @Value("${refreshduration}")
+    @Value("${refreshable.duration}")
     protected long REFRESH_DURATION;
 
     //* =================================== Auth Service =================================== //

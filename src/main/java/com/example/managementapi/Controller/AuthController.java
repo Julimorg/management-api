@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.ParseException;
 
 @RestController
-@RequestMapping("auth")
+@RequestMapping("api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -41,7 +41,7 @@ public class AuthController {
     }
 
     @PostMapping("/log-in")
-    ApiResponse<LoginRes> authenticate(@RequestBody LoginReq request){
+    ApiResponse<LoginRes> login(@RequestBody LoginReq request){
         var result = authenticationService.login(request);
 
         return ApiResponse.<LoginRes>builder()

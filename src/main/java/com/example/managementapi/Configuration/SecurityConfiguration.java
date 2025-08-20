@@ -2,6 +2,7 @@ package com.example.managementapi.Configuration;
 
 
 import lombok.experimental.NonFinal;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -24,12 +25,13 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfiguration {
-//    private final String[] PUBLIC_POST_ENDPOINTS = {"/users/create-users", "/auth/log-in"};
-//    private final String[] PUBLIC_GET_ENPOINTS = {"users/get-user "};
+    private final String[] PUBLIC_POST_ENDPOINTS = {"/users/create-users","api/v1/auth/sign-up", "api/v1/auth/log-in"};
+    private final String[] PUBLIC_GET_ENPOINTS = {"users/get-user "};
     private final String[] PUBLIC_SWAGGER = {"/swagger-ui/**","/v3/api-docs/**", "/webjars/**"};
 
     @NonFinal
-    protected  static final String SIGNER_KEY = "7aW5J8WZ0ck0TEg+OnxjCfK8dBqTkOjcKEEVM1UWufP3XZNfXTIcF/CBL+DyYJ52";
+    @Value("${signer.key}")
+    protected String SIGNER_KEY;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -39,9 +41,9 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request ->
-//                request.requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
-//                        .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENPOINTS).permitAll()
-                       request.requestMatchers(PUBLIC_SWAGGER).permitAll()
+                request.requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENPOINTS).permitAll()
+                        .requestMatchers(PUBLIC_SWAGGER).permitAll()
                         .anyRequest().authenticated());
 
         //? Config OAuth2

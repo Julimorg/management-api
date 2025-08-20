@@ -46,17 +46,6 @@ public class UserService {
 
 
         //? 2. Đây là cách thủ công ko sử dụng đến mapper
-//        User user = new User();
-//        user.setUserName(request.getUserName());
-//        user.setPassword(request.getPassword());
-//        user.setEmail(request.getEmail());
-//        user.setFirstName(request.getFirstName());
-//        user.setLastName(request.getLastName());
-//        user.setAddress(request.getAddress());
-//        user.setPhoneNumber(request.getPhoneNumber());
-//        user.setRole(request.getRole());
-//        user.setIsActive(request.getIsActive());
-
 
         return userRepository.save(user);
     }
