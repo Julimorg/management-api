@@ -1,11 +1,10 @@
 package com.example.managementapi.Controller;
 
 import com.example.managementapi.Dto.ApiResponse;
-import com.example.managementapi.Dto.Request.LoginReq;
-import com.example.managementapi.Dto.Request.IntrospectRequest;
-import com.example.managementapi.Dto.Request.SignUpReq;
+import com.example.managementapi.Dto.Request.*;
 import com.example.managementapi.Dto.Response.LoginRes;
 import com.example.managementapi.Dto.Response.IntrospectResponse;
+import com.example.managementapi.Dto.Response.RefreshRes;
 import com.example.managementapi.Entity.User;
 import com.example.managementapi.Repository.UserRepository;
 import com.example.managementapi.Service.AuthenticateService;
@@ -35,15 +34,6 @@ public class AuthController {
 
     @PostMapping("/sign-up")
     ApiResponse<User> signUp(@RequestBody @Valid SignUpReq request){
-        // 1. Nhận và validate request (ở đây dùng @Valid)
-
-        // 2. Gọi service để tạo user
-
-        // 3. Service tạo Entity, lưu DB, convert sang DTO
-
-        // 4. Nhận DTO từ service
-
-        // 5. Trả về response
 
         return ApiResponse.<User>builder()
                 .data(userService.createUser(request))
@@ -52,12 +42,33 @@ public class AuthController {
 
     @PostMapping("/log-in")
     ApiResponse<LoginRes> authenticate(@RequestBody LoginReq request){
-        var result = authenticationService.authenticate(request);
+        var result = authenticationService.login(request);
 
         return ApiResponse.<LoginRes>builder()
                 .data(result)
                 .build();
     }
+
+    @PostMapping("/log-out")
+    ApiResponse<String> logout(@RequestBody LogOutReq request)
+            throws ParseException, JOSEException {
+
+        authenticationService.logOut(request);
+        return ApiResponse.<String>builder()
+                .message("Log out successfully!")
+                .build();
+    }
+
+    @PostMapping("/refresh-token")
+    ApiResponse<RefreshRes> refreshToken(@RequestBody RefreshReq request)
+            throws ParseException, JOSEException {
+        var result = authenticationService.refreshToken(request);
+
+        return ApiResponse.<RefreshRes>builder()
+                .data(result)
+                .build();
+    }
+
 
     @PostMapping("/introspect-token")
     ApiResponse<IntrospectResponse> checkVerifyToken(@RequestBody IntrospectRequest request) throws ParseException, JOSEException {

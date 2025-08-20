@@ -26,11 +26,9 @@ public class User {
     private String user_id;
     private String firstName;
     private String lastName;
-    @NotNull
     @Column(unique = true)
     private String userName;
     private String password;
-    @NotNull
     @Email
     @Column(unique = true)
     private String email;
