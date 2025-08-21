@@ -2,6 +2,8 @@ package com.example.managementapi.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,22 +21,24 @@ import java.util.Set;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String product_id;
-    private String product_name;
-    private String product_description;
-    private String product_image;
-    private String product_volume;
-    private String product_unit;
-    private String product_code;
+    private String productId;
+    private String productName;
+    private String productDescription;
+    private String productImage;
+    private String productVolume;
+    private String productUnit;
+    private String productCode;
 
-    private int product_quantity;
+    private int productQuantity;
 
     private double discount;
-    private double product_price;
+    private double productPrice;
 
 
-    private LocalDateTime create_at;
-    private LocalDateTime update_at;
+    @CreationTimestamp
+    private LocalDateTime createAt;
+    @UpdateTimestamp
+    private LocalDateTime updateAt;
 
     @ManyToOne
     @JoinColumn(name = "supplier_id")

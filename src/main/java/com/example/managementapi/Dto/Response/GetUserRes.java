@@ -9,6 +9,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetUserRes {
+    private String userId;
     private String firstName;
     private String lastName;
     private String userName;

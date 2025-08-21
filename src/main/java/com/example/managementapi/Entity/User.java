@@ -23,7 +23,7 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String user_id;
+    private String userId;
     private String firstName;
     private String lastName;
     @Column(unique = true)
@@ -34,13 +34,15 @@ public class User {
     private String email;
     private String phone;
     private String isActive;
-    private String user_img;
-    private String user_address;
+    private String userImg;
+    private String userAddress;
 
-    private LocalDate user_dob;
+    private LocalDate userDob;
 
-    private LocalDateTime update_at;
-    private LocalDateTime create_at;
+    @CreationTimestamp
+    private LocalDateTime createAt;
+    @UpdateTimestamp
+    private LocalDateTime updateAt;
 
 
 

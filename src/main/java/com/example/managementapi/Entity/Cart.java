@@ -3,6 +3,8 @@ package com.example.managementapi.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -18,10 +20,12 @@ import java.util.List;
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String cart_id;
+    private String cartId;
 
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    @CreationTimestamp
+    private LocalDateTime createAt;
+    @UpdateTimestamp
+    private LocalDateTime updateAt;
 
     @OneToOne
     @JoinColumn(name = "user_id")

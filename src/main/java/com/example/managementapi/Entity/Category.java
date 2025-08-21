@@ -3,6 +3,8 @@ package com.example.managementapi.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -18,13 +20,15 @@ import java.util.List;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String category_id;
-    private String category_name;
-    private String category_description;
-    private String category_image;
+    private String categoryId;
+    private String categoryName;
+    private String categoryDescription;
+    private String categoryImage;
 
-    private LocalDateTime create_at;
-    private LocalDateTime update_at;
+    @CreationTimestamp
+    private LocalDateTime createAt;
+    @UpdateTimestamp
+    private LocalDateTime updateAt;
 
     @OneToMany(mappedBy = "category",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Product> products;

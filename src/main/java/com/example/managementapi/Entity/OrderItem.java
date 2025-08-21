@@ -2,6 +2,8 @@ package com.example.managementapi.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -16,13 +18,16 @@ import java.util.Date;
 public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String orderItem_id;
+    private String orderItemId;
     private int quantity;
     private double price;
 
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
-    private LocalDateTime deleted_at;
+    @CreationTimestamp
+    private LocalDateTime createAt;
+    @UpdateTimestamp
+    private LocalDateTime updateAt;
+
+    private LocalDateTime deletedAt;
 
     @ManyToOne
     @JoinColumn(name = "order_id")

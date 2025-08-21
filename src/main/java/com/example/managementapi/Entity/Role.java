@@ -2,6 +2,8 @@ package com.example.managementapi.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,11 +20,13 @@ import java.util.Set;
 public class Role {
     @Id
     @Column(unique = true)
-    private String role_name;
-    private String role_description;
+    private String roleName;
+    private String roleDescription;
 
-    private LocalDateTime update_at;
-    private LocalDateTime create_at;
+    @CreationTimestamp
+    private LocalDateTime createAt;
+    @UpdateTimestamp
+    private LocalDateTime updateAt;
 
     @ManyToMany
     private List<Permission> permissions;

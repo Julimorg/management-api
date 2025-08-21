@@ -2,6 +2,8 @@ package com.example.managementapi.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -16,25 +18,27 @@ import java.util.Date;
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String payment_id;
-    private String payment_method;
-    private String payment_status;
-    private String response_code;
-    private String transaction_status;
-    private String transaction_id;
-    private String bank_code;
-    private String bank_transaction_no;
-    private String card_type;
-    private String card_number;
-    private String txn_type;
-    private String order_info;
-    private String secure_hash;
+    private String paymentId;
+    private String paymentMethod;
+    private String paymentStatus;
+    private String responseCode;
+    private String transactionStatus;
+    private String transactionId;
+    private String bankCode;
+    private String bankTransactionNo;
+    private String cardType;
+    private String cardNumber;
+    private String txnType;
+    private String orderInfo;
+    private String secureHash;
 
     private double amount;
 
-    private LocalDateTime pay_date;
-    private LocalDateTime create_at;
-    private LocalDateTime update_at;
+    private LocalDateTime payDate;
+    @CreationTimestamp
+    private LocalDateTime createAt;
+    @UpdateTimestamp
+    private LocalDateTime updateAt;
 
     @OneToOne
     @JoinColumn(name = "order_id")

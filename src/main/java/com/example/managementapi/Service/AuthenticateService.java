@@ -44,7 +44,7 @@ public class AuthenticateService {
     private final InvalidatedTokenRepository invalidatedTokenRepository;
 
     @NonFinal
-    @Value("${expiry.date}")
+    @Value("${signer.key}")
     protected  String SIGNER_KEY;
 
     @NonFinal
@@ -151,7 +151,7 @@ public class AuthenticateService {
 
         JWTClaimsSet jwtClaimSet = new JWTClaimsSet.Builder()
                 .subject(user.getUserName()) // --> dai dien cho user dang nhap
-                .issuer("devteria.com") // --> dinh danh token
+//                .issuer("devteria.com") // --> dinh danh token
                 .issueTime(new Date())
                 .expirationTime(new Date(
                         Instant.now().plus(EXPIRY_DATE, ChronoUnit.SECONDS ).toEpochMilli()
@@ -179,11 +179,11 @@ public class AuthenticateService {
         StringJoiner stringJoiner = new StringJoiner(" ");
         if(!CollectionUtils.isEmpty(user.getUserRoles()))
             user.getUserRoles().forEach(role -> {
-                stringJoiner.add("ROLE_" + role.getRole_name());
+                stringJoiner.add("ROLE_" + role.getRoleName());
                 if(!CollectionUtils.isEmpty(role.getPermissions()))
                 {
                     role.getPermissions()
-                            .forEach(permission -> stringJoiner.add(permission.getPermission_name()));
+                            .forEach(permission -> stringJoiner.add(permission.getPermissionName()));
                 }
             });
 
