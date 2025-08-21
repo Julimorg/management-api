@@ -13,6 +13,7 @@ import com.nimbusds.jose.JOSEException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,9 @@ public class AuthController {
     ApiResponse<User> signUp(@RequestBody @Valid SignUpReq request){
 
         return ApiResponse.<User>builder()
+                .code(1000)
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
                 .data(userService.createUser(request))
                 .build();
     }
@@ -45,6 +49,9 @@ public class AuthController {
         var result = authenticationService.login(request);
 
         return ApiResponse.<LoginRes>builder()
+                .code(1000)
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
                 .data(result)
                 .build();
     }
@@ -55,6 +62,9 @@ public class AuthController {
 
         authenticationService.logOut(request);
         return ApiResponse.<String>builder()
+                .code(1000)
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
                 .message("Log out successfully!")
                 .build();
     }
@@ -65,6 +75,9 @@ public class AuthController {
         var result = authenticationService.refreshToken(request);
 
         return ApiResponse.<RefreshRes>builder()
+                .code(1000)
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
                 .data(result)
                 .build();
     }
@@ -75,6 +88,9 @@ public class AuthController {
         var result = authenticationService.introspect(request);
 
         return ApiResponse.<IntrospectResponse>builder()
+                .code(1000)
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
                 .data(result)
                 .build();
     }
