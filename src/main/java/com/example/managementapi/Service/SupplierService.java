@@ -34,6 +34,7 @@ public class SupplierService {
     }
 
     public GetSupplierDetailRes getSupplierDetailRes(String supplierId){
+
         return supplierMapper.toGetSupplierDetailRes(supplierRepository
                 .findById(supplierId)
                 .orElseThrow(() -> new RuntimeException("Supplier not found")));

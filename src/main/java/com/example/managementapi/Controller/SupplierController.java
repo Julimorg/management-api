@@ -58,7 +58,7 @@ public class SupplierController {
     @PutMapping("/update-supplier/{supplierId}")
     public ApiResponse<UpdateSupplierRes> updateSupplier(@PathVariable String supplierId, @RequestBody UpdateSupplierReq request) {
 
-        log.warn("supplier_id: " + supplierId);
+//        log.warn("supplier_id: " + supplierId);
         return ApiResponse.<UpdateSupplierRes>builder()
                 .code(1000)
                 .status_code(HttpStatus.OK.value())

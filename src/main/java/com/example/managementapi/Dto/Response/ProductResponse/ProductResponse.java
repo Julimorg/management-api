@@ -1,5 +1,6 @@
 package com.example.managementapi.Dto.Response.ProductResponse;
 
+import com.example.managementapi.Entity.Supplier;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
