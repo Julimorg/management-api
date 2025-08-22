@@ -1,8 +1,7 @@
 package com.example.managementapi.Entity;
 
+
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -11,7 +10,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -19,39 +17,24 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Users")
-public class User {
+@Table(name = "CartItem")
+public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String userId;
-    private String firstName;
-    private String lastName;
-    @Column(unique = true)
-    private String userName;
-    private String password;
-    @Email
-    @Column(unique = true)
-    private String email;
-    private String phone;
-    private String isActive;
-    private String userImg;
-    private String userAddress;
+    private String cartItemId;
 
-    private LocalDate userDob;
+    private int quantity;
 
     @CreationTimestamp
     private LocalDateTime createAt;
     @UpdateTimestamp
     private LocalDateTime updateAt;
 
-
-
-    @ManyToMany
-    private List<Role> userRoles;
-
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
-
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 }

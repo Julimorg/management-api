@@ -1,66 +1,56 @@
 package com.example.managementapi.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@Table(name = "Product")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
-    private String name;
-    private String description;
-    private float price;
-    private String status;
-    private int quantity;
+    private String productId;
+    private String productName;
+    private String productDescription;
+    private String productImage;
+    private String productVolume;
+    private String productUnit;
+    private String productCode;
 
-    public String getId() {
-        return id;
-    }
+    private int productQuantity;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    private double discount;
+    private double productPrice;
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    @CreationTimestamp
+    private LocalDateTime createAt;
+    @UpdateTimestamp
+    private LocalDateTime updateAt;
 
-    public String getDescription() {
-        return description;
-    }
+    @ManyToOne
+    @JoinColumn(name = "supplier_id")
+    private Supplier suppliers;
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    @ManyToOne
+    @JoinColumn(name = "color_id")
+    private Color colors;
 
-    public float getPrice() {
-        return price;
-    }
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-    public void setPrice(float price) {
-        this.price = price;
-    }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
 }
