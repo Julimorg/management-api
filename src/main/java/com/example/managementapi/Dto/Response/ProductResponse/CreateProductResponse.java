@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductResponse {
+public class CreateProductResponse {
     private String productId;
     private String productName;
     private String productDescription;
@@ -17,9 +17,11 @@ public class ProductResponse {
     private String productVolume;
     private String productUnit;
     private String productCode;
+
     private int productQuantity;
+
     private double discount;
     private double productPrice;
-
     private String supplierName;
+
 }
