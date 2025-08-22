@@ -1,16 +1,14 @@
-package com.example.managementapi.Dto.Request;
+package com.example.managementapi.Dto.Request.Auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LoginReq {
-    private String username;
-    private String password;
+public class LogOutReq {
+    private String token;
 }

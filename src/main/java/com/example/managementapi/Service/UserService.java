@@ -1,9 +1,9 @@
 package com.example.managementapi.Service;
 
-import com.example.managementapi.Dto.Request.SignUpReq;
-import com.example.managementapi.Dto.Request.UpdateUseReq;
-import com.example.managementapi.Dto.Response.GetUserRes;
-import com.example.managementapi.Dto.Response.UpdateUserRes;
+import com.example.managementapi.Dto.Request.Auth.SignUpReq;
+import com.example.managementapi.Dto.Request.User.UpdateUseReq;
+import com.example.managementapi.Dto.Response.User.GetUserRes;
+import com.example.managementapi.Dto.Response.User.UpdateUserRes;
 import com.example.managementapi.Entity.User;
 import com.example.managementapi.Enum.ErrorCode;
 import com.example.managementapi.Exception.AppException;

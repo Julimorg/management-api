@@ -1,12 +1,10 @@
-package com.example.managementapi.Dto.Request;
+package com.example.managementapi.Dto.Request.Supplier;
 
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -19,5 +17,4 @@ public class UpdateSupplierReq {
     private String supplierEmail;
     private String supplierImg;
 
-    private LocalDateTime createAt;
 }

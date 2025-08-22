@@ -24,6 +24,7 @@ public class Color {
     private String colorName;
     private String colorCode;
     private String colorDescription;
+    private String colorImg;
 
     @CreationTimestamp
     private LocalDateTime createAt;

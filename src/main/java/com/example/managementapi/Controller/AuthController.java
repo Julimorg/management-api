@@ -1,10 +1,10 @@
 package com.example.managementapi.Controller;
 
 import com.example.managementapi.Dto.ApiResponse;
-import com.example.managementapi.Dto.Request.*;
-import com.example.managementapi.Dto.Response.LoginRes;
-import com.example.managementapi.Dto.Response.IntrospectResponse;
-import com.example.managementapi.Dto.Response.RefreshRes;
+import com.example.managementapi.Dto.Request.Auth.*;
+import com.example.managementapi.Dto.Response.Auth.LoginRes;
+import com.example.managementapi.Dto.Response.Auth.IntrospectResponse;
+import com.example.managementapi.Dto.Response.Auth.RefreshRes;
 import com.example.managementapi.Entity.User;
 import com.example.managementapi.Repository.UserRepository;
 import com.example.managementapi.Service.AuthenticateService;

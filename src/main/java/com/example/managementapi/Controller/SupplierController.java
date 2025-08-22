@@ -1,12 +1,14 @@
 package com.example.managementapi.Controller;
 
 import com.example.managementapi.Dto.ApiResponse;
-import com.example.managementapi.Dto.Request.CreateSupplierReq;
-import com.example.managementapi.Dto.Request.UpdateSupplierReq;
-import com.example.managementapi.Dto.Response.CreateSupplierRes;
-import com.example.managementapi.Dto.Response.GetSupplierRes;
-import com.example.managementapi.Dto.Response.UpdateSupplierRes;
+import com.example.managementapi.Dto.Request.Supplier.CreateSupplierReq;
+import com.example.managementapi.Dto.Request.Supplier.UpdateSupplierReq;
+import com.example.managementapi.Dto.Response.Supplier.CreateSupplierRes;
+import com.example.managementapi.Dto.Response.Supplier.GetSupplierDetailRes;
+import com.example.managementapi.Dto.Response.Supplier.GetSupplierRes;
+import com.example.managementapi.Dto.Response.Supplier.UpdateSupplierRes;
 import com.example.managementapi.Service.SupplierService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Slf4j
 @RequestMapping("api/v1/supplier")
 public class SupplierController {
 
@@ -31,6 +34,16 @@ public class SupplierController {
                 .build();
     }
 
+    @GetMapping("/detail-supplier/{supplierId}")
+    public ApiResponse<GetSupplierDetailRes> getSupplierDetail(@PathVariable String supplierId){
+        return ApiResponse.<GetSupplierDetailRes>builder()
+                .code(1000)
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(supplierService.getSupplierDetailRes(supplierId) )
+                .build();
+    }
+
 
     @PostMapping("/create-supplier")
     public ApiResponse<CreateSupplierRes> createSupplier(@RequestBody CreateSupplierReq request) {
@@ -42,22 +55,24 @@ public class SupplierController {
                 .build();
     }
 
-    @PostMapping("/update-supplier/{supplier_id}")
-    public ApiResponse<UpdateSupplierRes> updateSupplier(@RequestBody  String supplier_id, UpdateSupplierReq request) {
+    @PutMapping("/update-supplier/{supplierId}")
+    public ApiResponse<UpdateSupplierRes> updateSupplier(@PathVariable String supplierId, @RequestBody UpdateSupplierReq request) {
+
+        log.warn("supplier_id: " + supplierId);
         return ApiResponse.<UpdateSupplierRes>builder()
                 .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
-                .data(supplierService.updateSupplier(supplier_id, request))
+                .data(supplierService.updateSupplier(supplierId, request))
                 .build();
     }
 
     @DeleteMapping("/delete-supplier/{supplierId}")
-    public ApiResponse<String> deleteSupplier() {
+    public ApiResponse<String> deleteSupplier(@PathVariable String supplierId) {
+        supplierService.deleteSupplier(supplierId);
         return ApiResponse.<String>builder()
                 .code(1000)
                 .status_code(HttpStatus.OK.value())
-                .message(HttpStatus.OK.getReasonPhrase())
                 .message("Deleted Supplier Sucessfully!")
                 .build();
     }

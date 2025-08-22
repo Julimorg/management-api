@@ -1,15 +1,14 @@
 package com.example.managementapi.Controller;
 
 import com.example.managementapi.Dto.ApiResponse;
-import com.example.managementapi.Dto.Request.UpdateUseReq;
-import com.example.managementapi.Dto.Response.GetUserRes;
-import com.example.managementapi.Dto.Response.UpdateUserRes;
+import com.example.managementapi.Dto.Request.User.UpdateUseReq;
+import com.example.managementapi.Dto.Response.User.GetUserRes;
+import com.example.managementapi.Dto.Response.User.UpdateUserRes;
 import com.example.managementapi.Service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

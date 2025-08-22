@@ -1,12 +1,12 @@
 package com.example.managementapi.Service;
 
-import com.example.managementapi.Dto.Request.LogOutReq;
-import com.example.managementapi.Dto.Request.LoginReq;
-import com.example.managementapi.Dto.Request.IntrospectRequest;
-import com.example.managementapi.Dto.Request.RefreshReq;
-import com.example.managementapi.Dto.Response.LoginRes;
-import com.example.managementapi.Dto.Response.IntrospectResponse;
-import com.example.managementapi.Dto.Response.RefreshRes;
+import com.example.managementapi.Dto.Request.Auth.LogOutReq;
+import com.example.managementapi.Dto.Request.Auth.LoginReq;
+import com.example.managementapi.Dto.Request.Auth.IntrospectRequest;
+import com.example.managementapi.Dto.Request.Auth.RefreshReq;
+import com.example.managementapi.Dto.Response.Auth.LoginRes;
+import com.example.managementapi.Dto.Response.Auth.IntrospectResponse;
+import com.example.managementapi.Dto.Response.Auth.RefreshRes;
 import com.example.managementapi.Entity.InvalidatedToken;
 import com.example.managementapi.Entity.User;
 import com.example.managementapi.Enum.ErrorCode;

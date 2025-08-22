@@ -1,6 +1,6 @@
 package com.example.managementapi.Configuration;
 
-import com.example.managementapi.Dto.Request.IntrospectRequest;
+import com.example.managementapi.Dto.Request.Auth.IntrospectRequest;
 import com.example.managementapi.Service.AuthenticateService;
 import com.nimbusds.jose.JOSEException;
 import lombok.experimental.NonFinal;

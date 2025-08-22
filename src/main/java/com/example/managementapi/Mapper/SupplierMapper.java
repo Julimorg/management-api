@@ -1,11 +1,12 @@
 package com.example.managementapi.Mapper;
 
 
-import com.example.managementapi.Dto.Request.CreateSupplierReq;
-import com.example.managementapi.Dto.Request.UpdateSupplierReq;
-import com.example.managementapi.Dto.Response.CreateSupplierRes;
-import com.example.managementapi.Dto.Response.GetSupplierRes;
-import com.example.managementapi.Dto.Response.UpdateSupplierRes;
+import com.example.managementapi.Dto.Request.Supplier.CreateSupplierReq;
+import com.example.managementapi.Dto.Request.Supplier.UpdateSupplierReq;
+import com.example.managementapi.Dto.Response.Supplier.CreateSupplierRes;
+import com.example.managementapi.Dto.Response.Supplier.GetSupplierDetailRes;
+import com.example.managementapi.Dto.Response.Supplier.GetSupplierRes;
+import com.example.managementapi.Dto.Response.Supplier.UpdateSupplierRes;
 import com.example.managementapi.Entity.Supplier;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -23,6 +24,8 @@ public interface SupplierMapper {
     UpdateSupplierRes toUpdateSupplierRes(Supplier supplier);
 
     GetSupplierRes toGetSuppliers(Supplier supplier);
+
+    GetSupplierDetailRes toGetSupplierDetailRes(Supplier supplier);
 
 
 }

@@ -1,4 +1,4 @@
-package com.example.managementapi.Dto.Response;
+package com.example.managementapi.Dto.Response.Auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.example.managementapi.Dto.Request;
+package com.example.managementapi.Dto.Request.Auth;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Email;

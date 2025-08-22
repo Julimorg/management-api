@@ -1,4 +1,4 @@
-package com.example.managementapi.Dto.Request;
+package com.example.managementapi.Dto.Request.Auth;
 
 
 import lombok.AllArgsConstructor;
@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RefreshReq {
+public class IntrospectRequest {
     private String token;
 }

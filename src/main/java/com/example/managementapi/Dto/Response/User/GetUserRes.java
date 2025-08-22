@@ -1,9 +1,6 @@
-package com.example.managementapi.Dto.Response;
+package com.example.managementapi.Dto.Response.User;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -11,15 +8,18 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateUserRes {
+public class GetUserRes {
+    private String userId;
     private String firstName;
     private String lastName;
     private String userName;
-    //    private String password;
+//    private String password;
     private String email;
     private String phoneNumber;
     private String role;
     private LocalDate birthDate;
     private String address;
     private String isActive;
+
+
 }

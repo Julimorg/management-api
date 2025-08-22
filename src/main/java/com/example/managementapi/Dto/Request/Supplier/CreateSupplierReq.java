@@ -1,4 +1,4 @@
-package com.example.managementapi.Dto.Response;
+package com.example.managementapi.Dto.Request.Supplier;
 
 
 import lombok.AllArgsConstructor;
@@ -12,14 +12,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateSupplierRes {
-
-    private String supplierId;
+public class CreateSupplierReq {
     private String supplierName;
     private String supplierAddress;
     private String supplierPhone;
     private String supplierEmail;
     private String supplierImg;
 
-    private LocalDateTime createAt;
+    private LocalDateTime create_at;
 }

@@ -1,4 +1,4 @@
-package com.example.managementapi.Dto.Request;
+package com.example.managementapi.Dto.Request.User;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;

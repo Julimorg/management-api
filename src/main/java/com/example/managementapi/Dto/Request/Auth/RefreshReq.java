@@ -1,4 +1,5 @@
-package com.example.managementapi.Dto.Request;
+package com.example.managementapi.Dto.Request.Auth;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LogOutReq {
+public class RefreshReq {
     private String token;
 }
