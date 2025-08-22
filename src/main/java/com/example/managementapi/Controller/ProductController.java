@@ -18,27 +18,27 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @PostMapping
+    @PostMapping("/create-product")
     CreateProductResponse createProduct(@RequestBody CreateProductRequest request){
         return productService.createProduct(request);
     }
 
-    @GetMapping
+    @GetMapping("/get-products")
     List<GetProductsResponse> getProducts(){
         return productService.getProducts();
     }
 
-    @GetMapping("/{productId}")
+    @GetMapping("/detail-product/{productId}")
     ProductResponse getProduct(@PathVariable("productId") String productId){
         return productService.getProduct(productId);
     }
 
-    @PutMapping("/{productId}")
+    @PutMapping("/update/{productId}")
     ProductResponse updateProduct(@PathVariable("productId") String productId, @RequestBody UpdateProductRequest request){
         return productService.updateProduct(productId, request);
     }
 
-    @DeleteMapping("/{productId}")
+    @DeleteMapping("/delete/{productId}")
     String deleteProduct(@PathVariable("productId") String productId){
         productService.deleteProduct(productId);
 
