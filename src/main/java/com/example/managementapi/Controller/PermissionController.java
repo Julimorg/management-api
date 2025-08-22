@@ -28,7 +28,7 @@ public class PermissionController {
     private final PermissionService premissionService;
 
 
-    @PostMapping("/create-permision")
+    @PostMapping("/create-permission")
     ApiResponse<CreatePermissionRes> createPermission(@RequestBody CreatePermissionReq request) {
         return ApiResponse.<CreatePermissionRes>builder()
                 .code(1000)
