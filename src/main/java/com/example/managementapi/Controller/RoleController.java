@@ -40,8 +40,9 @@ public class RoleController {
                 .build();
     }
 
-    @DeleteMapping("/delete-role")
-    public ApiResponse<String> deleteRole(){
+    @DeleteMapping("/delete-role/{roleName}")
+    public ApiResponse<String> deleteRole(@PathVariable String roleName){
+        roleService.deleteRole(roleName);
         return ApiResponse.<String>builder()
                 .code(1000)
                 .status_code(HttpStatus.OK.value())

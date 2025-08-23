@@ -13,8 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class RoleRes {
-    private String name;
-    private String description;
+    private String roleName;
+    private String roleDescription;
 
     List<GetPermissionRes> permissions;
 }

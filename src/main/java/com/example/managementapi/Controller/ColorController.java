@@ -11,7 +11,9 @@ import com.example.managementapi.Dto.Response.Color.UpdateColorRes;
 import com.example.managementapi.Service.ColorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -41,8 +43,20 @@ public class ColorController {
                 .build();
     }
 
-    @PostMapping("/create-color")
-    public ApiResponse<CreateColorRes> createColor(@RequestBody CreateColorReq request) {
+    @PostMapping(value = "/create-color", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<CreateColorRes> createColor(
+            @RequestPart("colorName") String colorName,
+            @RequestPart(value = "colorCode", required = false) String colorCode,
+            @RequestPart(value = "colorDescription", required = false) String colorDescription,
+            @RequestPart(value = "colorImg", required = false) MultipartFile colorImg) {
+
+        CreateColorReq request = CreateColorReq.builder()
+                .colorName(colorName)
+                .colorCode(colorCode)
+                .colorDescription(colorDescription)
+                .colorImg(colorImg)
+                .build();
+
         return ApiResponse.<CreateColorRes>builder()
                 .code(1000)
                 .status_code(HttpStatus.OK.value())

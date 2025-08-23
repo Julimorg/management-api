@@ -6,12 +6,14 @@ import com.example.managementapi.Dto.Response.Role.RoleRes;
 import com.example.managementapi.Mapper.RoleMapper;
 import com.example.managementapi.Repository.PermissionRepository;
 import com.example.managementapi.Repository.RoleRespository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import javax.management.relation.RoleNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -49,7 +51,11 @@ public class RoleService {
         return roles.stream().map(roleMapper::toRoleResponse).toList();
     }
 
-    void deleteRole(String roleId){
-        roleRespository.deleteById(roleId);
+    @Transactional
+    public void deleteRole(String roleName){
+        if(!roleRespository.existsByRoleName(roleName)){
+            throw new RuntimeException("Role Name not found:  " +  roleName);
+        }
+        roleRespository.deleteByRoleName(roleName);
     }
 }

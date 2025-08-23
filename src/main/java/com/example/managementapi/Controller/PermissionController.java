@@ -26,6 +26,8 @@ public class PermissionController {
 
     @Autowired
     private final PermissionService premissionService;
+    @Autowired
+    private PermissionService permissionService;
 
 
     @PostMapping("/create-permission")
@@ -49,8 +51,9 @@ public class PermissionController {
                 .build();
     }
 
-    @DeleteMapping("/delete-permission")
-    ApiResponse<String> deletePermission(){
+    @DeleteMapping("/delete-permission/{permissionName}")
+    ApiResponse<String> deletePermission(@PathVariable String permissionName){
+        permissionService.deletePermission(permissionName);
         return ApiResponse.<String>builder()
                 .code(1000)
                 .status_code(HttpStatus.OK.value())
