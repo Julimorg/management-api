@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RoleRespository extends JpaRepository<Role, String> {
+    void deleteByRoleName(String roleName);
+
+    boolean existsByRoleName(String roleName);
 }

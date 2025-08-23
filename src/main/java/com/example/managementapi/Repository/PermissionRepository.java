@@ -8,4 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PermissionRepository extends JpaRepository<Permission, String> {
 
+    void deleteByPermissionName(String permissionName);
+
+    boolean existsByPermissionName(String permissionName);
 }

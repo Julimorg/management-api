@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +18,6 @@ public class CreateSupplierReq {
     private String supplierAddress;
     private String supplierPhone;
     private String supplierEmail;
-    private String supplierImg;
+    private MultipartFile supplierImg;
 
-    private LocalDateTime create_at;
 }

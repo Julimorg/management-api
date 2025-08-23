@@ -9,16 +9,18 @@ import com.example.managementapi.Dto.Response.Supplier.GetSupplierRes;
 import com.example.managementapi.Dto.Response.Supplier.UpdateSupplierRes;
 import com.example.managementapi.Entity.Supplier;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface SupplierMapper {
 
-
+    @Mapping(target = "supplierImg", ignore = true)
     Supplier toCreateSupplierReq(CreateSupplierReq request);
 
     CreateSupplierRes toCreateSupplierRes(Supplier supplier);
 
+    @Mapping(target = "supplierImg", ignore = true)
     void toUpdateSupplierReq(@MappingTarget Supplier supplier, UpdateSupplierReq request);
 
     UpdateSupplierRes toUpdateSupplierRes(Supplier supplier);
