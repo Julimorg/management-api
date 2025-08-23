@@ -16,59 +16,76 @@ import java.util.regex.Pattern;
 @Slf4j
 public class FileUpLoadUtil {
 
+    //? Check size của File --> MAX = 2MB
     public static final long MAX_FILE_SIZE = 2 * 1024 * 1024;
 
 
-    //? Check định dạng file img
+    //? Check định dạng file img theo kiểu pattern regex
+    //? Có 2 kiểu check
+    //?  (?i)^(jpg|jpeg|png|gif|bmp|webp)$  --> Ko quan tâm đến tên file ( chỉ kiểu tra các đuôi file jpg, jpeg, ...)
+    //?  ([^\\s]+(\\.(?i)(jpg|jpeg|png|gif|bmp|webp))$) --> kiểm tra toàn bộ từ tên file ( ko có khoảng trắng ) đến đuôi file
     public static final String IMAGE_PATTERN = "(?i)^(jpg|jpeg|png|gif|bmp|webp)$";
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
+    //? Config tên file / %s_%s --> IMG_2025-03-12
     public static final String FILE_NAME_FORMAT = "%s_%s";
 
+
+    //? Function check phần mở rộng file có valid không
     public static boolean isAllowedExtension(final String extension, final String pattern) {
         if (extension == null) {
-            log.error("Extension is null");
             return false;
         }
-        log.info("Checking extension: '{}'", extension);
+        //? Compile dạng Regex với Pattern và không biệt hoa / thường
+        //? Loại bỏ khoảng trắng thông qua trim
         final Matcher matcher = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE).matcher(extension.trim());
+
+        //? Check extension khớp với pattern hay không
         boolean matches = matcher.matches();
-        log.info("Extension '{}' matches pattern '{}': {}", extension, pattern, matches);
         return matches;
     }
 
+    //? Function check MultipartFile có Valid không
     public static void assertAllowed(MultipartFile file, String pattern){
-        log.info("Validating file: {}", file.getOriginalFilename());
+
+        //? lấy kích thước của file
         final long size = file.getSize();
+        //? lấy tên file gốc
+        final String fileName = file.getOriginalFilename();
+
+        //? Lấy đuôi file --> Hello.png
+        //?         ví dụ --> final String extension = png
+        final String extension = FilenameUtils.getExtension(fileName);
 
         if (size > MAX_FILE_SIZE) {
-            log.error("File size exceeds limit: {}", size);
             throw new AppException(ErrorCode.IMG_OVER_SIZE);
         }
 
-        final String fileName = file.getOriginalFilename();
         if (fileName == null || fileName.isEmpty()) {
-            log.error("File name is null or empty");
             throw new RuntimeException("File name cannot be null or empty");
         }
 
-        final String extension = FilenameUtils.getExtension(fileName);
-        log.info("File extension: {}", extension);
         if (!isAllowedExtension(extension, pattern)) {
-            log.error("Invalid file extension: {}", extension);
             throw new RuntimeException("Only jpg, png, gif, bmp, webp files are allowed");
         }
 
     }
 
+    //? Generate ra tên file dựa trên các data được truyền vào
     public static String getFileName(final String name) {
 
+        //? Generate DATE theo yyyy-MM-dd
         final DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
+        //? Lấy DATE hiện tại
         final String date = dateFormat.format(System.currentTimeMillis());
+
+        //? Clean tên file, thay cho các ký tự không hợp lệ bằng dấu "_"
         String cleanName = name.replaceAll("[^a-zA-Z0-9_-]", "_");
-        return String.format(FILE_NAME_FORMAT, name, date);
+
+        //? return về tên file theo format -> yello_2025-08-23
+        return String.format(FILE_NAME_FORMAT, cleanName, date);
 
     }
 }

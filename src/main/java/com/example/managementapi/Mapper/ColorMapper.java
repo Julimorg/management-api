@@ -14,11 +14,12 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface ColorMapper {
 
-    @Mapping(target = "colorImg", ignore = true) // Bỏ qua colorImg, sẽ set trong service
+    @Mapping(target = "colorImg", ignore = true)
     Color toCreateColorReq(CreateColorReq request);
 
     CreateColorRes toCreateColorRes(Color color);
 
+    @Mapping(target = "colorImg", ignore = true)
     void toUpdateColor(@MappingTarget Color color, UpdateColorReq request);
 
     UpdateColorRes toUpdateColorRes(Color color);

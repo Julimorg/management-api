@@ -48,31 +48,34 @@ public class ColorService {
                         .orElseThrow(() -> new RuntimeException("Color not found!")));
     }
     public CreateColorRes createColor(CreateColorReq request){
-        log.info("Processing createColor request for colorName: {}", request.getColorName());
 
         MultipartFile image = request.getColorImg();
         String imageUrl = null;
 
         if (image != null && !image.isEmpty()) {
-            log.info("Uploading image for color: {}", request.getColorName());
+
+            //? lấy FileUpLoadUtil để check định dạng File có valid hay không
             FileUpLoadUtil.assertAllowed(image, FileUpLoadUtil.IMAGE_PATTERN);
 
+            //? Generate FileName từ field colorName
             String fileName = FileUpLoadUtil.getFileName(request.getColorName());
-            log.info("Generated fileName: {}", fileName);
 
+            //? Gọi thằng CloudinaryService để upFile
             CloudinaryRes cloudinaryRes = cloudinaryService.uploadFile(image, fileName);
+
+            //? Hứng url từ CloudinaryRes cho thằng imageUrl
             imageUrl = cloudinaryRes.getUrl();
-            log.info("Uploaded image URL: {}", imageUrl);
         } else {
             log.info("No image provided for color: {}", request.getColorName());
+            throw new RuntimeException("Image is empty!");
         }
 
         Color color = colorMapper.toCreateColorReq(request);
+
+        //? gán url đã hứng vào field colorImg
         color.setColorImg(imageUrl);
-        log.info("Set colorImg URL: {}", imageUrl);
 
         color = colorRepository.save(color);
-        log.info("Saved color with ID: {}", color.getColorId());
 
         return colorMapper.toCreateColorRes(color);
     }
@@ -84,17 +87,26 @@ public class ColorService {
 
         String imageUrl = null;
 
-        if(image != null && !image.isEmpty()) {
-
-        }
-
         Color color = colorRepository
                 .findById(colorId)
                 .orElseThrow(() -> new RuntimeException("Color not Found!"));
 
+        if(image != null && !image.isEmpty()) {
+            FileUpLoadUtil.assertAllowed(image, FileUpLoadUtil.IMAGE_PATTERN);
+            String fileName = FileUpLoadUtil.getFileName(request.getColorName());
+            CloudinaryRes cloudinaryRes = cloudinaryService.uploadFile(image, fileName);
+            imageUrl = cloudinaryRes.getUrl();
+        }else {
+            log.info("No image provided for color: {}", request.getColorName());
+            throw new RuntimeException("Image is empty!");
+        }
+
         colorMapper.toUpdateColor(color, request);
 
-        return colorMapper.toUpdateColorRes(colorRepository.save(color));
+        color.setColorImg(imageUrl);
+
+        color = colorRepository.save(color);
+        return colorMapper.toUpdateColorRes(color);
     }
 
     public void deleteColor(String colorId){

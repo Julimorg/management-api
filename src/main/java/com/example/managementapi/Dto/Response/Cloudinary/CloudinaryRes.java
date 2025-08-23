@@ -11,6 +11,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CloudinaryRes {
+
+    //? CloudinaryRes sẽ response về 2 field public_id và url
+    //? Nên việc tạo DTO để ứng response từ Api của Cloudinary là cần thiết
+
     private String publicId;
 
     private String url;

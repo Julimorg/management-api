@@ -21,13 +21,22 @@ public class CloudinaryService {
     @Transactional
     public CloudinaryRes uploadFile(MultipartFile file, String fileName) {
         try {
-            log.info("Uploading file to Cloudinary with public_id: {}", "img" + fileName);
+            //? Gọi API của Cloudinary để upload File
+            //? file.getBytes() --> Config file thành byte
+            //? Map.of("public_id", "img" + fileName) --> Config định dạng file trên cloudinary
+            //? result sẽ response về theo kiểu như sau
+            //?     -> result = https://res.cloudinary.com/.../imgYELLOW_2025-08-23.png
             final Map result = cloudinary
                     .uploader()
                     .upload(file.getBytes(), Map.of("public_id", "img" + fileName));
+
+            //? gán result ( ép kiểu result thành String ) cho url
             final String url = (String) result.get("secure_url");
+            // ? gán public_id resposne từ Cloudinary cho publicId
             final String publicId = (String) result.get("public_id");
-            log.info("File uploaded successfully. URL: {}, publicId: {}", url, publicId);
+
+            //? Khi lấy được những data cần thiết từ response của Cloudinary
+            //?     Build CloudinaryRes đã tạo trong DTO rồi gán các data đó vào các file của DTO
             return CloudinaryRes
                     .builder()
                     .publicId(publicId)
