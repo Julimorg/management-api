@@ -17,9 +17,11 @@ public enum ErrorCode {
     USER_NOT_EXISTED (1008, "User Not Existed", HttpStatus.BAD_REQUEST),
     UNAUTHENTICAED(1009, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1010, "Unauthorized", HttpStatus.UNAUTHORIZED),
-    PRODUCT_EXISTED(1001,"Product Existed", HttpStatus.BAD_REQUEST),
-    SUPPLIER_NOT_EXISTED(1008, "Supplier Not Existed", HttpStatus.BAD_REQUEST),
-    COLOR_NOT_EXISTED(1008, "Color Not Existed", HttpStatus.BAD_REQUEST),
+    PRODUCT_EXISTED(1011,"Product Existed", HttpStatus.BAD_REQUEST),
+    SUPPLIER_NOT_EXISTED(1012, "Supplier Not Existed", HttpStatus.BAD_REQUEST),
+    COLOR_NOT_EXISTED(1013, "Color Not Existed", HttpStatus.BAD_REQUEST),
+    //* ======================= CLOUDINARY CATCH ERROR =======================
+    IMG_OVER_SIZE(1020, "Your Image is over size!", HttpStatus.BAD_REQUEST),
     UNKNOWN_ERROR(9999, "Unknown Error", HttpStatus.INTERNAL_SERVER_ERROR);
 
     ;

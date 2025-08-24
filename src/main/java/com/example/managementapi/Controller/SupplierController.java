@@ -11,7 +11,9 @@ import com.example.managementapi.Service.SupplierService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -45,8 +47,11 @@ public class SupplierController {
     }
 
 
-    @PostMapping("/create-supplier")
-    public ApiResponse<CreateSupplierRes> createSupplier(@RequestBody CreateSupplierReq request) {
+    @PostMapping(value = "/create-supplier", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<CreateSupplierRes> createSupplier(
+            //? Sử dụng @ModelAttribute để ánh xạ toàn bộ form-data vào CreateColorReq
+            @ModelAttribute CreateSupplierReq request) {
+
         return ApiResponse.<CreateSupplierRes>builder()
                 .code(1000)
                 .status_code(HttpStatus.OK.value())
@@ -54,11 +59,10 @@ public class SupplierController {
                 .data(supplierService.createSupplier(request))
                 .build();
     }
+    @PatchMapping(value = "/update-supplier/{supplierId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<UpdateSupplierRes> updateSupplier(@PathVariable String supplierId, @ModelAttribute UpdateSupplierReq request) {
 
-    @PutMapping("/update-supplier/{supplierId}")
-    public ApiResponse<UpdateSupplierRes> updateSupplier(@PathVariable String supplierId, @RequestBody UpdateSupplierReq request) {
-
-        log.warn("supplier_id: " + supplierId);
+//        log.warn("supplier_id: " + supplierId);
         return ApiResponse.<UpdateSupplierRes>builder()
                 .code(1000)
                 .status_code(HttpStatus.OK.value())

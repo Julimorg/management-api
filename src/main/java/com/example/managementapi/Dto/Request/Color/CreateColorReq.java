@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @NoArgsConstructor
@@ -12,6 +13,6 @@ import lombok.NoArgsConstructor;
 public class CreateColorReq {
     private String colorName;
     private String colorCode;
-    private String colorImg;
     private String colorDescription;
+    private MultipartFile colorImg;
 }

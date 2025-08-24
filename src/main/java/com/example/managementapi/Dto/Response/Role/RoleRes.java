@@ -5,20 +5,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateRoleRes {
+public class RoleRes {
     private String roleName;
     private String roleDescription;
 
     List<GetPermissionRes> permissions;
-
-    private LocalDateTime createAt;
 }

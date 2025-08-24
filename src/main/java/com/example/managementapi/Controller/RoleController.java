@@ -1,41 +1,53 @@
-//package com.example.managementapi.Controller;
-//
-//import lombok.RequiredArgsConstructor;
-//import org.example.springdemoapi.Dto.ApiResponse;
-//import org.example.springdemoapi.Dto.Request.CreateRoleRequest;
-//import org.example.springdemoapi.Dto.Response.RoleResponse;
-//import org.example.springdemoapi.Service.RoleService;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.web.bind.annotation.*;
-//
-//import java.util.List;
-//
-//@RestController
-//@RequestMapping("/role")
-//@RequiredArgsConstructor
-//public class RoleController {
-//
-//    @Autowired
-//    private final RoleService roleService;
-//
-//    @GetMapping("/get-role")
-//    public ApiResponse<List<RoleResponse>> getRole() {
-//        return ApiResponse.<List<RoleResponse>>builder()
-//                .data(roleService.getRole())
-//                .build();
-//    }
-//
-//    @PostMapping("/create-role")
-//    public ApiResponse<RoleResponse> createRole(@RequestBody CreateRoleRequest request) {
-//        return ApiResponse.<RoleResponse>builder()
-//                .data(roleService.createRole(request))
-//                .build();
-//    }
-//
-//    @DeleteMapping("/delete-role")
-//    public ApiResponse<String> deleteRole(){
-//        return ApiResponse.<String>builder()
-//                .message("Delete role!")
-//                .build();
-//    }
-//}
+package com.example.managementapi.Controller;
+
+import com.example.managementapi.Dto.ApiResponse;
+import com.example.managementapi.Dto.Request.Role.CreateRoleReq;
+import com.example.managementapi.Dto.Response.Role.CreateRoleRes;
+import com.example.managementapi.Dto.Response.Role.RoleRes;
+import com.example.managementapi.Service.RoleService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("api/v1/role")
+@RequiredArgsConstructor
+public class RoleController {
+
+    @Autowired
+    private final RoleService roleService;
+
+    @GetMapping("/get-role")
+    public ApiResponse<List<RoleRes>> getRole() {
+        return ApiResponse.<List<RoleRes>>builder()
+                .code(1000)
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(roleService.getRole())
+                .build();
+    }
+
+    @PostMapping("/create-role")
+    public ApiResponse<CreateRoleRes> createRole(@RequestBody CreateRoleReq request) {
+        return ApiResponse.<CreateRoleRes>builder()
+                .code(1000)
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(roleService.createRole(request))
+                .build();
+    }
+
+    @DeleteMapping("/delete-role/{roleName}")
+    public ApiResponse<String> deleteRole(@PathVariable String roleName){
+        roleService.deleteRole(roleName);
+        return ApiResponse.<String>builder()
+                .code(1000)
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .message("Delete role!")
+                .build();
+    }
+}

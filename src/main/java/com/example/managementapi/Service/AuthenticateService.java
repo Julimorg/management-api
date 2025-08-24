@@ -143,15 +143,16 @@ public class AuthenticateService {
 
     //* =================================== JWT Service =================================== //
 
-
-
+    //? Tạo Token
+    //  JWT tuân thủ theo 3 param của chính nó
+    //          -- HEADER -- PAYLOAD -- SIGNATURE --
     private String generateToken(User user){
 
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimSet = new JWTClaimsSet.Builder()
                 .subject(user.getUserName()) // --> dai dien cho user dang nhap
-//                .issuer("devteria.com") // --> dinh danh token
+                .issuer("kienphongtran2003@gmail.com")
                 .issueTime(new Date())
                 .expirationTime(new Date(
                         Instant.now().plus(EXPIRY_DATE, ChronoUnit.SECONDS ).toEpochMilli()

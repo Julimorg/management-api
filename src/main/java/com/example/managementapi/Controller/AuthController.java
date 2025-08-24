@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,7 +41,7 @@ public class AuthController {
                 .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
-                .data(userService.createUser(request))
+                .data(userService.signUp(request))
                 .build();
     }
 
@@ -56,6 +57,7 @@ public class AuthController {
                 .build();
     }
 
+//    @PreAuthorize("")
     @PostMapping("/log-out")
     ApiResponse<String> logout(@RequestBody LogOutReq request)
             throws ParseException, JOSEException {

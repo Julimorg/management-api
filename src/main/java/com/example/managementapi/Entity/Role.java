@@ -29,5 +29,5 @@ public class Role {
     private LocalDateTime updateAt;
 
     @ManyToMany
-    private List<Permission> permissions;
+    private Set<Permission> permissions;
 }

@@ -30,7 +30,7 @@ public class UserService {
                 .map(userMapper::toGetUser).toList();
     }
 
-    public User createUser(SignUpReq request){
+    public User signUp(SignUpReq request){
 
         if(userRepository.existsByUserName(request.getUserName()))
             throw  new AppException((ErrorCode.USER_EXISTED));
@@ -46,6 +46,7 @@ public class UserService {
 
 
         //? 2. Đây là cách thủ công ko sử dụng đến mapper
+
 
         return userRepository.save(user);
     }

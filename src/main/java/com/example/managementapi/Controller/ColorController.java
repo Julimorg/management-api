@@ -11,7 +11,9 @@ import com.example.managementapi.Dto.Response.Color.UpdateColorRes;
 import com.example.managementapi.Service.ColorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -41,8 +43,23 @@ public class ColorController {
                 .build();
     }
 
-    @PostMapping("/create-color")
-    public ApiResponse<CreateColorRes> createColor(@RequestBody CreateColorReq request) {
+    //? Định nghĩa Endpoint Có Body theo FormData
+    @PostMapping(value = "/create-color", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<CreateColorRes> createColor(
+            //? Set up các Key Và Value cho FormData
+            @RequestPart("colorName") String colorName,
+            @RequestPart(value = "colorCode") String colorCode,
+            @RequestPart(value = "colorDescription") String colorDescription,
+            @RequestPart(value = "colorImg") MultipartFile colorImg) {
+
+        //? Điịnh nghĩa lại Object Dto CreateColorReq từ các Set up Key và Value
+        CreateColorReq request = CreateColorReq.builder()
+                .colorName(colorName)
+                .colorCode(colorCode)
+                .colorDescription(colorDescription)
+                .colorImg(colorImg)
+                .build();
+
         return ApiResponse.<CreateColorRes>builder()
                 .code(1000)
                 .status_code(HttpStatus.OK.value())
@@ -51,8 +68,21 @@ public class ColorController {
                 .build();
     }
 
-    @PutMapping("/edit-color/{colorId}")
-    public ApiResponse<UpdateColorRes> updateColor(@PathVariable String colorId, @RequestBody UpdateColorReq request) {
+    @PatchMapping(value = "/edit-color/{colorId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<UpdateColorRes> updateColor(
+            @PathVariable String colorId,
+            @RequestPart(value = "colorName") String colorName,
+            @RequestPart(value = "colorCode") String colorCode,
+            @RequestPart(value = "colorDescription") String colorDescription,
+            @RequestPart(value = "colorImg") MultipartFile colorImg
+    ) {
+        UpdateColorReq request = UpdateColorReq.builder()
+                .colorCode(colorCode)
+                .colorName(colorName)
+                .colorDescription(colorDescription)
+                .colorImg(colorImg)
+                .build();
+
         return ApiResponse.<UpdateColorRes>builder()
                 .code(1000)
                 .status_code(HttpStatus.OK.value())

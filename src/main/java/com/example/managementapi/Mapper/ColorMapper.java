@@ -8,15 +8,18 @@ import com.example.managementapi.Dto.Response.Color.GetColorRes;
 import com.example.managementapi.Dto.Response.Color.UpdateColorRes;
 import com.example.managementapi.Entity.Color;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface ColorMapper {
 
+    @Mapping(target = "colorImg", ignore = true)
     Color toCreateColorReq(CreateColorReq request);
 
     CreateColorRes toCreateColorRes(Color color);
 
+    @Mapping(target = "colorImg", ignore = true)
     void toUpdateColor(@MappingTarget Color color, UpdateColorReq request);
 
     UpdateColorRes toUpdateColorRes(Color color);

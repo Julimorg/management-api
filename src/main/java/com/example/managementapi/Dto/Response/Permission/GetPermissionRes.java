@@ -17,8 +17,6 @@ public class GetPermissionRes {
     private String permissionName;
     private String permissionDescription;
 
-    private List<Role> roles;
-
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 }

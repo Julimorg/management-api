@@ -6,6 +6,7 @@ import com.example.managementapi.Dto.Response.Permission.GetPermissionRes;
 import com.example.managementapi.Entity.Permission;
 import com.example.managementapi.Mapper.PermissionMapper;
 import com.example.managementapi.Repository.PermissionRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,11 @@ public class PermissionService {
         return permission.stream().map(permissionMapper::toGetPermission).toList();
     }
 
-    public void deletePermission(String permissionId){
-        permissionRepository.deleteById(permissionId);
+    @Transactional
+    public void deletePermission(String permissionName){
+        if (!permissionRepository.existsByPermissionName(permissionName)) {
+            throw new RuntimeException("Permission not found: " + permissionName);
+        }
+        permissionRepository.deleteByPermissionName(permissionName);
     }
 }

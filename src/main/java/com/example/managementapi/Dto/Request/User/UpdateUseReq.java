@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -26,7 +28,9 @@ public class UpdateUseReq {
     @Size(min = 2, max = 10, message = "PHONE_INVALID")
     private String phoneNumber;
     private String role;
+    private Set<String> roles;
     private LocalDate birthDate;
     private String address;
     private String isActive;
+
 }
