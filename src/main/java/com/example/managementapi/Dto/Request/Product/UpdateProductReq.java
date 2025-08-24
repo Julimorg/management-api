@@ -1,4 +1,4 @@
-package com.example.managementapi.Dto.Request.ProductRequest;
+package com.example.managementapi.Dto.Request.Product;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateProductRequest {
-    private String productName;
+public class UpdateProductReq {
     private String productDescription;
     private String productImage;
     private String productVolume;
@@ -19,6 +18,8 @@ public class CreateProductRequest {
     private int productQuantity;
     private double discount;
     private double productPrice;
+
     private String supplierId;
+    private String colorId;
 
 }

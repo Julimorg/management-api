@@ -1,13 +1,15 @@
 package com.example.managementapi.Controller;
 
-import com.example.managementapi.Dto.Request.ProductRequest.CreateProductRequest;
-import com.example.managementapi.Dto.Request.ProductRequest.UpdateProductRequest;
-import com.example.managementapi.Dto.Response.ProductResponse.CreateProductResponse;
-import com.example.managementapi.Dto.Response.ProductResponse.GetProductsResponse;
-import com.example.managementapi.Dto.Response.ProductResponse.ProductResponse;
-import com.example.managementapi.Entity.Product;
+import com.example.managementapi.Dto.ApiResponse;
+import com.example.managementapi.Dto.Request.Product.CreateProductReq;
+import com.example.managementapi.Dto.Request.Product.UpdateProductReq;
+import com.example.managementapi.Dto.Response.Product.CreateProductRes;
+import com.example.managementapi.Dto.Response.Product.GetProductsRes;
+import com.example.managementapi.Dto.Response.Product.ProductRes;
+import com.example.managementapi.Dto.Response.Product.UpdateProductRes;
 import com.example.managementapi.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,30 +21,55 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping("/create-product")
-    CreateProductResponse createProduct(@RequestBody CreateProductRequest request){
-        return productService.createProduct(request);
+    ApiResponse<CreateProductRes> createProduct(@RequestBody CreateProductReq request){
+        return ApiResponse.<CreateProductRes>builder()
+                .code(1000)
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(productService.createProduct(request))
+                .build();
     }
 
     @GetMapping("/get-products")
-    List<GetProductsResponse> getProducts(){
-        return productService.getProducts();
+    ApiResponse<List<GetProductsRes>> getProducts(){
+        return ApiResponse.<List<GetProductsRes>>builder()
+                .code(1000)
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(productService.getProducts())
+                .build();
     }
 
     @GetMapping("/detail-product/{productId}")
-    ProductResponse getProduct(@PathVariable("productId") String productId){
-        return productService.getProduct(productId);
+    ApiResponse<ProductRes> getProduct(@PathVariable("productId") String productId){
+        return ApiResponse.<ProductRes>builder()
+                .code(1000)
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(productService.getProduct(productId))
+                .build();
+
     }
 
-    @PutMapping("/update/{productId}")
-    ProductResponse updateProduct(@PathVariable("productId") String productId, @RequestBody UpdateProductRequest request){
-        return productService.updateProduct(productId, request);
+    @PatchMapping("/update/{productId}")
+    ApiResponse<UpdateProductRes> updateProduct(@PathVariable("productId") String productId, @RequestBody UpdateProductReq request){
+        return ApiResponse.<UpdateProductRes>builder()
+                .code(1000)
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(productService.updateProduct(productId, request))
+                .build();
     }
 
     @DeleteMapping("/delete/{productId}")
-    String deleteProduct(@PathVariable("productId") String productId){
+    ApiResponse<String> deleteProduct(@PathVariable("productId") String productId){
         productService.deleteProduct(productId);
 
-        return "Product has been deleted";
+        return ApiResponse.<String>builder()
+                .code(1000)
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .build();
     }
 
 }

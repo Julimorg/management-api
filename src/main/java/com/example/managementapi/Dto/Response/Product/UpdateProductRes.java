@@ -1,4 +1,4 @@
-package com.example.managementapi.Dto.Response.ProductResponse;
+package com.example.managementapi.Dto.Response.Product;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductResponse {
+public class UpdateProductRes {
     private String productId;
     private String productName;
     private String productDescription;
@@ -21,5 +21,7 @@ public class ProductResponse {
     private double discount;
     private double productPrice;
 
+    //
     private String supplierName;
+    private String colorName;
 }

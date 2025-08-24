@@ -1,34 +1,34 @@
 package com.example.managementapi.Mapper;
 
-import com.example.managementapi.Dto.Request.ProductRequest.CreateProductRequest;
-import com.example.managementapi.Dto.Request.ProductRequest.UpdateProductRequest;
-import com.example.managementapi.Dto.Response.ProductResponse.CreateProductResponse;
-import com.example.managementapi.Dto.Response.ProductResponse.GetProductsResponse;
-import com.example.managementapi.Dto.Response.ProductResponse.ProductResponse;
-import com.example.managementapi.Dto.Response.Supplier.GetSupplierDetailRes;
+import com.example.managementapi.Dto.Request.Product.CreateProductReq;
+import com.example.managementapi.Dto.Request.Product.UpdateProductReq;
+import com.example.managementapi.Dto.Response.Product.CreateProductRes;
+import com.example.managementapi.Dto.Response.Product.GetProductsRes;
+import com.example.managementapi.Dto.Response.Product.ProductRes;
+import com.example.managementapi.Dto.Response.Product.UpdateProductRes;
+import com.example.managementapi.Dto.Response.Supplier.UpdateSupplierRes;
 import com.example.managementapi.Entity.Product;
 import com.example.managementapi.Entity.Supplier;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import java.util.List;
-
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
-    Product toProduct(CreateProductRequest request);
+    Product toProduct(CreateProductReq request);
 
     //get 1 product
-    @Mapping(source = "suppliers.supplierName", target = "supplierName")
-    ProductResponse toProductResponse(Product product);
+    ProductRes toProductResponse(Product product);
 
-    CreateProductResponse toCreateProductResponse(Product product);
+    CreateProductRes toCreateProductResponse(Product product);
 
     //get list product
-    @Mapping(source = "suppliers.supplierName", target = "supplierName")
-    GetProductsResponse toGetProductsResponses(Product products);
+    GetProductsRes toGetProductsResponses(Product products);
 
-    void updateProduct(@MappingTarget Product product, UpdateProductRequest request);
+    //Req
+    void updateProduct(@MappingTarget Product product, UpdateProductReq request);
+
+    UpdateProductRes toUpdateProductRes(Product product);
     //xong bài #5
 
 }

@@ -1,4 +1,4 @@
-package com.example.managementapi.Dto.Response.ProductResponse;
+package com.example.managementapi.Dto.Response.Product;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GetProductsResponse {
+public class GetProductsRes {
     private String productId;
     private String productName;
     private String productDescription;
@@ -17,10 +17,7 @@ public class GetProductsResponse {
     private String productVolume;
     private String productUnit;
     private String productCode;
-
     private int productQuantity;
-
     private double discount;
     private double productPrice;
-    private String supplierName;
 }

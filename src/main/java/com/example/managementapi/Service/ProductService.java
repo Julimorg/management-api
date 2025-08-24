@@ -1,11 +1,12 @@
 package com.example.managementapi.Service;
 
-import com.example.managementapi.Dto.Request.ProductRequest.CreateProductRequest;
-import com.example.managementapi.Dto.Request.ProductRequest.UpdateProductRequest;
-import com.example.managementapi.Dto.Response.ProductResponse.CreateProductResponse;
-import com.example.managementapi.Dto.Response.ProductResponse.GetProductsResponse;
-import com.example.managementapi.Dto.Response.ProductResponse.ProductResponse;
-import com.example.managementapi.Entity.Category;
+import com.example.managementapi.Dto.Request.Product.CreateProductReq;
+import com.example.managementapi.Dto.Request.Product.UpdateProductReq;
+import com.example.managementapi.Dto.Response.Product.CreateProductRes;
+import com.example.managementapi.Dto.Response.Product.GetProductsRes;
+import com.example.managementapi.Dto.Response.Product.ProductRes;
+import com.example.managementapi.Dto.Response.Product.UpdateProductRes;
+import com.example.managementapi.Entity.Color;
 import com.example.managementapi.Entity.Product;
 import com.example.managementapi.Entity.Supplier;
 import com.example.managementapi.Enum.ErrorCode;
@@ -28,23 +29,41 @@ public class ProductService {
     @Autowired
     private ColorRepository colorRepository;
 
-
     @Autowired
     private ProductMapper productMapper;
 
     //Tạo product
-    public CreateProductResponse createProduct(CreateProductRequest request){
+
+    public CreateProductRes createProduct(CreateProductReq request){
         if(productRepository.existsByProductName(request.getProductName())){
             throw new AppException(ErrorCode.PRODUCT_EXISTED);
         }
 
         Product product = productMapper.toProduct(request);
+
         if(request.getSupplierId() != null){
             Supplier supplier = supplierRepository.findById(request.getSupplierId()).orElseThrow(()-> new AppException(ErrorCode.SUPPLIER_NOT_EXISTED));
             product.setSuppliers(supplier);
         }
+
+        if(request.getColorId() != null){
+            Color color = colorRepository.findById(request.getColorId()).orElseThrow(() -> new AppException(ErrorCode.COLOR_NOT_EXISTED));
+            product.setColors(color);
+        }
+
         Product savedProduct = productRepository.save(product);
-        return productMapper.toCreateProductResponse(savedProduct);
+
+        CreateProductRes response = productMapper.toCreateProductResponse(savedProduct);
+
+        if(savedProduct.getSuppliers() != null){
+            response.setSupplierName(savedProduct.getSuppliers().getSupplierName());
+        }
+
+        if(savedProduct.getColors() != null){
+            response.setColorName(savedProduct.getColors().getColorName());
+        }
+
+        return response;
 //        product.setName(request.getName());
 //        product.setDescription(request.getDescription());
 //        product.setPrice(request.getPrice());
@@ -53,26 +72,50 @@ public class ProductService {
     }
 
     //Get list product
-    public List<GetProductsResponse> getProducts(){
+    //Note: get thủ công cho supplier
+    public List<GetProductsRes> getProducts(){
         return productRepository.findAll().stream().map(product -> productMapper.toGetProductsResponses(product)).toList();
     }
 
     //Get 1 product
-    public ProductResponse getProduct(String id){
-        return productMapper.toProductResponse(productRepository.findById(id).orElseThrow(()
-                -> new RuntimeException("Product not found")));
+    public ProductRes getProduct(String id){
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        ProductRes response = productMapper.toProductResponse(product);
+
+        if (product.getSuppliers() != null) {
+            response.setSupplierName(product.getSuppliers().getSupplierName());
+        }
+
+        if(product.getColors() != null){
+            response.setColorName(product.getColors().getColorName());
+        }
+
+        return response;
     }
 
-    public ProductResponse updateProduct(String id, UpdateProductRequest request){
+    //Update Product
+    public UpdateProductRes updateProduct(String id, UpdateProductReq request){
         Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+
         productMapper.updateProduct(product, request);
+
+        Product savedProduct = productRepository.save(product);
+
+        UpdateProductRes res = productMapper.toUpdateProductRes(savedProduct);
+
+        if(savedProduct.getSuppliers() != null){
+            //
+        }
+
+        return productMapper.toUpdateProductRes(productRepository.save(product));
 
 //        product.setDescription(request.getDescription());
 //        product.setPrice(request.getPrice());
 //        product.setStatus(request.getStatus());
 //        product.setQuantity(request.getQuantity());
 
-        return productMapper.toProductResponse(productRepository.save(product));
     }
 
     public void deleteProduct(String id){

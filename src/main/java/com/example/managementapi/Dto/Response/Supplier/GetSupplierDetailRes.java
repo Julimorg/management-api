@@ -1,9 +1,8 @@
 package com.example.managementapi.Dto.Response.Supplier;
 
 
-import com.example.managementapi.Dto.Response.ProductResponse.ProductResponse;
+import com.example.managementapi.Dto.Response.Product.ProductRes;
 import com.example.managementapi.Entity.Color;
-import com.example.managementapi.Entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +23,7 @@ public class GetSupplierDetailRes {
     private String supplierEmail;
     private String supplierImg;
 
-    private List<ProductResponse> products;
+    private List<ProductRes> products;
 
     private List<Color> colors;
 
