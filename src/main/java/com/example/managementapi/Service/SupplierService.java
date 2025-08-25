@@ -15,6 +15,7 @@ import com.example.managementapi.Util.FileUpLoadUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,6 +35,7 @@ public class SupplierService {
     @Autowired
     private final CloudinaryService cloudinaryService;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<GetSupplierRes> getSuppliers(){
         return supplierRepository.findAll().stream()
                 .map(supplier -> supplierMapper.toGetSuppliers(supplier)).toList();

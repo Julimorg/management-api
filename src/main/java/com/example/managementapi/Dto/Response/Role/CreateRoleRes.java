@@ -15,8 +15,9 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class CreateRoleRes {
-    private String roleName;
-    private String roleDescription;
+    private String name;
+    private String description;
+
 
     List<GetPermissionRes> permissions;
 

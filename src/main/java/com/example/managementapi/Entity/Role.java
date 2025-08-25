@@ -20,14 +20,19 @@ import java.util.Set;
 public class Role {
     @Id
     @Column(unique = true)
-    private String roleName;
-    private String roleDescription;
+    private String name;
+    private String description;
 
     @CreationTimestamp
     private LocalDateTime createAt;
     @UpdateTimestamp
     private LocalDateTime updateAt;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "role_permissions",
+            joinColumns = @JoinColumn(name = "role_name"),
+            inverseJoinColumns = @JoinColumn(name = "permissions_name")
+    )
     private Set<Permission> permissions;
 }

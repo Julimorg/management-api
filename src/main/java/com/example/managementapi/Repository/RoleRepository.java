@@ -4,9 +4,14 @@ import com.example.managementapi.Entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface RoleRespository extends JpaRepository<Role, String> {
-    void deleteByRoleName(String roleName);
+import java.util.Optional;
 
-    boolean existsByRoleName(String roleName);
+@Repository
+public interface RoleRepository extends JpaRepository<Role, String> {
+    void deleteByName(String name);
+
+    Optional<Role> findByName(String name);
+
+
+    boolean existsByName(String name);
 }

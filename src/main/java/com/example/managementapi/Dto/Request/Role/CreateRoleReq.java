@@ -13,8 +13,10 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class CreateRoleReq {
-    private String roleName;
-    private String roleDescription;
+    private String name;
+
+    private String description;
+
 
     List<String> permissions;
 }

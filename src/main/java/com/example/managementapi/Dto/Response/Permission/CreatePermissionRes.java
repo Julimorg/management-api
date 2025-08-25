@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreatePermissionRes {
-    private String permissionName;
-    private String permissionDescription;
+    private String name;
+    private String description;
 
     private LocalDateTime createAt;
 }

@@ -37,6 +37,7 @@ public class AuthController {
     @PostMapping("/sign-up")
     ApiResponse<User> signUp(@RequestBody @Valid SignUpReq request){
 
+
         return ApiResponse.<User>builder()
                 .code(1000)
                 .status_code(HttpStatus.OK.value())
