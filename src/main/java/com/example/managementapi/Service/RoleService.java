@@ -5,7 +5,7 @@ import com.example.managementapi.Dto.Response.Role.CreateRoleRes;
 import com.example.managementapi.Dto.Response.Role.RoleRes;
 import com.example.managementapi.Mapper.RoleMapper;
 import com.example.managementapi.Repository.PermissionRepository;
-import com.example.managementapi.Repository.RoleRespository;
+import com.example.managementapi.Repository.RoleRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-import javax.management.relation.RoleNotFoundException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -30,7 +28,7 @@ public class RoleService {
     private final PermissionRepository permissionRepository;
 
     @Autowired
-    private final RoleRespository roleRespository;
+    private final RoleRepository roleRespository;
 
     public CreateRoleRes createRole(CreateRoleReq request){
         var role = roleMapper.toCreateRole(request);
@@ -53,9 +51,9 @@ public class RoleService {
 
     @Transactional
     public void deleteRole(String roleName){
-        if(!roleRespository.existsByRoleName(roleName)){
+        if(!roleRespository.existsByName(roleName)){
             throw new RuntimeException("Role Name not found:  " +  roleName);
         }
-        roleRespository.deleteByRoleName(roleName);
+        roleRespository.deleteByName(roleName);
     }
 }

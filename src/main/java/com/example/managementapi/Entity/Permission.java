@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -20,14 +21,12 @@ import java.util.List;
 public class Permission {
     @Id
     @Column(unique = true)
-    private String permissionName;
-    private String permissionDescription;
+    private String name;
+    private String description;
 
     @CreationTimestamp
     private LocalDateTime createAt;
     @UpdateTimestamp
     private LocalDateTime updateAt;
 
-    @ManyToMany
-    private List<Role> roles;
 }

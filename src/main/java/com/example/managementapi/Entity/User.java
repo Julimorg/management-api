@@ -23,7 +23,7 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String userId;
+    private String id;
     private String firstName;
     private String lastName;
     @Column(unique = true)
@@ -44,10 +44,13 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updateAt;
 
-
-
-    @ManyToMany
-    private List<Role> userRoles;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "roles_name")
+    )
+    private Set<Role> roles;
 
     @OneToOne
     @JoinColumn(name = "cart_id")

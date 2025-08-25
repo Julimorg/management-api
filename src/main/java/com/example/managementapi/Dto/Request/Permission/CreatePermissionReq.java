@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class CreatePermissionReq {
-    private String permissionName;
-    private String permissionDescription;
+    private String name;
+    private String description;
+
 }

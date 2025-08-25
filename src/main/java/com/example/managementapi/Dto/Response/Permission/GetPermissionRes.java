@@ -14,8 +14,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetPermissionRes {
-    private String permissionName;
-    private String permissionDescription;
+    private String name;
+    private String description;
+
 
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
