@@ -74,8 +74,8 @@ public class ProductController {
     }
 
     @GetMapping("/generate-qr/{productId}")
-    public ApiResponse<String> generateProductQr(@PathVariable String id) {
-        ProductRes product = productService.getProduct(id);
+    public ApiResponse<String> generateProductQr(@PathVariable String productId) {
+        ProductRes product = productService.getProduct(productId);
 
         String productJson = new QRGenerateUtil().prettyObject(product);
 
