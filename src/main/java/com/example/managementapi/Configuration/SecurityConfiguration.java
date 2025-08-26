@@ -25,7 +25,7 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfiguration {
-    private final String[] PUBLIC_POST_ENDPOINTS = {"/users/create-users","api/v1/auth/sign-up","api/v1/auth/log-in","api/v1/supplier/create-supplier", "api/v1/supplier/**"};
+    private final String[] PUBLIC_POST_ENDPOINTS = {"api/v1/auth/**"};
     private final String[] PUBLIC_GET_ENPOINTS = {"api/v1/users/get-user", "api/v1/supplier/get-suppliers"};
     private final String[] PUBLIC_SWAGGER = {"/swagger-ui/**","/v3/api-docs/**", "/webjars/**"};
 

@@ -56,5 +56,8 @@ public class User {
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ForgotPassword forgotPassword;
+
 
 }
