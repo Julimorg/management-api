@@ -8,6 +8,7 @@ import com.example.managementapi.Dto.Response.Product.GetProductsRes;
 import com.example.managementapi.Dto.Response.Product.ProductRes;
 import com.example.managementapi.Dto.Response.Product.UpdateProductRes;
 import com.example.managementapi.Service.ProductService;
+import com.example.managementapi.Util.QRGenerateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -72,4 +73,19 @@ public class ProductController {
                 .build();
     }
 
+    @GetMapping("/generate-qr/{productId}")
+    public ApiResponse<String> generateProductQr(@PathVariable String id) {
+        ProductRes product = productService.getProduct(id);
+
+        String productJson = new QRGenerateUtil().prettyObject(product);
+
+        String qrCodeBase64 = QRGenerateUtil.generateQrCode(productJson, 300, 300);
+
+        return ApiResponse.<String>builder()
+                .code(1000)
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(qrCodeBase64)
+                .build();
+    }
 }

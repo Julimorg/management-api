@@ -42,7 +42,7 @@ public class ProductService {
         Product product = productMapper.toProduct(request);
 
         if(request.getSupplierId() != null){
-            Supplier supplier = supplierRepository.findById(request.getSupplierId()).orElseThrow(()-> new AppException(ErrorCode.SUPPLIER_NOT_EXISTED));
+            Supplier supplier = supplierRepository.findById(request.getSupplierId()).orElseThrow(() -> new AppException(ErrorCode.SUPPLIER_NOT_EXISTED));
             product.setSuppliers(supplier);
         }
 
@@ -121,4 +121,6 @@ public class ProductService {
     public void deleteProduct(String id){
         productRepository.deleteById(id);
     }
+
+
 }
