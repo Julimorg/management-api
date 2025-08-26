@@ -25,7 +25,7 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfiguration {
-    private final String[] PUBLIC_POST_ENDPOINTS = {"/users/create-users","api/v1/auth/sign-up","api/v1/auth/log-in","api/v1/supplier/create-supplier", "api/v1/supplier/**"};
+    private final String[] PUBLIC_POST_ENDPOINTS = {"api/v1/auth/**"};
     private final String[] PUBLIC_GET_ENPOINTS = {"api/v1/users/get-user", "api/v1/supplier/get-suppliers"};
     private final String[] PUBLIC_SWAGGER = {"/swagger-ui/**","/v3/api-docs/**", "/webjars/**"};
 
@@ -38,15 +38,19 @@ public class SecurityConfiguration {
         return new BCryptPasswordEncoder();
     }
 
+    //? Config filter chain của Spring Security
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+
+        //** Config ra các endpoint nào cần secure và endpoint nào không cần secure
+        //? Config ra những enpoint ko cần secure với httpSecurity.authorizeHttpRequests()
         httpSecurity.authorizeHttpRequests(request ->
                 request.requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENPOINTS).permitAll()
                         .requestMatchers(PUBLIC_SWAGGER).permitAll()
                         .anyRequest().authenticated());
 
-        //? Config OAuth2
+        //? Config OAuth2 với Oauth2ResourceServer
         httpSecurity.oauth2ResourceServer(oauth2
                 -> oauth2.jwt(jwtConfigurer
                 -> jwtConfigurer.decoder(jwtDecoder())

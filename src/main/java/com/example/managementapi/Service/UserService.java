@@ -4,25 +4,34 @@ import com.example.managementapi.Dto.Request.Auth.SignUpReq;
 import com.example.managementapi.Dto.Request.User.UpdateUseReq;
 import com.example.managementapi.Dto.Response.User.GetUserRes;
 import com.example.managementapi.Dto.Response.User.UpdateUserRes;
+import com.example.managementapi.Entity.Role;
 import com.example.managementapi.Entity.User;
 import com.example.managementapi.Enum.ErrorCode;
 import com.example.managementapi.Exception.AppException;
 import com.example.managementapi.Mapper.UserMapper;
+import com.example.managementapi.Repository.RoleRepository;
 import com.example.managementapi.Repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Service
+@Slf4j
 public class UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private RoleRepository roleRepository;
 
 
     public List<GetUserRes> getUser(){
@@ -35,22 +44,33 @@ public class UserService {
         if(userRepository.existsByUserName(request.getUserName()))
             throw  new AppException((ErrorCode.USER_EXISTED));
 
-
         //? Sử dụng Mapper
         User user = userMapper.toUser(request);
 
-        //? Sử dụng thuật toán Bcrypt để encode Pass
-        //? Nên đặt length là 10 vì đây là ở muc thuật toán có thể encrypt nhanh
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
+        Role userRole = roleRepository.findByName("USER").orElseGet(() -> {
+                    Role newRole = Role.builder()
+                            .name("STAFF")
+                            .description("Staff role office")
+                            .build();
+            Role savedRole = roleRepository.save(newRole);
+            log.info("Created role: {}", savedRole);
+            return savedRole;
+                });
 
-        //? 2. Đây là cách thủ công ko sử dụng đến mapper
+        Set<Role> roles = new HashSet<>();
+        roles.add(userRole);
+
+        user.setRoles(roles);
 
 
         return userRepository.save(user);
     }
 
+    @PostAuthorize("returnObject.userName == authentication.name")
     public UpdateUserRes updateUser(String userId, UpdateUseReq request){
 
         if(userRepository.existsByUserName(request.getUserName()))

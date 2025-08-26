@@ -3,7 +3,6 @@ package com.example.managementapi.Service;
 import com.example.managementapi.Dto.Request.Permission.CreatePermissionReq;
 import com.example.managementapi.Dto.Response.Permission.CreatePermissionRes;
 import com.example.managementapi.Dto.Response.Permission.GetPermissionRes;
-import com.example.managementapi.Entity.Permission;
 import com.example.managementapi.Mapper.PermissionMapper;
 import com.example.managementapi.Repository.PermissionRepository;
 import jakarta.transaction.Transactional;
@@ -43,9 +42,9 @@ public class PermissionService {
 
     @Transactional
     public void deletePermission(String permissionName){
-        if (!permissionRepository.existsByPermissionName(permissionName)) {
+        if (!permissionRepository.existsByName(permissionName)) {
             throw new RuntimeException("Permission not found: " + permissionName);
         }
-        permissionRepository.deleteByPermissionName(permissionName);
+        permissionRepository.deleteByName(permissionName);
     }
 }

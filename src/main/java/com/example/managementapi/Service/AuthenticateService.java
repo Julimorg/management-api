@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -58,6 +59,7 @@ public class AuthenticateService {
     //* =================================== Auth Service =================================== //
 
 
+//    @PreAuthorize("hasRole('USER')")
     public LoginRes login(LoginReq request) {
         var user = userRepository.findByUserName(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -144,8 +146,8 @@ public class AuthenticateService {
     //* =================================== JWT Service =================================== //
 
     //? Tạo Token
-    //  JWT tuân thủ theo 3 param của chính nó
-    //          -- HEADER -- PAYLOAD -- SIGNATURE --
+    //?  JWT tuân thủ theo 3 param của chính nó
+    //?         -- HEADER -- PAYLOAD -- SIGNATURE --
     private String generateToken(User user){
 
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
@@ -156,18 +158,22 @@ public class AuthenticateService {
                 .issueTime(new Date())
                 .expirationTime(new Date(
                         Instant.now().plus(EXPIRY_DATE, ChronoUnit.SECONDS ).toEpochMilli()
-                ))
+                )) // --> Hạn của Token
                 .jwtID(UUID.randomUUID().toString())
                 .claim("scope", buildScope(user))
                 .build();
 
+
+        //? Tạo Payload cho Token và truyền jwtClaimSet dưới dạng JSONObject vào
         Payload payload = new Payload(jwtClaimSet.toJSONObject());
 
+        //? jwsObject cần phai thỏa mãn điều kiện 1 trong 3 yếu tố
+        //? HEADER - PAYLOAD - SIGNATURE
         JWSObject jwsObject = new JWSObject(header, payload);
 
         //? Sign Token voi thuat toan MACSigner
         try {
-            jwsObject.sign(new MACSigner(SIGNER_KEY));
+            jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
             return jwsObject.serialize();
         } catch (JOSEException e) {
             log.error("Cannot create token", e);
@@ -176,17 +182,23 @@ public class AuthenticateService {
 
     }
 
+
+    //? Config Role - Permission bên trong Payload của JWT
     private String buildScope(User user){
         StringJoiner stringJoiner = new StringJoiner(" ");
-        if(!CollectionUtils.isEmpty(user.getUserRoles()))
-            user.getUserRoles().forEach(role -> {
-                stringJoiner.add("ROLE_" + role.getRoleName());
-                if(!CollectionUtils.isEmpty(role.getPermissions()))
-                {
+        if(!CollectionUtils.isEmpty(user.getRoles())) {
+            log.warn("get role here!");
+            user.getRoles().forEach(role -> {
+                log.error("SCOPE ROLE: " + user.getRoles());
+                stringJoiner.add("ROLE_" + role.getName());
+                if (!CollectionUtils.isEmpty(role.getPermissions())) {
                     role.getPermissions()
-                            .forEach(permission -> stringJoiner.add(permission.getPermissionName()));
+                            .forEach(permission -> stringJoiner.add(permission.getName()));
                 }
             });
+        } else{
+            log.info("cant not get role!");
+        }
 
         return stringJoiner.toString();
     }

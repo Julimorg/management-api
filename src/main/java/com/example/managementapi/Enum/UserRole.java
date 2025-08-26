@@ -1,6 +1,6 @@
 package com.example.managementapi.Enum;
 
-public enum Role {
+public enum UserRole {
     ADMIN,
     STAFF,
     USER
