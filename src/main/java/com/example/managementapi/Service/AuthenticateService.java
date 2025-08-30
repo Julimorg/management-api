@@ -22,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -69,7 +68,7 @@ public class AuthenticateService {
         boolean authenticate = passwordEncode.matches(request.getPassword(), user.getPassword());
 
         if(!authenticate)
-            throw  new AppException(ErrorCode.UNAUTHENTICAED);
+            throw  new AppException(ErrorCode.UNAUTHENTICATED);
 
         var token = generateToken(user);
 
@@ -219,10 +218,10 @@ public class AuthenticateService {
         var verified = signedJWT.verify(verifier);
 
         if(!verified && expiryTime.after(new Date()))
-            throw  new AppException(ErrorCode.UNAUTHENTICAED);
+            throw  new AppException(ErrorCode.UNAUTHENTICATED);
 
         if(invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
-            throw new AppException(ErrorCode.UNAUTHENTICAED);
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
 
         return signedJWT;
     }

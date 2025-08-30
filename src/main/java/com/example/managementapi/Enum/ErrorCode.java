@@ -15,7 +15,7 @@ public enum ErrorCode {
     EMAIL_INVALID(1006, "Invalid Email Format", HttpStatus.BAD_REQUEST),
     PHONE_INVALID(1007, "Invalid Phone Number", HttpStatus.BAD_REQUEST),
     USER_NOT_EXISTED (1008, "User Not Existed", HttpStatus.BAD_REQUEST),
-    UNAUTHENTICAED(1009, "Wrong Password!", HttpStatus.UNAUTHORIZED),
+    UNAUTHENTICATED(1009, "UnAuthenticated! Please Log in to continue!", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1010, "Unauthorized", HttpStatus.UNAUTHORIZED),
     PRODUCT_EXISTED(1011,"Product Existed", HttpStatus.BAD_REQUEST),
     SUPPLIER_NOT_EXISTED(1012, "Supplier Not Existed", HttpStatus.BAD_REQUEST),

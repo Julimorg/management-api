@@ -29,7 +29,6 @@ public class SecurityConfiguration {
             "api/v1/auth/**",
             "api/v1/reset-pass/**"
     };
-    private final String[] PUBLIC_GET_ENPOINTS = {"api/v1/users/get-user", "api/v1/supplier/get-suppliers"};
     private final String[] PUBLIC_SWAGGER = {"/swagger-ui/**","/v3/api-docs/**", "/webjars/**"};
 
     @NonFinal
@@ -49,7 +48,6 @@ public class SecurityConfiguration {
         //? Config ra những enpoint ko cần secure với httpSecurity.authorizeHttpRequests()
         httpSecurity.authorizeHttpRequests(request ->
                 request.requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENPOINTS).permitAll()
                         .requestMatchers(PUBLIC_SWAGGER).permitAll()
                         .anyRequest().authenticated());
 
