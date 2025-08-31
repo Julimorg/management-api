@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @NoArgsConstructor
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UpdateProductReq {
     private String productDescription;
-    private String productImage;
+    private MultipartFile productImage;
     private String productVolume;
     private String productUnit;
     private String productCode;

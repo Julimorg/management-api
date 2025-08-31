@@ -2,6 +2,7 @@ package com.example.managementapi.Service;
 
 import com.example.managementapi.Dto.Request.Product.CreateProductReq;
 import com.example.managementapi.Dto.Request.Product.UpdateProductReq;
+import com.example.managementapi.Dto.Response.Cloudinary.CloudinaryRes;
 import com.example.managementapi.Dto.Response.Product.CreateProductRes;
 import com.example.managementapi.Dto.Response.Product.GetProductsRes;
 import com.example.managementapi.Dto.Response.Product.ProductRes;
@@ -15,8 +16,10 @@ import com.example.managementapi.Mapper.ProductMapper;
 import com.example.managementapi.Repository.ColorRepository;
 import com.example.managementapi.Repository.ProductRepository;
 import com.example.managementapi.Repository.SupplierRepository;
+import com.example.managementapi.Util.FileUpLoadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -32,12 +35,26 @@ public class ProductService {
     @Autowired
     private ProductMapper productMapper;
 
+    @Autowired
+
     //Tạo product
 
     public CreateProductRes createProduct(CreateProductReq request){
         if(productRepository.existsByProductName(request.getProductName())){
             throw new AppException(ErrorCode.PRODUCT_EXISTED);
         }
+
+        MultipartFile image = request.getProductImage();
+        String imgUrl = null;
+
+        if(image != null && !image.isEmpty()){
+            FileUpLoadUtil.assertAllowed(image, FileUpLoadUtil.IMAGE_PATTERN);
+
+            String fileName = FileUpLoadUtil.getFileName(request.getProductName());
+
+
+        }
+
 
         Product product = productMapper.toProduct(request);
 
