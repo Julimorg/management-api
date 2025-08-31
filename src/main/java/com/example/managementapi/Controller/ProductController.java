@@ -11,6 +11,7 @@ import com.example.managementapi.Service.ProductService;
 import com.example.managementapi.Util.QRGenerateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,8 +22,8 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @PostMapping("/create-product")
-    ApiResponse<CreateProductRes> createProduct(@RequestBody CreateProductReq request){
+    @PostMapping(value = "/create-product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ApiResponse<CreateProductRes> createProduct(@ModelAttribute CreateProductReq request){
         return ApiResponse.<CreateProductRes>builder()
                 .code(1000)
                 .status_code(HttpStatus.OK.value())
@@ -52,8 +53,8 @@ public class ProductController {
 
     }
 
-    @PatchMapping("/update/{productId}")
-    ApiResponse<UpdateProductRes> updateProduct(@PathVariable("productId") String productId, @RequestBody UpdateProductReq request){
+    @PatchMapping(value = "/update/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ApiResponse<UpdateProductRes> updateProduct(@PathVariable("productId") String productId, @ModelAttribute UpdateProductReq request){
         return ApiResponse.<UpdateProductRes>builder()
                 .code(1000)
                 .status_code(HttpStatus.OK.value())

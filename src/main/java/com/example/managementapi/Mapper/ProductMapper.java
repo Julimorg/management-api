@@ -15,6 +15,7 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
+    @Mapping(target = "productImage", ignore = true)
     Product toProduct(CreateProductReq request);
 
     //get 1 product
@@ -26,7 +27,9 @@ public interface ProductMapper {
     GetProductsRes toGetProductsResponses(Product products);
 
     //Req
+    @Mapping(target = "productImage", ignore = true)
     void updateProduct(@MappingTarget Product product, UpdateProductReq request);
+
 
     UpdateProductRes toUpdateProductRes(Product product);
     //xong bài #5

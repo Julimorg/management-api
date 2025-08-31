@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @Builder
 public class UpdateProductReq {
+    private String productName;
     private String productDescription;
     private MultipartFile productImage;
     private String productVolume;
