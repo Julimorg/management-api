@@ -21,5 +21,4 @@ public class UpdateUserRes {
     private String role;
     private LocalDate birthDate;
     private String address;
-    private String isActive;
 }

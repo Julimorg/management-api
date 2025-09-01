@@ -102,6 +102,7 @@ public class ProductService {
 
     //Get list product
     //Note: get thủ công cho supplier
+    // Check xem findALl xem co lay them nhung thang ENtity ko lien quan ko
     public List<GetProductsRes> getProducts(){
         return productRepository.findAll().stream().map(product -> productMapper.toGetProductsResponses(product)).toList();
     }
