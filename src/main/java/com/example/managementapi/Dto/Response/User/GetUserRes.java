@@ -9,13 +9,13 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetUserRes {
-    private String userId;
+    private String id;
     private String firstName;
     private String lastName;
     private String userName;
 //    private String password;
     private String email;
-    private String phoneNumber;
+    private String phone;
     private String role;
     private LocalDate birthDate;
     private String address;

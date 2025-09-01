@@ -3,6 +3,7 @@ package com.example.managementapi.Service;
 import com.example.managementapi.Dto.Request.Auth.SignUpReq;
 import com.example.managementapi.Dto.Request.User.UpdateUseReq;
 import com.example.managementapi.Dto.Response.User.GetUserRes;
+import com.example.managementapi.Dto.Response.User.SearchUserRes;
 import com.example.managementapi.Dto.Response.User.UpdateUserRes;
 import com.example.managementapi.Entity.Role;
 import com.example.managementapi.Entity.User;
@@ -13,7 +14,10 @@ import com.example.managementapi.Repository.RoleRepository;
 import com.example.managementapi.Repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,7 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
+// Url/search/name
 @Service
 @Slf4j
 public class UserService {
@@ -33,7 +37,9 @@ public class UserService {
     @Autowired
     private RoleRepository roleRepository;
 
+// ** =============================== ROLE USER ===============================
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<GetUserRes> getUser(){
         return userRepository.findAll().stream()
                 .map(userMapper::toGetUser).toList();
@@ -83,8 +89,15 @@ public class UserService {
         return userMapper.toResUpdateUser(userRepository.save(user));
     }
 
+    public Page<SearchUserRes> searchUser(String keyword, Pageable pageable){
+        return userRepository.searchUser(keyword, pageable);
+    }
+
     public void deleteUser(String userId) {
         userRepository.deleteById(userId);
     }
+
+// ** =============================== ROLE ADMIN ===============================
+
 
 }
