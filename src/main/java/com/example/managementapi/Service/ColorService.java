@@ -11,11 +11,16 @@ import com.example.managementapi.Dto.Response.Color.UpdateColorRes;
 import com.example.managementapi.Entity.Color;
 import com.example.managementapi.Mapper.ColorMapper;
 import com.example.managementapi.Repository.ColorRepository;
+import com.example.managementapi.Specification.ColorSpecification;
 import com.example.managementapi.Util.FileUpLoadUtil;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -81,7 +86,7 @@ public class ColorService {
     }
 
 
-    public UpdateColorRes updateColor(String colorId, UpdateColorReq request){
+    public UpdateColorRes updateColor(String colorId, UpdateColorReq request) {
 
         MultipartFile image = request.getColorImg();
 
@@ -107,6 +112,12 @@ public class ColorService {
 
         color = colorRepository.save(color);
         return colorMapper.toUpdateColorRes(color);
+    }
+
+    public Page<GetColorRes> searchColor(String keyword, Pageable pageable){
+        Specification<Color> spec = ColorSpecification.searchByCriteria(keyword);
+        Page<Color> colorPage = colorRepository.findAll(spec, pageable);
+        return colorPage.map(color -> colorMapper.toGetColorRes(color));
     }
 
     public void deleteColor(String colorId){
