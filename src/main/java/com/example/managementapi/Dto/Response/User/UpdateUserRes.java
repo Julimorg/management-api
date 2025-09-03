@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -15,10 +16,13 @@ public class UpdateUserRes {
     private String firstName;
     private String lastName;
     private String userName;
-    //    private String password;
+
     private String email;
     private String phoneNumber;
     private String role;
     private LocalDate birthDate;
     private String address;
+
+    private LocalDateTime updateAt;
+
 }

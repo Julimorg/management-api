@@ -6,6 +6,7 @@ import com.example.managementapi.Dto.Response.User.*;
 import com.example.managementapi.Entity.Role;
 import com.example.managementapi.Entity.User;
 import com.example.managementapi.Enum.ErrorCode;
+import com.example.managementapi.Enum.Status;
 import com.example.managementapi.Exception.AppException;
 import com.example.managementapi.Mapper.UserMapper;
 import com.example.managementapi.Repository.RoleRepository;
@@ -22,11 +23,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-// Url/search/name
+
 @Service
 @Slf4j
 public class UserService {
@@ -38,12 +40,6 @@ public class UserService {
     private RoleRepository roleRepository;
 
 // ** =============================== ROLE USER ===============================
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<GetUserRes> getUser(){
-        return userRepository.findAll().stream()
-                .map(userMapper::toGetUser).toList();
-    }
 
     public SignUpUserRes signUp(SignUpReq request){
 
@@ -67,13 +63,12 @@ public class UserService {
             return savedRole;
                 });
 
-        user.setIsActive("TRUE");
+        user.setIsActive(String.valueOf(Status.ACTIVE));
 
         Set<Role> roles = new HashSet<>();
         roles.add(userRole);
 
         user.setRoles(roles);
-
 
         return userMapper.toSignUpUserRes(userRepository.save(user));
     }
@@ -91,14 +86,16 @@ public class UserService {
         return userMapper.toResUpdateUser(userRepository.save(user));
     }
 
-    public Page<SearchUserRes> searchUser(String keyword, Pageable pageable){
-        return userRepository.searchUser(keyword, pageable);
+    // ** =============================== ROLE ADMIN ===============================
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF')")
+    public List<GetUserRes> getUser(){
+        return userRepository.findAll().stream()
+                .map(user -> userMapper.toGetUser(user)).toList();
+
     }
 
-
-
-// ** =============================== ROLE ADMIN ===============================
-
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_STAFF')")
     public Page<UserSearchResByAdmin> searchUserByAdmin(String keyword, String status, Pageable pageable){
         Specification<User> spec = UserSpecification.searchByCriteria(keyword, status);
         Page<User> userPage = userRepository.findAll(spec, pageable);

@@ -6,11 +6,13 @@ import org.springframework.data.jpa.domain.Specification;
 public class ColorSpecification {
     //? Khai báo kiểu Specification để query key "keyword"
     public static Specification<Color> hasKeyword(String keyword){
+
         return (root, query, criteriaBuilder ) -> {
 
             if(keyword == null && keyword.isEmpty()){
                return null;
             }
+
             return criteriaBuilder.or(
                     criteriaBuilder
                             .like(criteriaBuilder
@@ -26,13 +28,15 @@ public class ColorSpecification {
                                             .get("colorCode")), "%" + keyword.toLowerCase() + "%")
 
             );
+
         };
     }
-
     public static Specification<Color> searchByCriteria(String keyword){
-        return (root, query, criteriaBuilder) -> {
+        return (root, query, cb) -> {
             query.distinct(true);
-            return hasKeyword(keyword).toPredicate(root, query, criteriaBuilder);
+            return Specification.allOf(
+                    hasKeyword(keyword)
+            ).toPredicate(root, query, cb);
         };
     }
 }

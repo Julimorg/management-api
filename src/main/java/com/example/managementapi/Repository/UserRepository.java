@@ -31,10 +31,4 @@ public interface UserRepository extends JpaRepository<User, String>, JpaSpecific
     void updatePassword(String email, String password);
 
 
-    @Query(" SELECT u.userName AS userName, u.email AS email FROM User u WHERE " +
-            "LOWER(u.userName) LIKE LOWER (CONCAT('%', :keyword ,'%')) OR " +
-            "LOWER(u.email) LIKE LOWER (CONCAT('%', :keyword , '%'))"
-    )
-    Page<SearchUserRes> searchUser(String keyword, Pageable pageable);
-
 }
