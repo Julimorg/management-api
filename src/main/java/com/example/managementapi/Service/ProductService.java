@@ -3,10 +3,7 @@ package com.example.managementapi.Service;
 import com.example.managementapi.Dto.Request.Product.CreateProductReq;
 import com.example.managementapi.Dto.Request.Product.UpdateProductReq;
 import com.example.managementapi.Dto.Response.Cloudinary.CloudinaryRes;
-import com.example.managementapi.Dto.Response.Product.CreateProductRes;
-import com.example.managementapi.Dto.Response.Product.GetProductsRes;
-import com.example.managementapi.Dto.Response.Product.ProductRes;
-import com.example.managementapi.Dto.Response.Product.UpdateProductRes;
+import com.example.managementapi.Dto.Response.Product.*;
 import com.example.managementapi.Entity.Color;
 import com.example.managementapi.Entity.Product;
 import com.example.managementapi.Entity.Supplier;
@@ -19,7 +16,11 @@ import com.example.managementapi.Repository.SupplierRepository;
 import com.example.managementapi.Util.FileUpLoadUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.converters.models.Sort;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -171,5 +172,9 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
+    public Page<SearchProductRes> searchProducts(String keyword, Pageable pageable){
+        return productRepository.searchProducts(keyword, pageable);
+
+    }
 
 }

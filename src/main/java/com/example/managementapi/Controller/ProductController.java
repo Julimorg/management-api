@@ -1,15 +1,15 @@
 package com.example.managementapi.Controller;
 
+import com.cloudinary.Api;
 import com.example.managementapi.Dto.ApiResponse;
 import com.example.managementapi.Dto.Request.Product.CreateProductReq;
 import com.example.managementapi.Dto.Request.Product.UpdateProductReq;
-import com.example.managementapi.Dto.Response.Product.CreateProductRes;
-import com.example.managementapi.Dto.Response.Product.GetProductsRes;
-import com.example.managementapi.Dto.Response.Product.ProductRes;
-import com.example.managementapi.Dto.Response.Product.UpdateProductRes;
+import com.example.managementapi.Dto.Response.Product.*;
 import com.example.managementapi.Service.ProductService;
 import com.example.managementapi.Util.QRGenerateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -87,6 +87,20 @@ public class ProductController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(qrCodeBase64)
+                .build();
+    }
+
+    @GetMapping("/search")
+    public ApiResponse<Page<SearchProductRes>> searchProducts(
+            @RequestParam(value = "keyword", defaultValue = "") String keyword, Pageable pageable){
+
+        Page<SearchProductRes> product = productService.searchProducts(keyword, pageable);
+
+        return ApiResponse.<Page<SearchProductRes>>builder()
+                .code(1000)
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(product)
                 .build();
     }
 }
