@@ -1,11 +1,7 @@
 package com.example.managementapi.Specification;
 
 import com.example.managementapi.Entity.Color;
-import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ColorSpecification {
     //? Khai báo kiểu Specification để query key "keyword"

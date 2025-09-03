@@ -5,6 +5,7 @@ import com.example.managementapi.Dto.Request.User.UpdateUseReq;
 import com.example.managementapi.Dto.Response.User.GetUserRes;
 import com.example.managementapi.Dto.Response.User.SearchUserRes;
 import com.example.managementapi.Dto.Response.User.UpdateUserRes;
+import com.example.managementapi.Dto.Response.User.UserSearchResByAdmin;
 import com.example.managementapi.Entity.User;
 import com.example.managementapi.Service.UserService;
 import jakarta.validation.Valid;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,7 +44,7 @@ public class UserController {
                 .build();
     }
 
-    @GetMapping("/search")
+    @GetMapping("/d-search")
     public ApiResponse<Page<SearchUserRes>> searchUser(
             @RequestParam(value = "keyword", defaultValue = "") String keyword,
             @RequestParam(value = "page" , defaultValue = "") int page,
@@ -58,6 +61,15 @@ public class UserController {
                 .data(userService.searchUser(keyword, pageable))
                 .build();
     }
+
+    @GetMapping("/search-user")
+    public Page<UserSearchResByAdmin> searchUser(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "status" , required = false) String status,
+            @PageableDefault(size = 10, sort = "createAt", direction = Sort.Direction.ASC) Pageable pageable){
+                return userService.searchUserByAdmin(keyword, status, pageable);
+    }
+
 
     @PutMapping("/update-user/{userId}")
     ApiResponse<UpdateUserRes> updateUserById(@PathVariable String userId, @RequestBody @Valid UpdateUseReq request){
