@@ -9,8 +9,8 @@ public class ColorSpecification {
 
         return (root, query, criteriaBuilder ) -> {
 
-            if(keyword == null && keyword.isEmpty()){
-               return null;
+            if(keyword == null || keyword.isEmpty()){
+                return criteriaBuilder.conjunction();
             }
 
             return criteriaBuilder.or(
@@ -31,11 +31,27 @@ public class ColorSpecification {
 
         };
     }
-    public static Specification<Color> searchByCriteria(String keyword){
+
+    public static Specification<Color> filterBySupplier(String filter){
+        return(root, query, criteriaBuilder) -> {
+            if(filter == null || filter.isEmpty())
+            {
+                return criteriaBuilder.conjunction();
+            }
+            return criteriaBuilder.or(
+                    criteriaBuilder.like(
+                            criteriaBuilder.lower(root.get("supplierName")), "%" + filter.toLowerCase() + "%"
+                    )
+            );
+        };
+    }
+
+    public static Specification<Color> searchByCriteria(String keyword, String filter){
         return (root, query, cb) -> {
             query.distinct(true);
             return Specification.allOf(
-                    hasKeyword(keyword)
+                    hasKeyword(keyword),
+                    filterBySupplier(filter)
             ).toPredicate(root, query, cb);
         };
     }

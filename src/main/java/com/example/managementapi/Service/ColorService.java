@@ -114,8 +114,8 @@ public class ColorService {
         return colorMapper.toUpdateColorRes(color);
     }
 
-    public Page<GetColorRes> searchColor(String keyword, Pageable pageable){
-        Specification<Color> spec = ColorSpecification.searchByCriteria(keyword);
+    public Page<GetColorRes> searchColor(String keyword, String filter,  Pageable pageable){
+        Specification<Color> spec = ColorSpecification.searchByCriteria(keyword, filter);
         Page<Color> colorPage = colorRepository.findAll(spec, pageable);
         return colorPage.map(color -> colorMapper.toGetColorRes(color));
     }

@@ -55,8 +55,8 @@ public class UserService {
 
         Role userRole = roleRepository.findByName("USER").orElseGet(() -> {
                     Role newRole = Role.builder()
-                            .name("STAFF")
-                            .description("Staff role office")
+                            .name("USER")
+                            .description("Default user role")
                             .build();
             Role savedRole = roleRepository.save(newRole);
             log.info("Created role: {}", savedRole);

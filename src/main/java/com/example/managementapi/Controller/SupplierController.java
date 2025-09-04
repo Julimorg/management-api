@@ -10,6 +10,10 @@ import com.example.managementapi.Dto.Response.Supplier.UpdateSupplierRes;
 import com.example.managementapi.Service.SupplierService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +48,14 @@ public class SupplierController {
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(supplierService.getSupplierDetailRes(supplierId) )
                 .build();
+    }
+
+    @GetMapping("/search-supplier")
+    public Page<GetSupplierRes> searchSupplier(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @PageableDefault(size = 10, sort = "supplierName", direction = Sort.Direction.ASC) Pageable pageable
+    ){
+        return supplierService.searchSupplier(keyword, pageable);
     }
 
 

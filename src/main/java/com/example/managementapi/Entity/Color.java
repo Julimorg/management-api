@@ -31,9 +31,8 @@ public class Color {
     @UpdateTimestamp
     private LocalDateTime updateAt;
 
-    @ManyToOne
-    @JoinColumn(name = "supplier_id")
-    private Supplier supplier;
+    @ManyToMany(mappedBy = "colors")
+    private List<Supplier> supplier;
 
     @OneToMany(mappedBy = "colors",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Product> products;

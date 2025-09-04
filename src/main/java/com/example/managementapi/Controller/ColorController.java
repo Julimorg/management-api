@@ -98,8 +98,9 @@ public class ColorController {
     @GetMapping("/search-color")
     public Page<GetColorRes> searchColor(
             @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "filter", required = false) String filter,
             @PageableDefault(size = 10, sort = "colorName", direction = Sort.Direction.ASC) Pageable pageable){
-        return colorService.searchColor(keyword, pageable);
+        return colorService.searchColor(keyword, filter, pageable);
     }
 
     @DeleteMapping("/delete-color/{colorId}")

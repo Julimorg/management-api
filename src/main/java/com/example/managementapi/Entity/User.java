@@ -40,8 +40,11 @@ public class User {
     private LocalDate userDob;
 
     @CreationTimestamp
+    @Column(name = "create_at", updatable = false, nullable = false)
     private LocalDateTime createAt;
+
     @UpdateTimestamp
+    @Column(name = "update_at")
     private LocalDateTime updateAt;
 
     @ManyToMany(fetch = FetchType.EAGER)
