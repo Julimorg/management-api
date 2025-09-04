@@ -23,5 +23,6 @@ public class CreateProductReq {
 
     private String supplierId;
     private String colorId;
+    private String categoryId;
 
 }

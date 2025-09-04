@@ -4,12 +4,14 @@ import com.example.managementapi.Dto.Request.Product.CreateProductReq;
 import com.example.managementapi.Dto.Request.Product.UpdateProductReq;
 import com.example.managementapi.Dto.Response.Cloudinary.CloudinaryRes;
 import com.example.managementapi.Dto.Response.Product.*;
+import com.example.managementapi.Entity.Category;
 import com.example.managementapi.Entity.Color;
 import com.example.managementapi.Entity.Product;
 import com.example.managementapi.Entity.Supplier;
 import com.example.managementapi.Enum.ErrorCode;
 import com.example.managementapi.Exception.AppException;
 import com.example.managementapi.Mapper.ProductMapper;
+import com.example.managementapi.Repository.CategoryRepository;
 import com.example.managementapi.Repository.ColorRepository;
 import com.example.managementapi.Repository.ProductRepository;
 import com.example.managementapi.Repository.SupplierRepository;
@@ -36,6 +38,8 @@ public class ProductService {
     private SupplierRepository supplierRepository;
     @Autowired
     private ColorRepository colorRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Autowired
     private ProductMapper productMapper;
@@ -78,6 +82,11 @@ public class ProductService {
             product.setColors(color);
         }
 
+        if(request.getCategoryId() != null){
+            Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
+            product.setCategory(category);
+        }
+
         //*
         product.setProductImage(imgUrl);
 
@@ -91,6 +100,10 @@ public class ProductService {
 
         if(savedProduct.getColors() != null){
             response.setColorName(savedProduct.getColors().getColorName());
+        }
+
+        if(savedProduct.getCategory() != null){
+            response.setCategoryName(savedProduct.getCategory().getCategoryName());
         }
 
         return response;
@@ -123,6 +136,10 @@ public class ProductService {
             response.setColorName(product.getColors().getColorName());
         }
 
+        if(product.getCategory() != null){
+            response.setCategoryName(product.getCategory().getCategoryName());
+        }
+
         return response;
     }
 
@@ -151,12 +168,16 @@ public class ProductService {
 
         UpdateProductRes response = productMapper.toUpdateProductRes(savedProduct);
 
-        if (product.getSuppliers() != null) {
-            response.setSupplierName(product.getSuppliers().getSupplierName());
+        if (savedProduct.getSuppliers() != null) {
+            response.setSupplierName(savedProduct.getSuppliers().getSupplierName());
         }
 
-        if(product.getColors() != null){
-            response.setColorName(product.getColors().getColorName());
+        if(savedProduct.getColors() != null){
+            response.setColorName(savedProduct.getColors().getColorName());
+        }
+
+        if(savedProduct.getCategory() != null){
+            response.setCategoryName(savedProduct.getCategory().getCategoryName());
         }
 
         return response;

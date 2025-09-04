@@ -25,4 +25,5 @@ public class ProductRes {
     //
     private String supplierName;
     private String colorName;
+    private String categoryName;
 }

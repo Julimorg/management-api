@@ -24,4 +24,5 @@ public class UpdateProductRes {
     //
     private String supplierName;
     private String colorName;
+    private String categoryName;
 }

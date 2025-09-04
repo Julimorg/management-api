@@ -23,5 +23,6 @@ public class UpdateProductReq {
 
     private String supplierId;
     private String colorId;
+    private String categoryId;
 
 }
