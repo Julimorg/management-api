@@ -71,6 +71,7 @@ public class ProductController {
                 .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
+                .data("Delete product successfully")
                 .build();
     }
 

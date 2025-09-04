@@ -20,4 +20,6 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
     @Query("SELECT p.productId AS productId, p.productName AS productName " +
             "FROM Product p WHERE LOWER(p.productName) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<SearchProductRes> searchProducts(String keyword, Pageable pageable);
+
+
 }
