@@ -2,31 +2,33 @@ package com.example.managementapi.Service;
 
 import com.example.managementapi.Dto.Request.Auth.SignUpReq;
 import com.example.managementapi.Dto.Request.User.UpdateUseReq;
-import com.example.managementapi.Dto.Response.User.GetUserRes;
-import com.example.managementapi.Dto.Response.User.SearchUserRes;
-import com.example.managementapi.Dto.Response.User.UpdateUserRes;
+import com.example.managementapi.Dto.Response.User.*;
 import com.example.managementapi.Entity.Role;
 import com.example.managementapi.Entity.User;
 import com.example.managementapi.Enum.ErrorCode;
+import com.example.managementapi.Enum.Status;
 import com.example.managementapi.Exception.AppException;
 import com.example.managementapi.Mapper.UserMapper;
 import com.example.managementapi.Repository.RoleRepository;
 import com.example.managementapi.Repository.UserRepository;
+import com.example.managementapi.Specification.UserSpecification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-// Url/search/name
+
 @Service
 @Slf4j
 public class UserService {
@@ -39,13 +41,7 @@ public class UserService {
 
 // ** =============================== ROLE USER ===============================
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<GetUserRes> getUser(){
-        return userRepository.findAll().stream()
-                .map(userMapper::toGetUser).toList();
-    }
-
-    public User signUp(SignUpReq request){
+    public SignUpUserRes signUp(SignUpReq request){
 
         if(userRepository.existsByUserName(request.getUserName()))
             throw  new AppException((ErrorCode.USER_EXISTED));
@@ -59,21 +55,22 @@ public class UserService {
 
         Role userRole = roleRepository.findByName("USER").orElseGet(() -> {
                     Role newRole = Role.builder()
-                            .name("STAFF")
-                            .description("Staff role office")
+                            .name("USER")
+                            .description("Default user role")
                             .build();
             Role savedRole = roleRepository.save(newRole);
             log.info("Created role: {}", savedRole);
             return savedRole;
                 });
 
+        user.setIsActive(String.valueOf(Status.ACTIVE));
+
         Set<Role> roles = new HashSet<>();
         roles.add(userRole);
 
         user.setRoles(roles);
 
-
-        return userRepository.save(user);
+        return userMapper.toSignUpUserRes(userRepository.save(user));
     }
 
     @PostAuthorize("returnObject.userName == authentication.name")
@@ -89,15 +86,26 @@ public class UserService {
         return userMapper.toResUpdateUser(userRepository.save(user));
     }
 
-    public Page<SearchUserRes> searchUser(String keyword, Pageable pageable){
-        return userRepository.searchUser(keyword, pageable);
+    // ** =============================== ROLE ADMIN ===============================
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF')")
+    public List<GetUserRes> getUser(){
+        return userRepository.findAll().stream()
+                .map(user -> userMapper.toGetUser(user)).toList();
+
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_STAFF')")
+    public Page<UserSearchResByAdmin> searchUserByAdmin(String keyword, String status, Pageable pageable){
+        Specification<User> spec = UserSpecification.searchByCriteria(keyword, status);
+        Page<User> userPage = userRepository.findAll(spec, pageable);
+        return  userPage.map(user -> userMapper.toUserSearchResByAdmin(user));
     }
 
     public void deleteUser(String userId) {
         userRepository.deleteById(userId);
     }
 
-// ** =============================== ROLE ADMIN ===============================
 
 
 }

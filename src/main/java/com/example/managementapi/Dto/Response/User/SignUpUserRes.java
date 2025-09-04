@@ -5,24 +5,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateUserRes {
+public class SignUpUserRes {
+    private String id;
     private String firstName;
     private String lastName;
     private String userName;
-
     private String email;
-    private String phoneNumber;
-    private String role;
-    private LocalDate birthDate;
-    private String address;
-
-    private LocalDateTime updateAt;
-
+    private String phone;
+    private String userAddress;
+    private String userDob;
+    private LocalDateTime createAt;
 }

@@ -1,8 +1,11 @@
 package com.example.managementapi.Dto.Response.User;
 
+import com.example.managementapi.Entity.Role;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @Builder
@@ -13,13 +16,15 @@ public class GetUserRes {
     private String firstName;
     private String lastName;
     private String userName;
-//    private String password;
     private String email;
     private String phone;
-    private String role;
-    private LocalDate birthDate;
-    private String address;
+    private String userDob;
+    private String userAddress;
+    private String userImg;
+    private Set<Role> roles;
     private String isActive;
 
+    private LocalDateTime createAt;
+    private LocalDateTime updateAt;
 
 }
