@@ -14,7 +14,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserSearchResByAdmin {
+public class SearchByAdminRes {
     private String id;
     private String firstName;
     private String lastName;

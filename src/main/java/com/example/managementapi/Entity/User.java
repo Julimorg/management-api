@@ -1,5 +1,6 @@
 package com.example.managementapi.Entity;
 
+import com.example.managementapi.Enum.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -33,7 +34,10 @@ public class User {
     @Column(unique = true)
     private String email;
     private String phone;
-    private String isActive;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     private String userImg;
     private String userAddress;
 

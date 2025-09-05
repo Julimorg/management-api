@@ -22,8 +22,6 @@ import java.text.ParseException;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final  UserService userService;
-
     private final AuthenticateService authenticationService;
 
     @PostMapping("/sign-up")
@@ -33,7 +31,7 @@ public class AuthController {
                 .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
-                .data(userService.signUp(request))
+                .data(authenticationService.signUp(request))
                 .build();
     }
 

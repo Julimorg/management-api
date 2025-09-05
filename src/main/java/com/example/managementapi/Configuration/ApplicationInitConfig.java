@@ -3,6 +3,7 @@ package com.example.managementapi.Configuration;
 
 import com.example.managementapi.Entity.Role;
 import com.example.managementapi.Entity.User;
+import com.example.managementapi.Enum.Status;
 import com.example.managementapi.Repository.RoleRepository;
 import com.example.managementapi.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +52,8 @@ public class ApplicationInitConfig {
                 User user = User.builder()
                         .userName("admin")
                         .password(passwordEncoder.encode("123456"))
-                        .email("admin@gmai.com")
+                        .status(Status.ACTIVE)
+                        .email("admin@gmail.com")
                         .roles(roles)
                         .build();
 

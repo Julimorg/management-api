@@ -4,27 +4,24 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateUserRes {
+public class CreateStaffRes {
+    private String id;
     private String firstName;
     private String lastName;
     private String userName;
     private String email;
-    private String phoneNumber;
-    private String role;
-    private LocalDate birthDate;
-    private String address;
-
-    private MultipartFile userImg;
-
-    private LocalDateTime updateAt;
-
+    private String phone;
+    private String userAddress;
+    private String userDob;
+    private String status;
+    private String roles;
+    private LocalDateTime createAt;
 }
