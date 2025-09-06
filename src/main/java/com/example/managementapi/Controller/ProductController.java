@@ -9,6 +9,7 @@ import com.example.managementapi.Service.ProductService;
 import com.example.managementapi.Util.QRGenerateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,12 +34,13 @@ public class ProductController {
     }
 
     @GetMapping("/get-products")
-    ApiResponse<List<GetProductsRes>> getProducts(){
-        return ApiResponse.<List<GetProductsRes>>builder()
+    ApiResponse<Page<GetProductsRes>> getProducts(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        Pageable pageable = PageRequest.of(page, size);
+        return ApiResponse.<Page<GetProductsRes>>builder()
                 .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
-                .data(productService.getProducts())
+                .data(productService.getProducts(pageable))
                 .build();
     }
 
@@ -91,17 +93,21 @@ public class ProductController {
                 .build();
     }
 
-    @GetMapping("/search")
+    @GetMapping("/search-product")
     public ApiResponse<Page<SearchProductRes>> searchProducts(
-            @RequestParam(value = "keyword", defaultValue = "") String keyword, Pageable pageable){
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "categoryId", required = false) String categoryId,
+            @RequestParam(value = "supplierId", required = false) String supplierId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size){
 
-        Page<SearchProductRes> product = productService.searchProducts(keyword, pageable);
+        Pageable pageable = PageRequest.of(page, size);
 
         return ApiResponse.<Page<SearchProductRes>>builder()
                 .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
-                .data(product)
+                .data(productService.searchProducts(keyword, categoryId, supplierId, pageable))
                 .build();
     }
 }

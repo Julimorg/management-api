@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class CreateProductReq {
     private String productName;
     private String productDescription;
-    private MultipartFile productImage;
+    private MultipartFile[] productImage;
     private String productVolume;
     private String productUnit;
     private String productCode;

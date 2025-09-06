@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +26,9 @@ public class Product {
     private String productId;
     private String productName;
     private String productDescription;
-    private String productImage;
+
+    @ElementCollection
+    private List<String> productImage = new ArrayList<>();
     private String productVolume;
     private String productUnit;
     private String productCode;

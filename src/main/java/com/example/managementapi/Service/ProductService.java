@@ -26,6 +26,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -53,21 +54,21 @@ public class ProductService {
             throw new AppException(ErrorCode.PRODUCT_EXISTED);
         }
 
-        MultipartFile image = request.getProductImage();
-        String imgUrl = null;
+        MultipartFile[] images = request.getProductImage();
+        List<String> imgUrls = new ArrayList<>();
 
-        if(image != null && !image.isEmpty()){
-            FileUpLoadUtil.assertAllowed(image, FileUpLoadUtil.IMAGE_PATTERN);
+        for(MultipartFile image : images){
+            if(image != null && !image.isEmpty()){
+                FileUpLoadUtil.assertAllowed(image, FileUpLoadUtil.IMAGE_PATTERN);
+                String fileName = FileUpLoadUtil.getFileName(request.getProductName());
+                CloudinaryRes cloudinaryRes = cloudinaryService.uploadFile(image, fileName);
+                imgUrls.add(cloudinaryRes.getUrl());
+            }
+            else {
+                log.info("No image provided for product: {}", request.getProductName());
+                throw new RuntimeException("Image is empty!");
+            }
 
-            String fileName = FileUpLoadUtil.getFileName(request.getProductName());
-
-            CloudinaryRes cloudinaryRes = cloudinaryService.uploadFile(image, fileName);
-
-            imgUrl = cloudinaryRes.getUrl();
-        }
-        else {
-            log.info("No image provided for product: {}", request.getProductName());
-            throw new RuntimeException("Image is empty!");
         }
 
         Product product = productMapper.toProduct(request);
@@ -88,7 +89,7 @@ public class ProductService {
         }
 
         //*
-        product.setProductImage(imgUrl);
+        product.setProductImage(imgUrls);
 
         Product savedProduct = productRepository.save(product);
 
@@ -117,8 +118,8 @@ public class ProductService {
     //Get list product
     //Note: get thủ công cho supplier
     // Check xem findALl xem co lay them nhung thang ENtity ko lien quan ko
-    public List<GetProductsRes> getProducts(){
-        return productRepository.findAll().stream().map(product -> productMapper.toGetProductsResponses(product)).toList();
+    public Page<GetProductsRes> getProducts(Pageable pageable){
+        return productRepository.findAll(pageable).map(productMapper::toGetProductsResponses);
     }
 
     //Get 1 product
@@ -145,24 +146,27 @@ public class ProductService {
 
     //Update Product
     public UpdateProductRes updateProduct(String id, UpdateProductReq request){
-        MultipartFile image = request.getProductImage();
-        String imageUrl = null;
+        MultipartFile[] images = request.getProductImage();
+        List<String> imageUrls = new ArrayList<>();
 
         Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
 
-        if(image != null && !image.isEmpty()) {
-            FileUpLoadUtil.assertAllowed(image, FileUpLoadUtil.IMAGE_PATTERN);
-            String fileName = FileUpLoadUtil.getFileName(request.getProductName());
-            CloudinaryRes cloudinaryRes = cloudinaryService.uploadFile(image, fileName);
-            imageUrl = cloudinaryRes.getUrl();
-        }else {
-            log.info("No image provided for product: {}", request.getProductName());
-            throw new RuntimeException("Image is empty!");
+        for(MultipartFile image : images){
+            if(image != null && !image.isEmpty()) {
+                FileUpLoadUtil.assertAllowed(image, FileUpLoadUtil.IMAGE_PATTERN);
+                String fileName = FileUpLoadUtil.getFileName(request.getProductName());
+                CloudinaryRes cloudinaryRes = cloudinaryService.uploadFile(image, fileName);
+                imageUrls.add(cloudinaryRes.getUrl());
+            }else {
+                log.info("No image provided for product: {}", request.getProductName());
+                throw new RuntimeException("Image is empty!");
+            }
         }
+
 
         productMapper.updateProduct(product, request);
 
-        product.setProductImage(imageUrl);
+        product.setProductImage(imageUrls);
 
         Product savedProduct = productRepository.save(product);
 
@@ -193,8 +197,8 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    public Page<SearchProductRes> searchProducts(String keyword, Pageable pageable){
-        return productRepository.searchProducts(keyword, pageable);
+    public Page<SearchProductRes> searchProducts(String keyword, String categoryId, String supplierId, Pageable pageable){
+        return productRepository.searchProducts(keyword, categoryId, supplierId, pageable);
 
     }
 

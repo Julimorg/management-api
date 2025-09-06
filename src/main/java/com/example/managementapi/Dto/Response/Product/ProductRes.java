@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,7 +16,7 @@ public class ProductRes {
     private String productId;
     private String productName;
     private String productDescription;
-    private String productImage;
+    private List<String> productImage;
     private String productVolume;
     private String productUnit;
     private String productCode;
