@@ -3,6 +3,7 @@ package com.example.managementapi.Controller;
 import com.example.managementapi.Dto.ApiResponse;
 import com.example.managementapi.Dto.Request.User.CreateStaffReq;
 import com.example.managementapi.Dto.Request.User.UpdateUseReq;
+import com.example.managementapi.Dto.Request.User.UpdateUserByAdminReq;
 import com.example.managementapi.Dto.Response.User.*;
 import com.example.managementapi.Service.UserService;
 import jakarta.validation.Valid;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -60,8 +62,8 @@ public class UserController {
         return userService.searchUserByUser(userDob, keyword, pageable);
     }
 
-    @PostMapping("/create-staff")
-    public ApiResponse<CreateStaffRes> createStaff( @Valid @RequestBody CreateStaffReq request){
+    @PostMapping(value = "/create-staff", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<CreateStaffRes> createStaff( @Valid @ModelAttribute CreateStaffReq request){
         return ApiResponse.<CreateStaffRes>builder()
                 .code(1000)
                 .status_code(HttpStatus.OK.value())
@@ -71,13 +73,23 @@ public class UserController {
     }
 
 
-    @PutMapping("/update-user/{userId}")
-    ApiResponse<UpdateUserRes> updateUserById(@PathVariable String userId, @RequestBody @Valid UpdateUseReq request){
+    @PatchMapping(value = "/update-profile/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ApiResponse<UpdateUserRes> updateProfileById(@PathVariable String userId, @ModelAttribute @Valid UpdateUseReq request){
         return ApiResponse.<UpdateUserRes>builder()
                 .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
-                .data(userService.updateUser(userId, request))
+                .data(userService.updateProfileById(userId, request))
+                .build();
+    }
+
+    @PatchMapping(value = "/update-user/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ApiResponse<UpdateUserByAdminRes> updateUserByAdmin(@PathVariable String userId, @ModelAttribute @Valid UpdateUserByAdminReq request){
+        return ApiResponse.<UpdateUserByAdminRes>builder()
+                .code(1000)
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(userService.updateUserByAdmin(userId, request))
                 .build();
     }
 

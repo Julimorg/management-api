@@ -88,7 +88,7 @@ public class ColorController {
                 .build();
 
         return ApiResponse.<UpdateColorRes>builder()
-                .code(1000)
+                                                                                                                                                                                                                                                                                                             .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(colorService.updateColor(colorId, request))

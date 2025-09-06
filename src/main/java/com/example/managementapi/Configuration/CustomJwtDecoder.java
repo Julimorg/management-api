@@ -1,8 +1,12 @@
 package com.example.managementapi.Configuration;
 
 import com.example.managementapi.Dto.Request.Auth.IntrospectRequest;
+import com.example.managementapi.Entity.User;
+import com.example.managementapi.Enum.Status;
+import com.example.managementapi.Repository.UserRepository;
 import com.example.managementapi.Service.AuthenticateService;
 import com.nimbusds.jose.JOSEException;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +21,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.text.ParseException;
 import java.util.Objects;
 
+@RequiredArgsConstructor
 @Component
 public class CustomJwtDecoder implements JwtDecoder {
 
@@ -24,20 +29,25 @@ public class CustomJwtDecoder implements JwtDecoder {
     @Value("${signer.key}")
     protected String SIGNER_KEY;
 
-    @Autowired
-    private AuthenticateService authenticateService;
+    private final UserRepository userRepository;
+
+    private final AuthenticateService authenticateService;
 
     private NimbusJwtDecoder nimbusJwtDecoder  = null;
 
     @Override
     public Jwt decode(String token) throws JwtException {
         try {
+
+            //? Kiểm tra token
             var response = authenticateService.introspect(IntrospectRequest.builder()
                     .token(token)
                     .build());
 
             if (!response.isValid())
                 throw new JwtException("Token invalid");
+
+
         } catch (JOSEException | ParseException e) {
             throw new JwtException(e.getMessage());
         }

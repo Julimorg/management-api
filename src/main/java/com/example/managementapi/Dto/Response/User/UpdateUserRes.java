@@ -18,12 +18,11 @@ public class UpdateUserRes {
     private String lastName;
     private String userName;
     private String email;
-    private String phoneNumber;
-    private String role;
-    private LocalDate birthDate;
-    private String address;
+    private String phone;
+    private LocalDate userDob;
+    private String userAddress;
 
-    private MultipartFile userImg;
+    private String userImg;
 
     private LocalDateTime updateAt;
 

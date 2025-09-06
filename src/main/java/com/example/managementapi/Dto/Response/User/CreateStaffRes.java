@@ -1,11 +1,15 @@
 package com.example.managementapi.Dto.Response.User;
 
+import com.example.managementapi.Dto.Response.Role.RoleRes;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 
 @Data
@@ -21,7 +25,11 @@ public class CreateStaffRes {
     private String phone;
     private String userAddress;
     private String userDob;
+    private String userImg;
+
     private String status;
-    private String roles;
+
+    private Set<RoleRes> roles;
+
     private LocalDateTime createAt;
 }

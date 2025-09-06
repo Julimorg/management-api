@@ -14,13 +14,13 @@ import java.time.LocalDate;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SignUpReq {
 
-    @Size(min = 2, message = "USERFIRSTNAME_INVALID")
+    @Size(min = 2, message = "USER_FIRSTNAME_INVALID")
     private String firstName;
-    @Size(min = 2, message = "USERLASTNAME_INVALID")
+    @Size(min = 2, message = "USER_LASTNAME_INVALID")
     private String lastName;
     @Size(min = 2, message = "USERNAME_INVALID")
     private String userName;
-    @Size(min = 5, max = 20, message = "USERPASSWORD_INVALID")
+    @Size(min = 5, max = 20, message = "USER_PASSWORD_INVALID")
     private String password;
     @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",message = "EMAIL_INVALID")
     private String email;

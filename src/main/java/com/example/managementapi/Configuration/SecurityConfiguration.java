@@ -2,6 +2,7 @@ package com.example.managementapi.Configuration;
 
 
 import com.example.managementapi.Component.UserStatusFilter;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,15 +19,17 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfiguration {
+
     private final String[] PUBLIC_POST_ENDPOINTS = {
             "api/v1/auth/**",
             "api/v1/reset-pass/**"
@@ -53,6 +56,12 @@ public class SecurityConfiguration {
                         .requestMatchers(PUBLIC_SWAGGER).permitAll()
                         .anyRequest().authenticated());
 
+        httpSecurity.exceptionHandling(ex -> ex
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    throw accessDeniedException;
+                })
+        );
+
         //? Config OAuth2 với Oauth2ResourceServer
         httpSecurity.oauth2ResourceServer(oauth2
                 -> oauth2.jwt(jwtConfigurer
@@ -61,7 +70,7 @@ public class SecurityConfiguration {
                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
         );
 
-        httpSecurity.addFilterBefore(userStatusFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterAfter(userStatusFilter, BearerTokenAuthenticationFilter.class);
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
 

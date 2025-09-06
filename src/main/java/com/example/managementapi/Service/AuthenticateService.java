@@ -65,8 +65,14 @@ public class AuthenticateService {
 
 //    @PreAuthorize("hasRole('USER')")
     public LoginRes login(LoginReq request) {
+
         var user = userRepository.findByUserName(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        var status =  user.getStatus();
+        if (Objects.equals(String.valueOf(status), "INACTIVE")){
+            throw new AppException(ErrorCode.BANNED);
+        }
 
         PasswordEncoder passwordEncode = new BCryptPasswordEncoder(10);
 
@@ -88,6 +94,8 @@ public class AuthenticateService {
 
         if(userRepository.existsByUserName(request.getUserName()))
             throw  new AppException((ErrorCode.USER_EXISTED));
+
+
 
         //? Sử dụng Mapper
         User user = userMapper.toUser(request);

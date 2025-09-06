@@ -1,7 +1,11 @@
 package com.example.managementapi.Dto.Response.User;
 
-import com.example.managementapi.Entity.Role;
-import lombok.*;
+import com.example.managementapi.Dto.Response.Role.RoleRes;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,20 +15,19 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetUserRes {
-    private String id;
+public class UpdateUserByAdminRes {
     private String firstName;
     private String lastName;
     private String userName;
     private String email;
     private String phone;
-    private String userDob;
+    private LocalDate userDob;
     private String userAddress;
-    private String userImg;
-    private Set<Role> roles;
+    private Set<RoleRes> roles;
     private String status;
 
-    private LocalDateTime createAt;
+    private String userImg;
+
     private LocalDateTime updateAt;
 
 }
