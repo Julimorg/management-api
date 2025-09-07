@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -34,8 +36,8 @@ public class ProductController {
     }
 
     @GetMapping("/get-products")
-    ApiResponse<Page<GetProductsRes>> getProducts(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
-        Pageable pageable = PageRequest.of(page, size);
+    ApiResponse<Page<GetProductsRes>> getProducts(@PageableDefault(size = 10, sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable){
+
         return ApiResponse.<Page<GetProductsRes>>builder()
                 .code(1000)
                 .status_code(HttpStatus.OK.value())
@@ -98,10 +100,7 @@ public class ProductController {
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "categoryName", required = false) String categoryName,
             @RequestParam(value = "supplierName", required = false) String supplierName,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size){
-
-        Pageable pageable = PageRequest.of(page, size);
+            @PageableDefault(size = 10, sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable){
 
         return ApiResponse.<Page<GetProductsRes>>builder()
                 .code(1000)
