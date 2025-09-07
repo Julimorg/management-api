@@ -21,9 +21,6 @@ import java.util.Random;
 @Slf4j
 @RequiredArgsConstructor
 public class ForgetPassService {
-    private final  UserService userService;
-
-    private final AuthenticateService authenticationService;
 
     private final UserRepository userRepository;
 

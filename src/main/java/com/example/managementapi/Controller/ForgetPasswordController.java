@@ -21,7 +21,6 @@ public class ForgetPasswordController {
         forgetPassService.sendOtpViaEmail(email);
 
         return ApiResponse.<String>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message("Send Email Successfully!")
                 .build();
@@ -34,7 +33,6 @@ public class ForgetPasswordController {
         forgetPassService.verifyOtp(otp, email);
         return ApiResponse
                 .<String>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message("OTP verified!")
                 .build();
@@ -47,7 +45,6 @@ public class ForgetPasswordController {
 
         return ApiResponse
                 .<String>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message("Update password successfully!")
                 .build();
