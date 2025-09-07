@@ -14,13 +14,9 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
     boolean existsByProductName(String productName);
 
     //List<Product> searchProduct(String product);
-    @Query("SELECT p.productId AS productId, p.productName AS productName " +
-            "FROM Product p WHERE LOWER(p.productName) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "AND p.category.categoryId = :categoryId "+
-            "AND p.suppliers.supplierId = :supplierId ")
-    Page<SearchProductRes> searchProducts(String keyword, String categoryId, String supplierId, Pageable pageable);
-
-
+//    @Query("SELECT p.productId AS productId, p.productName AS productName " +
+//            "FROM Product p WHERE LOWER(p.productName) LIKE LOWER(CONCAT('%', :keyword, '%')) ")
+//    Page<SearchProductRes> searchProducts(String keyword, Pageable pageable);
 
 
 }

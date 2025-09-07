@@ -15,6 +15,7 @@ import com.example.managementapi.Repository.CategoryRepository;
 import com.example.managementapi.Repository.ColorRepository;
 import com.example.managementapi.Repository.ProductRepository;
 import com.example.managementapi.Repository.SupplierRepository;
+import com.example.managementapi.Specification.ProductSpecification;
 import com.example.managementapi.Util.FileUpLoadUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -197,9 +198,12 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    public Page<SearchProductRes> searchProducts(String keyword, String categoryId, String supplierId, Pageable pageable){
-        return productRepository.searchProducts(keyword, categoryId, supplierId, pageable);
+    public Page<GetProductsRes> searchProducts(String keyword, String categoryName, String supplierName, Pageable pageable){
+        Specification<Product> specification = ProductSpecification.searchProduct(keyword, categoryName, supplierName);
+        Page<Product> products = productRepository.findAll(specification, pageable);
 
+        return products.map(product -> productMapper.toGetProductsResponses(product));
     }
+
 
 }

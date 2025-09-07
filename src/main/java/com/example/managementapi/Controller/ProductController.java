@@ -94,20 +94,20 @@ public class ProductController {
     }
 
     @GetMapping("/search-product")
-    public ApiResponse<Page<SearchProductRes>> searchProducts(
+    public ApiResponse<Page<GetProductsRes>> searchProducts(
             @RequestParam(value = "keyword", required = false) String keyword,
-            @RequestParam(value = "categoryId", required = false) String categoryId,
-            @RequestParam(value = "supplierId", required = false) String supplierId,
+            @RequestParam(value = "categoryName", required = false) String categoryName,
+            @RequestParam(value = "supplierName", required = false) String supplierName,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size){
 
         Pageable pageable = PageRequest.of(page, size);
 
-        return ApiResponse.<Page<SearchProductRes>>builder()
+        return ApiResponse.<Page<GetProductsRes>>builder()
                 .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
-                .data(productService.searchProducts(keyword, categoryId, supplierId, pageable))
+                .data(productService.searchProducts(keyword, categoryName, supplierName, pageable))
                 .build();
     }
 }
