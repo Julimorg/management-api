@@ -5,6 +5,7 @@ import com.example.managementapi.Dto.Request.Auth.*;
 import com.example.managementapi.Dto.Response.Auth.LoginRes;
 import com.example.managementapi.Dto.Response.Auth.IntrospectResponse;
 import com.example.managementapi.Dto.Response.Auth.RefreshRes;
+import com.example.managementapi.Dto.Response.User.SignUpUserRes;
 import com.example.managementapi.Entity.User;
 import com.example.managementapi.Service.AuthenticateService;
 import com.example.managementapi.Service.UserService;
@@ -21,18 +22,16 @@ import java.text.ParseException;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final  UserService userService;
-
     private final AuthenticateService authenticationService;
 
     @PostMapping("/sign-up")
-    ApiResponse<User> signUp(@RequestBody @Valid SignUpReq request){
+    ApiResponse<SignUpUserRes> signUp(@RequestBody @Valid SignUpReq request){
 
-        return ApiResponse.<User>builder()
+        return ApiResponse.<SignUpUserRes>builder()
                 .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
-                .data(userService.signUp(request))
+                .data(authenticationService.signUp(request))
                 .build();
     }
 

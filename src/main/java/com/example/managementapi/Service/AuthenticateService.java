@@ -1,17 +1,19 @@
 package com.example.managementapi.Service;
 
-import com.example.managementapi.Dto.Request.Auth.LogOutReq;
-import com.example.managementapi.Dto.Request.Auth.LoginReq;
-import com.example.managementapi.Dto.Request.Auth.IntrospectRequest;
-import com.example.managementapi.Dto.Request.Auth.RefreshReq;
+import com.example.managementapi.Dto.Request.Auth.*;
 import com.example.managementapi.Dto.Response.Auth.LoginRes;
 import com.example.managementapi.Dto.Response.Auth.IntrospectResponse;
 import com.example.managementapi.Dto.Response.Auth.RefreshRes;
+import com.example.managementapi.Dto.Response.User.SignUpUserRes;
 import com.example.managementapi.Entity.InvalidatedToken;
+import com.example.managementapi.Entity.Role;
 import com.example.managementapi.Entity.User;
 import com.example.managementapi.Enum.ErrorCode;
+import com.example.managementapi.Enum.Status;
 import com.example.managementapi.Exception.AppException;
+import com.example.managementapi.Mapper.UserMapper;
 import com.example.managementapi.Repository.InvalidatedTokenRepository;
+import com.example.managementapi.Repository.RoleRepository;
 import com.example.managementapi.Repository.UserRepository;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
@@ -21,6 +23,7 @@ import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,9 +33,7 @@ import org.springframework.util.CollectionUtils;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.StringJoiner;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -42,6 +43,10 @@ public class AuthenticateService {
     private final UserRepository userRepository;
 
     private final InvalidatedTokenRepository invalidatedTokenRepository;
+
+    private final UserMapper userMapper;
+
+    private final RoleRepository roleRepository;
 
     @NonFinal
     @Value("${signer.key}")
@@ -60,8 +65,14 @@ public class AuthenticateService {
 
 //    @PreAuthorize("hasRole('USER')")
     public LoginRes login(LoginReq request) {
+
         var user = userRepository.findByUserName(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        var status =  user.getStatus();
+        if (Objects.equals(String.valueOf(status), "INACTIVE")){
+            throw new AppException(ErrorCode.BANNED);
+        }
 
         PasswordEncoder passwordEncode = new BCryptPasswordEncoder(10);
 
@@ -77,6 +88,40 @@ public class AuthenticateService {
                 .authenticated(true)
                 .build();
 
+    }
+
+    public SignUpUserRes signUp(SignUpReq request){
+
+        if(userRepository.existsByUserName(request.getUserName()))
+            throw  new AppException((ErrorCode.USER_EXISTED));
+
+
+
+        //? Sử dụng Mapper
+        User user = userMapper.toUser(request);
+
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        Role userRole = roleRepository.findByName("USER").orElseGet(() -> {
+            Role newRole = Role.builder()
+                    .name("USER")
+                    .description("Default user role")
+                    .build();
+            Role savedRole = roleRepository.save(newRole);
+            log.info("Created role: {}", savedRole);
+            return savedRole;
+        });
+
+        user.setStatus(Status.ACTIVE);
+
+        Set<Role> roles = new HashSet<>();
+        roles.add(userRole);
+
+        user.setRoles(roles);
+
+        return userMapper.toSignUpUserRes(userRepository.save(user));
     }
     public void logOut(LogOutReq request) throws ParseException, JOSEException {
         try {
@@ -203,6 +248,7 @@ public class AuthenticateService {
     }
 
     private SignedJWT verifyToken(String token, boolean isRefresh) throws ParseException, JOSEException {
+
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY);
 
         SignedJWT signedJWT = SignedJWT.parse(token);

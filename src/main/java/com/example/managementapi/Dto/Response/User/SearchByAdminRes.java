@@ -1,9 +1,12 @@
 package com.example.managementapi.Dto.Response.User;
 
-import com.example.managementapi.Entity.Role;
-import lombok.*;
 
-import java.time.LocalDate;
+import com.example.managementapi.Entity.Role;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -11,7 +14,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetUserRes {
+public class SearchByAdminRes {
     private String id;
     private String firstName;
     private String lastName;
@@ -22,7 +25,7 @@ public class GetUserRes {
     private String userAddress;
     private String userImg;
     private Set<Role> roles;
-    private String status;
+    private String isActive;
 
     private LocalDateTime createAt;
     private LocalDateTime updateAt;

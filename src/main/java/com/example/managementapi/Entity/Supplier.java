@@ -35,7 +35,12 @@ public class Supplier {
     @OneToMany(mappedBy = "suppliers",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Product> products;
 
-    @OneToMany(mappedBy = "supplier",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ManyToMany
+    @JoinTable(
+            name = "supplier_color",
+            joinColumns = @JoinColumn(name = "supplier_id"),
+            inverseJoinColumns = @JoinColumn(name = "color_id")
+    )
     private List<Color> colors;
 
 }

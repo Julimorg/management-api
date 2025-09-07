@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -19,6 +20,7 @@ public class UpdateSupplierRes {
     private String supplierPhone;
     private String supplierEmail;
     private String supplierImg;
+    private List<String> colorId;
 
     private LocalDateTime updateAt;
 }

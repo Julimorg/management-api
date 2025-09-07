@@ -1,9 +1,13 @@
-package com.example.managementapi.Dto.Request.Auth;
+package com.example.managementapi.Dto.Request.User;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -12,7 +16,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SignUpReq {
+public class CreateStaffReq {
 
     @Size(min = 2, message = "USER_FIRSTNAME_INVALID")
     private String firstName;
@@ -26,6 +30,8 @@ public class SignUpReq {
     private String email;
     @Size(min = 2, max = 10, message = "PHONE_INVALID")
     private String phone;
+    private MultipartFile userImg;
+
     private LocalDate userDob;
     private String userAddress;
 }

@@ -1,5 +1,7 @@
 package com.example.managementapi.Dto.Response.Color;
 
+import com.example.managementapi.Dto.Response.Product.ProductRes;
+import com.example.managementapi.Dto.Response.Supplier.GetSupplierRes;
 import com.example.managementapi.Entity.Product;
 import com.example.managementapi.Entity.Supplier;
 import lombok.AllArgsConstructor;
@@ -21,8 +23,8 @@ public class GetColorDetailRes {
     private String colorDescription;
     private String colorImg;
 
-    private Supplier supplier;
-    private List<Product> products;
+    private List<GetSupplierRes> supplier;
+
 
     private LocalDateTime createAt;
     private LocalDateTime updateAt;

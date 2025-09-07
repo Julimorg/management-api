@@ -29,5 +29,11 @@ public interface ColorMapper {
     GetColorDetailRes toGetColorDetailRes(Color color);
 
 
+    @Mapping(source = "colorId", target = "colorId")
+    @Mapping(source = "colorName", target = "colorName")
+    @Mapping(source = "colorCode", target = "colorCode")
+    GetColorRes toSearchColor(Color color);
+
+
 
 }

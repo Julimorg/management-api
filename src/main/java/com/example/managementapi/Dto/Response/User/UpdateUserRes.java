@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -15,10 +17,13 @@ public class UpdateUserRes {
     private String firstName;
     private String lastName;
     private String userName;
-    //    private String password;
     private String email;
-    private String phoneNumber;
-    private String role;
-    private LocalDate birthDate;
-    private String address;
+    private String phone;
+    private LocalDate userDob;
+    private String userAddress;
+
+    private String userImg;
+
+    private LocalDateTime updateAt;
+
 }

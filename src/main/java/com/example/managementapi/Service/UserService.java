@@ -1,103 +1,168 @@
 package com.example.managementapi.Service;
 
 import com.example.managementapi.Dto.Request.Auth.SignUpReq;
+import com.example.managementapi.Dto.Request.User.CreateStaffReq;
 import com.example.managementapi.Dto.Request.User.UpdateUseReq;
-import com.example.managementapi.Dto.Response.User.GetUserRes;
-import com.example.managementapi.Dto.Response.User.SearchUserRes;
-import com.example.managementapi.Dto.Response.User.UpdateUserRes;
+import com.example.managementapi.Dto.Request.User.UpdateUserByAdminReq;
+import com.example.managementapi.Dto.Response.Cloudinary.CloudinaryRes;
+import com.example.managementapi.Dto.Response.User.*;
 import com.example.managementapi.Entity.Role;
 import com.example.managementapi.Entity.User;
 import com.example.managementapi.Enum.ErrorCode;
+import com.example.managementapi.Enum.Status;
 import com.example.managementapi.Exception.AppException;
 import com.example.managementapi.Mapper.UserMapper;
 import com.example.managementapi.Repository.RoleRepository;
 import com.example.managementapi.Repository.UserRepository;
+import com.example.managementapi.Specification.UserByAdminSpecification;
+import com.example.managementapi.Specification.UserByUserSpecification;
+import com.example.managementapi.Util.FileUpLoadUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-// Url/search/name
+
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserMapper userMapper;
-    @Autowired
-    private RoleRepository roleRepository;
 
-// ** =============================== ROLE USER ===============================
+    private final UserRepository userRepository;
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    private final UserMapper userMapper;
+
+    private final RoleRepository roleRepository;
+
+    private final PasswordEncoder passwordEncoder;
+    private final CloudinaryService cloudinaryService;
+
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF')")
     public List<GetUserRes> getUser(){
         return userRepository.findAll().stream()
-                .map(userMapper::toGetUser).toList();
+                .map(user -> userMapper.toGetUser(user)).toList();
+
     }
 
-    public User signUp(SignUpReq request){
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_STAFF')")
+    public Page<SearchByAdminRes> searchUserByAdmin(String keyword, String status, Pageable pageable){
+        Specification<User> spec = UserByAdminSpecification.searchUserByAdmin(keyword, status);
+        Page<User> userPage = userRepository.findAll(spec, pageable);
+        return  userPage.map(user -> userMapper.toUserSearchResByAdmin(user));
+    }
 
-        if(userRepository.existsByUserName(request.getUserName()))
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_STAFF', 'ROLE_ADMIN')")
+    public Page<SearchByUserRes> searchUserByUser(String keyword, String userDob, Pageable pageable){
+        Specification<User> spec = UserByUserSpecification.searchByUser(keyword, userDob);
+        Page<User> userPage = userRepository.findAll(spec, pageable);
+        return userPage.map(user -> userMapper.toUserSearchResByUser(user));
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public CreateStaffRes createStaff(CreateStaffReq req){
+
+        MultipartFile image = req.getUserImg();
+        String imgUrl = null;
+
+        if(image != null && !image.isEmpty()){
+            FileUpLoadUtil.assertAllowed(image, FileUpLoadUtil.IMAGE_PATTERN);
+            String fileName = FileUpLoadUtil.getFileName(req.getUserName());
+            CloudinaryRes cloudinaryRes = cloudinaryService.uploadFile(image, fileName);
+            imgUrl = cloudinaryRes.getUrl();
+        }
+
+        if(userRepository.existsByUserName(req.getUserName()))
             throw  new AppException((ErrorCode.USER_EXISTED));
 
-        //? Sử dụng Mapper
-        User user = userMapper.toUser(request);
 
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        User user =  userMapper.toCreateStaff(req);
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setUserImg(imgUrl);
 
-        Role userRole = roleRepository.findByName("USER").orElseGet(() -> {
-                    Role newRole = Role.builder()
-                            .name("STAFF")
-                            .description("Staff role office")
-                            .build();
+        user.setPassword(passwordEncoder.encode(req.getPassword()));
+
+        Role staffRole = roleRepository.findByName("STAFF").orElseGet(() -> {
+            Role newRole = Role.builder()
+                    .name("STAFF")
+                    .description("Default Staff role")
+                    .build();
             Role savedRole = roleRepository.save(newRole);
             log.info("Created role: {}", savedRole);
             return savedRole;
-                });
+        });
+        user.setStatus(Status.ACTIVE);
 
         Set<Role> roles = new HashSet<>();
-        roles.add(userRole);
+        roles.add(staffRole);
 
         user.setRoles(roles);
 
+        return userMapper.toCreateStaffRes(userRepository.save(user));
 
-        return userRepository.save(user);
     }
 
-    @PostAuthorize("returnObject.userName == authentication.name")
-    public UpdateUserRes updateUser(String userId, UpdateUseReq request){
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_STAFF', 'ROLE_ADMIN')")
+//    @PostAuthorize("returnObject.userName == authentication.name")
+    public UpdateUserRes updateProfileById(String userId, UpdateUseReq request){
+        MultipartFile image = request.getUserImg();
+        String imgUrl = null;
 
-        if(userRepository.existsByUserName(request.getUserName()))
-            throw  new AppException((ErrorCode.USER_EXISTED));
+        if(image != null && !image.isEmpty()){
+            FileUpLoadUtil.assertAllowed(image, FileUpLoadUtil.IMAGE_PATTERN);
+            String fileName = FileUpLoadUtil.getFileName(request.getUserName());
+            CloudinaryRes cloudinaryRes = cloudinaryService.uploadFile(image, fileName);
+            imgUrl = cloudinaryRes.getUrl();
+        }
 
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not Found!"));
 
-        userMapper.updateUser(user, request);
+        user.setUserImg(imgUrl);
+
+        userMapper.updateProfile(user, request);
 
         return userMapper.toResUpdateUser(userRepository.save(user));
     }
 
-    public Page<SearchUserRes> searchUser(String keyword, Pageable pageable){
-        return userRepository.searchUser(keyword, pageable);
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public UpdateUserByAdminRes updateUserByAdmin(String userId, UpdateUserByAdminReq request){
+        MultipartFile image = request.getUserImg();
+        String imgUrl = null;
+
+        if(image != null && !image.isEmpty()){
+            FileUpLoadUtil.assertAllowed(image, FileUpLoadUtil.IMAGE_PATTERN);
+            String fileName = FileUpLoadUtil.getFileName(request.getUserName());
+            CloudinaryRes cloudinaryRes = cloudinaryService.uploadFile(image, fileName);
+            imgUrl = cloudinaryRes.getUrl();
+        }
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not Found!"));
+
+        user.setUserImg(imgUrl);
+
+        userMapper.updateUser(user, request);
+
+        return userMapper.toResUpdateUserByAdmin(userRepository.save(user));
     }
 
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_STAFF')")
     public void deleteUser(String userId) {
         userRepository.deleteById(userId);
     }
 
-// ** =============================== ROLE ADMIN ===============================
 
 
 }

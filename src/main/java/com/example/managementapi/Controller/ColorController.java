@@ -10,6 +10,10 @@ import com.example.managementapi.Dto.Response.Color.GetColorRes;
 import com.example.managementapi.Dto.Response.Color.UpdateColorRes;
 import com.example.managementapi.Service.ColorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -84,11 +88,19 @@ public class ColorController {
                 .build();
 
         return ApiResponse.<UpdateColorRes>builder()
-                .code(1000)
+                                                                                                                                                                                                                                                                                                             .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(colorService.updateColor(colorId, request))
                 .build();
+    }
+
+    @GetMapping("/search-color")
+    public Page<GetColorRes> searchColor(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "filter", required = false) String filter,
+            @PageableDefault(size = 10, sort = "colorName", direction = Sort.Direction.ASC) Pageable pageable){
+        return colorService.searchColor(keyword, filter, pageable);
     }
 
     @DeleteMapping("/delete-color/{colorId}")
