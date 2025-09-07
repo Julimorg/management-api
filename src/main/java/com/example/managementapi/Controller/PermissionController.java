@@ -33,7 +33,6 @@ public class PermissionController {
     @PostMapping("/create-permission")
     ApiResponse<CreatePermissionRes> createPermission(@RequestBody CreatePermissionReq request) {
         return ApiResponse.<CreatePermissionRes>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(premissionService.createPermission(request))
@@ -44,7 +43,6 @@ public class PermissionController {
     @GetMapping("/get-permission")
     ApiResponse<List<GetPermissionRes>> getPermission() {
         return ApiResponse.<List<GetPermissionRes>>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(premissionService.getPermission())
@@ -55,7 +53,6 @@ public class PermissionController {
     ApiResponse<String> deletePermission(@PathVariable String permissionName){
         permissionService.deletePermission(permissionName);
         return ApiResponse.<String>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message("Delete successfull!")
                 .build();

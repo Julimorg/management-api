@@ -30,7 +30,6 @@ public class ColorController {
     @GetMapping("/get-color")
     public ApiResponse<List<GetColorRes>> getColor(){
         return ApiResponse.<List<GetColorRes>>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(colorService.getColor())
@@ -40,7 +39,6 @@ public class ColorController {
     @GetMapping("/detail-color/{colorId}")
     public ApiResponse<GetColorDetailRes> getColorById(@PathVariable String colorId){
         return ApiResponse.<GetColorDetailRes>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(colorService.getColorDetail(colorId))
@@ -65,7 +63,6 @@ public class ColorController {
                 .build();
 
         return ApiResponse.<CreateColorRes>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(colorService.createColor(request))
@@ -88,7 +85,6 @@ public class ColorController {
                 .build();
 
         return ApiResponse.<UpdateColorRes>builder()
-                                                                                                                                                                                                                                                                                                             .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(colorService.updateColor(colorId, request))
@@ -107,7 +103,6 @@ public class ColorController {
     public ApiResponse<String> deleteColor(@PathVariable String colorId) {
         colorService.deleteColor(colorId);
         return ApiResponse.<String>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message("Delete Color Successfully!")
                 .build();

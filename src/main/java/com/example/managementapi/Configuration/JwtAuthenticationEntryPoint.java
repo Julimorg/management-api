@@ -26,7 +26,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         ApiResponse<?> apiResponse = ApiResponse
                 .builder()
-                .code(errorCode.getCode())
+                .status_code(errorCode.getStatusCode().value())
                 .message(errorCode.getMessage())
                 .build();
 

@@ -29,7 +29,6 @@ public class CategoryController {
     @PostMapping(value = "/create-category", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ApiResponse<CreateCategoryRes> createCategory(@ModelAttribute CreateCategoryReq request){
         return ApiResponse.<CreateCategoryRes>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(categoryService.createCategory(request))
@@ -39,7 +38,6 @@ public class CategoryController {
     @PatchMapping(value = "/update/{categoryId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ApiResponse<UpdateCategoryRes> updateCategory(@PathVariable("categoryId") String categoryId, @ModelAttribute UpdateCategoryReq request){
         return ApiResponse.<UpdateCategoryRes>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(categoryService.updateCategory(categoryId, request))
@@ -50,7 +48,6 @@ public class CategoryController {
     ApiResponse<Page<GetCategoriesRes>> getCategories(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
         Pageable pageable = PageRequest.of(page, size);
         return ApiResponse.<Page<GetCategoriesRes>>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(categoryService.getCategories(pageable))
@@ -60,7 +57,6 @@ public class CategoryController {
     @GetMapping("/detail-category/{categoryId}")
     ApiResponse<GetDetailCategoryRes> getCategory(@PathVariable("categoryId") String categoryId){
         return ApiResponse.<GetDetailCategoryRes>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(categoryService.getCategory(categoryId))
@@ -72,7 +68,6 @@ public class CategoryController {
         categoryService.deleteCategory(categoryId);
 
         return ApiResponse.<String>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data("Delete category successfully")
