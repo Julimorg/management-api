@@ -1,6 +1,4 @@
 package com.example.managementapi.Service;
-
-import com.example.managementapi.Dto.Request.Auth.SignUpReq;
 import com.example.managementapi.Dto.Request.User.CreateStaffReq;
 import com.example.managementapi.Dto.Request.User.UpdateUseReq;
 import com.example.managementapi.Dto.Request.User.UpdateUserByAdminReq;
@@ -19,11 +17,9 @@ import com.example.managementapi.Specification.UserByUserSpecification;
 import com.example.managementapi.Util.FileUpLoadUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -99,9 +95,7 @@ public class UserService {
                     .name("STAFF")
                     .description("Default Staff role")
                     .build();
-            Role savedRole = roleRepository.save(newRole);
-            log.info("Created role: {}", savedRole);
-            return savedRole;
+            return roleRepository.save(newRole);
         });
         user.setStatus(Status.ACTIVE);
 
