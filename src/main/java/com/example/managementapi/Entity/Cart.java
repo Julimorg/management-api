@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,7 +24,7 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String cartId;
 
-    private double totalPrice;
+    private BigDecimal totalPrice;
 
     @CreationTimestamp
     private LocalDateTime createAt;

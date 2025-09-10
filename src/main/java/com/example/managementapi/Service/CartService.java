@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,9 +64,10 @@ public class CartService {
             Product product = productRepository.findById(itemReq.getProductId())
                     .orElseThrow(() -> new RuntimeException("Product not found"));
 
-            if (itemReq.getQuantity() > product.getProductQuantity() || itemReq.getQuantity() < 0) {
-                throw new RuntimeException("Cannot add more quantity for product " + product.getProductId());
+            if (itemReq.getQuantity() > product.getProductQuantity() || itemReq.getQuantity() < 0 || itemReq.getQuantity() > 10000) {
+                throw new RuntimeException("Cannot add more quantity for product " + product.getProductName());
             }
+
             //? Check Product đã có trong Cart hay chưa
             //? Sẽ đi từ Cart -> CartItem -> Product -> ProductID
             Optional<CartItem> existingProductInCart = cart
@@ -97,9 +99,12 @@ public class CartService {
 
             //? Tính tổng giá tiền theo product.price * product quantity
             //? sau đó dùng sum() để cộng lại toàn bộ mà thôi
-            cart.setTotalPrice(cart.getCartItems().stream()
-                    .mapToDouble(item -> item.getProduct().getProductPrice() * item.getQuantity())
-                    .sum());
+             cart.setTotalPrice(
+                cart.getCartItems().stream()
+                        .map(item -> item.getProduct().getProductPrice()
+                                .multiply(BigDecimal.valueOf(item.getQuantity())))
+                        .reduce(BigDecimal.ZERO, BigDecimal::add)
+             );
 
             Cart savedCart = cartRepository.save(cart);
 
@@ -114,7 +119,7 @@ public class CartService {
                                     .productVolume(ci.getProduct().getProductVolume())
                                     .productUnit(ci.getProduct().getProductUnit())
                                     .productCode(ci.getProduct().getProductCode())
-                                    .productQuantity(ci.getProduct().getProductQuantity())
+                                    .productQuantity(ci.getQuantity())
                                     .discount(ci.getProduct().getDiscount())
                                     .productPrice(ci.getProduct().getProductPrice())
                                     .colorName(ci.getProduct().getColors().getColorCode())

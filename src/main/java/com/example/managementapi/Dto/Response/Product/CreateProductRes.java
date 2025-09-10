@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -21,7 +22,7 @@ public class CreateProductRes {
     private String productCode;
     private int productQuantity;
     private double discount;
-    private double productPrice;
+    private BigDecimal productPrice;
 
     //
     private String supplierName;

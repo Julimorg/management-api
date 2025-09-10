@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class Product {
     private int productQuantity;
 
     private double discount;
-    private double productPrice;
+    private BigDecimal productPrice;
 
 
     @CreationTimestamp

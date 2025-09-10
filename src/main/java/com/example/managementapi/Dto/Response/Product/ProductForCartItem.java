@@ -1,10 +1,12 @@
 package com.example.managementapi.Dto.Response.Product;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -20,7 +22,8 @@ public class ProductForCartItem {
     private String productCode;
     private int productQuantity;
     private double discount;
-    private double productPrice;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private BigDecimal productPrice;
     private String colorName;
     private String categoryName;
 }
