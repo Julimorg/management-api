@@ -12,7 +12,8 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class AddItemToCartReq {
-    private List<ProductQuantityReq> items;
+    private String productId;
+    private int quantity;
 }
 
 

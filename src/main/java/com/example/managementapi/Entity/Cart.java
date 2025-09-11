@@ -26,6 +26,8 @@ public class Cart {
 
     private BigDecimal totalPrice;
 
+    private int totalQuantity;
+
     @CreationTimestamp
     private LocalDateTime createAt;
     @UpdateTimestamp

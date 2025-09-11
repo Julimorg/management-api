@@ -21,6 +21,7 @@ public class GetCartRes {
     private String userId;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private BigDecimal totalPrice;
+    private int totalQuantity;
     private List<CartItemDetailRes> items;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

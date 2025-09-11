@@ -3,6 +3,7 @@ package com.example.managementapi.Controller;
 import com.example.managementapi.Dto.ApiResponse;
 import com.example.managementapi.Dto.Request.Cart.AddItemToCartReq;
 import com.example.managementapi.Dto.Response.Cart.GetCartRes;
+
 import com.example.managementapi.Service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ public class CartController {
 
     private final CartService cartService;
 
+
     @PostMapping("/add-items/{id}")
     public ApiResponse<GetCartRes> addProductToCart(@PathVariable String id, @RequestBody AddItemToCartReq req){
         return ApiResponse.<GetCartRes>builder()
@@ -24,12 +26,22 @@ public class CartController {
                 .build();
     }
 
-    @GetMapping("/get-cart/{cartId}")
-    public ApiResponse<GetCartRes> getCart(@PathVariable String cartId){
+    @GetMapping("/get-cart/{userId}")
+    public ApiResponse<GetCartRes> getCart(@PathVariable String userId){
         return ApiResponse.<GetCartRes>builder()
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
-                .data(cartService.getCart(cartId))
+                .data(cartService.getCart(userId))
+                .build();
+    }
+
+    @DeleteMapping("/delete-item/{cartItemId}")
+    public ApiResponse<String> deleteItem(@PathVariable String cartItemId){
+        cartService.deleteCartItem(cartItemId);
+        return ApiResponse.<String>
+                builder()
+                .status_code(HttpStatus.OK.value())
+                .message("Delete item: " + cartItemId + " successfully! ")
                 .build();
     }
 }
