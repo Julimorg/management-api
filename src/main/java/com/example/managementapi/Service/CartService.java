@@ -17,8 +17,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -169,7 +167,42 @@ public class CartService {
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_STAFF' , 'ROLE_ADMIN')")
     public GetCartRes getCart(String userId) {
 
-        return cartMapper.toGetCartRes(cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Cart not found")));
+        Cart cart = cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
+
+
+        List<CartItemDetailRes> cartItemDetailResList = cart.getCartItems().stream()
+                .map(ci -> CartItemDetailRes.builder()
+                        .cartItemId(ci.getCartItemId())
+                        .cartId(ci.getCart().getCartId())
+                        .product(ProductForCartItem.builder()
+                                .productId(ci.getProduct().getProductId())
+                                .productName(ci.getProduct().getProductName())
+                                .productImage(ci.getProduct().getProductImage())
+                                .productVolume(ci.getProduct().getProductVolume())
+                                .productUnit(ci.getProduct().getProductUnit())
+                                .productCode(ci.getProduct().getProductCode())
+                                .productQuantity(ci.getQuantity())
+                                .discount(ci.getProduct().getDiscount())
+                                .productPrice(ci.getProduct().getProductPrice())
+                                .colorName(ci.getProduct().getColors().getColorCode())
+                                .categoryName(ci.getProduct().getCategory().getCategoryName())
+                                .build())
+                        .createAt(ci.getCreateAt())
+                        .updateAt(ci.getUpdateAt())
+                        .build())
+                .toList();
+
+        return GetCartRes
+                .builder()
+                .cartId(cart.getCartId())
+                .userId(userId)
+                .totalPrice(cart.getTotalPrice())
+                .totalQuantity(cart.getTotalQuantity())
+                .createdAt(cart.getCreateAt())
+                .updatedAt(cart.getUpdateAt())
+                .items(cartItemDetailResList)
+                .build();
+
     }
 }
