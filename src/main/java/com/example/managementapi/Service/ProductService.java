@@ -89,6 +89,10 @@ public class ProductService {
             product.setCategory(category);
         }
 
+        if(request.getProductQuantity() > 10000000){
+            throw new AppException(ErrorCode.PRODUCT_EXCEED_LIMIT);
+        }
+
         //*
         product.setProductImage(imgUrls);
 

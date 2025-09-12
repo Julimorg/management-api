@@ -26,6 +26,7 @@ public enum ErrorCode {
     //* ======================= PRODUCT CATCH ERROR 1200 =======================
 
     PRODUCT_EXISTED(1200,"Product Existed", HttpStatus.BAD_REQUEST),
+    PRODUCT_EXCEED_LIMIT(1201, "Product Quantity is too high", HttpStatus.BAD_REQUEST ),
 
     //* ======================= SUPPLIER CATCH ERROR 1300 =======================
     SUPPLIER_NOT_EXISTED(1300, "Supplier Not Existed", HttpStatus.BAD_REQUEST),
