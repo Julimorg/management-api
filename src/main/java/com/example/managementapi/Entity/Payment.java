@@ -1,12 +1,14 @@
 package com.example.managementapi.Entity;
 
+import com.example.managementapi.Enum.PaymentMethod;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
+
 
 @Getter
 @Setter
@@ -19,7 +21,10 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String paymentId;
-    private String paymentMethod;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
+
     private String paymentStatus;
     private String responseCode;
     private String transactionStatus;
@@ -32,7 +37,8 @@ public class Payment {
     private String orderInfo;
     private String secureHash;
 
-    private double amount;
+    @Column(nullable = false, precision = 15, scale = 2)
+    private BigDecimal amount = BigDecimal.ZERO;
 
     private LocalDateTime payDate;
     @CreationTimestamp

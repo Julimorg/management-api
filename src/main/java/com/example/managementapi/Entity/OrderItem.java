@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -20,7 +21,9 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String orderItemId;
     private int quantity;
-    private double price;
+
+    @Column(nullable = false)
+    private BigDecimal price = BigDecimal.ZERO;
 
     @CreationTimestamp
     private LocalDateTime createAt;

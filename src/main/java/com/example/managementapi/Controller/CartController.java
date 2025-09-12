@@ -2,6 +2,8 @@ package com.example.managementapi.Controller;
 
 import com.example.managementapi.Dto.ApiResponse;
 import com.example.managementapi.Dto.Request.Cart.AddItemToCartReq;
+import com.example.managementapi.Dto.Request.Cart.UpdateCartItemQuantityReq;
+import com.example.managementapi.Dto.Response.Cart.CartItemDetailRes;
 import com.example.managementapi.Dto.Response.Cart.GetCartRes;
 
 import com.example.managementapi.Service.CartService;
@@ -32,6 +34,16 @@ public class CartController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(cartService.getCart(userId))
+                .build();
+    }
+
+    @PatchMapping("/update-item/{cartItemId}")
+    public ApiResponse<CartItemDetailRes> updateCartItem(@PathVariable String cartItemId
+            , @RequestBody UpdateCartItemQuantityReq request){
+        return ApiResponse.<CartItemDetailRes>builder()
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(cartService.updateCartItem(cartItemId, request))
                 .build();
     }
 
