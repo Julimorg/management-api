@@ -2,6 +2,7 @@ package com.example.managementapi.Service;
 
 
 import com.example.managementapi.Component.GenerateRandomCode;
+import com.example.managementapi.Dto.Request.Order.UpdateOrderReq;
 import com.example.managementapi.Dto.Response.Cart.CartItemDetailRes;
 import com.example.managementapi.Dto.Response.Order.GetOrderResponse;
 import com.example.managementapi.Dto.Response.Order.OrderItemRes;
@@ -11,6 +12,8 @@ import com.example.managementapi.Enum.OrderStatus;
 import com.example.managementapi.Enum.PaymentMethod;
 import com.example.managementapi.Enum.PaymentMethodStatus;
 import com.example.managementapi.Repository.*;
+import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,14 +33,15 @@ public class OrderService {
 
     private final CartRepository cartRepository;
 
-    private final CartItemRepository cartItemRepository;
-
-    private final ProductRepository productRepository;
-
     private final GenerateRandomCode orderCodeGenerator;
 
+    private final OrderItemRepository orderItemRepository;
 
+    private final PaymentRepository paymentRepository;
 
+    private final EmailService emailService;
+
+    @Transactional
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF','ROLE_USER')")
     public GetOrderResponse createOrderFromCart(String userId, String cartId){
 
@@ -48,26 +52,27 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
 
 
-        Order order = orderRepository.findByUserId(userId).orElseGet(() ->{
-            Order newOrder = Order
-                    .builder()
-                    .user(user)
-                    .orderCode(orderCodeGenerator.generateOrderCode())
-                    .orderStatus(OrderStatus.Pending)
-                    .orderAmount(cart.getTotalPrice())
-                    .orderItems(new ArrayList<>())
-                    .build();
-            return orderRepository.save(newOrder);
-        });
+        Order order = Order.builder()
+                .user(user)
+                .orderCode(orderCodeGenerator.generateOrderCode())
+                .orderStatus(OrderStatus.Pending)
+                .orderAmount(cart.getTotalPrice())
+                .build();
+
+        order = orderRepository.save(order);
+
+        final Order finalOrder = order;
 
         List<OrderItem> orderItems = cart.getCartItems().stream()
                 .map(cartItem -> OrderItem.builder()
-                        .order(order)
+                        .order(finalOrder)
                         .product(cartItem.getProduct())
                         .quantity(cartItem.getQuantity())
                         .price(cartItem.getProduct().getProductPrice())
                         .build())
                 .toList();
+
+        orderItemRepository.saveAll(orderItems);
 
         Payment payment = Payment
                 .builder()
@@ -77,9 +82,10 @@ public class OrderService {
                 .order(order)
                 .build();
 
-        order.setOrderItems(orderItems);
-        order.setPayment(payment);
+        paymentRepository.save(payment);
 
+        finalOrder.setPayment(payment);
+        finalOrder.setOrderItems(orderItems);
 
         List<OrderItemRes> orderItemResList = order.getOrderItems().stream()
                 .map(or -> OrderItemRes.builder()
@@ -108,6 +114,9 @@ public class OrderService {
                 .builder()
                 .orderId(order.getOrderId())
                 .orderCode(order.getOrderCode())
+                .userId(userId)
+                .status(order.getOrderStatus())
+                .amount(order.getOrderAmount())
                 .orderItems(orderItemResList)
                 .paymentId(payment.getPaymentId())
                 .paymentMethod(payment.getPaymentMethod())
@@ -116,4 +125,24 @@ public class OrderService {
 
     }
 
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF')")
+    public void approveOrder(String userId, String orderId, UpdateOrderReq request) throws MessagingException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        List<OrderItem> orderItemsList = order.getOrderItems();
+
+        if(request.getOrderStatus() == OrderStatus.Successfully){
+            emailService.sendOrderStatusEmail(
+                    "lhquocbao1703@gmail.com", "Nguyễn Văn A", "ORDER123", "12/09/2025",
+                    String.valueOf(request.getOrderStatus()), orderItemsList, null, "123 Đường ABC", "15/09/2025",
+                    "Công Ty ABC", "support@abc.com", "0123456789", "www.abc.com"
+            );
+        }
+    }
 }

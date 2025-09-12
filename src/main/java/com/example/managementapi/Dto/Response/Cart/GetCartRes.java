@@ -19,7 +19,6 @@ import java.util.List;
 public class GetCartRes {
     private String cartId;
     private String userId;
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private BigDecimal totalPrice;
     private int totalQuantity;
     private List<CartItemDetailRes> items;

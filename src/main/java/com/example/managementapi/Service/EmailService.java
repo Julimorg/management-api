@@ -2,20 +2,23 @@ package com.example.managementapi.Service;
 
 
 import com.example.managementapi.Dto.Email.MailBody;
+import com.example.managementapi.Entity.OrderItem;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.mail.SimpleMailMessage;
+import org.thymeleaf.context.Context;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.spring6.SpringTemplateEngine;
+
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +28,9 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String email_name;
 
-    private final JavaMailSender javaMailSender; // --> Class JavaMailSender chịu trách nhiệm cho việc send mail
+    private final SpringTemplateEngine templateEngine;
 
+    private final JavaMailSender javaMailSender; // --> Class JavaMailSender chịu trách nhiệm cho việc send mail
     //? Load template từ resources
     //? Code này của GPT =)
     public String loadTemplate(String fileName) throws Exception {
@@ -36,7 +40,7 @@ public class EmailService {
         }
     }
 
-    //? Function dùng để send mail
+    //? Function dùng để send mail otp
     public void sendOtpEmail(MailBody mailBody, int otp) throws Exception {
         String htmlContent = loadTemplate("sendEmailForm.html");
         htmlContent = htmlContent.replace("{{otp}}", String.valueOf(otp));
@@ -50,6 +54,38 @@ public class EmailService {
         helper.setFrom(email_name);
         helper.setSubject(mailBody.subject());
         helper.setText(htmlContent, true);
+
+        javaMailSender.send(message);
+    }
+
+    public void sendOrderStatusEmail(String to, String customerName, String orderId, String orderDate,
+                                     String orderStatus, List<OrderItem> orderItems, String orderDetails,
+                                     String shippingAddress, String estimatedDeliveryDate,
+                                     String companyName, String supportEmail, String supportPhone,
+                                     String companyWebsite) throws MessagingException {
+
+        Context context = new Context();
+        context.setVariable("customer_name", customerName);
+        context.setVariable("order_id", orderId);
+        context.setVariable("order_date", orderDate);
+        context.setVariable("order_status", orderStatus);
+        context.setVariable("order_items", orderItems);
+        context.setVariable("order_details", orderDetails);
+        context.setVariable("shipping_address", shippingAddress);
+        context.setVariable("estimated_delivery_date", estimatedDeliveryDate);
+        context.setVariable("company_name", companyName);
+        context.setVariable("support_email", supportEmail);
+        context.setVariable("support_phone", supportPhone);
+        context.setVariable("company_website", companyWebsite);
+
+        String emailContent = templateEngine.process("TestForm", context);
+
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        helper.setTo(to);
+        helper.setFrom("kienphongtran2003@gmail.com");
+        helper.setSubject("Cập nhật tình trạng đơn hàng #" + orderId);
+        helper.setText(emailContent, true);
 
         javaMailSender.send(message);
     }
