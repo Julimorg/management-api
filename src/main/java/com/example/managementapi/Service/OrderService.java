@@ -5,12 +5,14 @@ import com.example.managementapi.Component.GenerateRandomCode;
 import com.example.managementapi.Dto.Request.Order.UpdateOrderReq;
 import com.example.managementapi.Dto.Response.Cart.CartItemDetailRes;
 import com.example.managementapi.Dto.Response.Order.GetOrderResponse;
+import com.example.managementapi.Dto.Response.Order.GetUserOrdersRes;
 import com.example.managementapi.Dto.Response.Order.OrderItemRes;
 import com.example.managementapi.Dto.Response.Product.ProductForCartItem;
 import com.example.managementapi.Entity.*;
 import com.example.managementapi.Enum.OrderStatus;
 import com.example.managementapi.Enum.PaymentMethod;
 import com.example.managementapi.Enum.PaymentMethodStatus;
+import com.example.managementapi.Mapper.OrderMapper;
 import com.example.managementapi.Repository.*;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
@@ -41,6 +43,15 @@ public class OrderService {
 
     private final EmailService emailService;
 
+    private final OrderMapper orderMapper;
+
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF','ROLE_USER')")
+    public List<GetUserOrdersRes> getUserOrder(){
+       return orderRepository.findAll().stream()
+               .map(user -> orderMapper.toGetUserOrdersRes(user))
+               .toList();
+    }
 
     @Transactional
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF','ROLE_USER')")

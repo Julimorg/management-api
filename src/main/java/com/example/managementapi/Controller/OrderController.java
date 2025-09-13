@@ -7,6 +7,7 @@ import com.example.managementapi.Dto.Request.Order.UpdateOrderReq;
 import com.example.managementapi.Dto.Response.Cart.CartItemDetailRes;
 import com.example.managementapi.Dto.Response.Cart.GetCartRes;
 import com.example.managementapi.Dto.Response.Order.GetOrderResponse;
+import com.example.managementapi.Dto.Response.Order.GetUserOrdersRes;
 import com.example.managementapi.Service.CartService;
 import com.example.managementapi.Service.OrderService;
 import jakarta.mail.MessagingException;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +26,16 @@ public class OrderController {
 
     private final OrderService orderService;
 
+
+    @GetMapping("/user-order")
+    public ApiResponse<List<GetUserOrdersRes>> getUserOrder(){
+        return ApiResponse.<List<GetUserOrdersRes>>builder()
+                .status_code(HttpStatus.OK.value())
+                .message(String.valueOf(HttpStatus.OK.value()))
+                .data(orderService.getUserOrder())
+                .timestamp(new Date())
+                .build();
+    }
 
     @PostMapping("/from-cart/{userId}/{cartId}")
     public ApiResponse<GetOrderResponse> addProductToCart(@PathVariable String userId,
