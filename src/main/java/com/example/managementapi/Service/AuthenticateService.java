@@ -23,7 +23,6 @@ import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -62,8 +61,6 @@ public class AuthenticateService {
 
     //* =================================== Auth Service =================================== //
 
-
-//    @PreAuthorize("hasRole('USER')")
     public LoginRes login(LoginReq request) {
 
         var user = userRepository.findByUserName(request.getUsername())
@@ -84,6 +81,8 @@ public class AuthenticateService {
         var token = generateToken(user);
 
         return LoginRes.builder()
+                .id(user.getId())
+                .userName(user.getUserName())
                 .token(token)
                 .authenticated(true)
                 .build();

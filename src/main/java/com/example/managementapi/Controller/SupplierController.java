@@ -33,7 +33,6 @@ public class SupplierController {
     @GetMapping("/get-suppliers")
     public ApiResponse<List<GetSupplierRes>> getSupplier(){
         return ApiResponse.<List<GetSupplierRes>>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(supplierService.getSuppliers())
@@ -43,7 +42,6 @@ public class SupplierController {
     @GetMapping("/detail-supplier/{supplierId}")
     public ApiResponse<GetSupplierDetailRes> getSupplierDetail(@PathVariable String supplierId){
         return ApiResponse.<GetSupplierDetailRes>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(supplierService.getSupplierDetailRes(supplierId) )
@@ -65,7 +63,6 @@ public class SupplierController {
             @ModelAttribute CreateSupplierReq request) {
 
         return ApiResponse.<CreateSupplierRes>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(supplierService.createSupplier(request))
@@ -76,7 +73,6 @@ public class SupplierController {
 
 //        log.warn("supplier_id: " + supplierId);
         return ApiResponse.<UpdateSupplierRes>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(supplierService.updateSupplier(supplierId, request))
@@ -87,7 +83,6 @@ public class SupplierController {
     public ApiResponse<String> deleteSupplier(@PathVariable String supplierId) {
         supplierService.deleteSupplier(supplierId);
         return ApiResponse.<String>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message("Deleted Supplier Sucessfully!")
                 .build();

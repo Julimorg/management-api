@@ -6,7 +6,9 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +24,8 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String cartId;
 
+    private BigDecimal totalPrice;
+
     @CreationTimestamp
     private LocalDateTime createAt;
     @UpdateTimestamp
@@ -31,8 +35,8 @@ public class Cart {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "cart")
-    private List<CartItem> cartItems;
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItem> cartItems = new ArrayList<>();;
 
 }
 

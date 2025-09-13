@@ -33,7 +33,6 @@ public class UserController {
     ApiResponse<List<GetUserRes>> getUser(){
         log.warn(String.valueOf(HttpStatus.OK));
         return ApiResponse.<List<GetUserRes>>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(userService.getUser())
@@ -65,7 +64,6 @@ public class UserController {
     @PostMapping(value = "/create-staff", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<CreateStaffRes> createStaff( @Valid @ModelAttribute CreateStaffReq request){
         return ApiResponse.<CreateStaffRes>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(userService.createStaff(request))
@@ -76,7 +74,6 @@ public class UserController {
     @PatchMapping(value = "/update-profile/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ApiResponse<UpdateUserRes> updateProfileById(@PathVariable String userId, @ModelAttribute @Valid UpdateUseReq request){
         return ApiResponse.<UpdateUserRes>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(userService.updateProfileById(userId, request))
@@ -86,7 +83,6 @@ public class UserController {
     @PatchMapping(value = "/update-user/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ApiResponse<UpdateUserByAdminRes> updateUserByAdmin(@PathVariable String userId, @ModelAttribute @Valid UpdateUserByAdminReq request){
         return ApiResponse.<UpdateUserByAdminRes>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(userService.updateUserByAdmin(userId, request))
@@ -98,7 +94,6 @@ public class UserController {
     ApiResponse<String> deleteUserById(@PathVariable String userId){
         userService.deleteUser(userId);
         return ApiResponse.<String>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data("User has been deleted")

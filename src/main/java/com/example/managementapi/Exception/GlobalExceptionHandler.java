@@ -23,7 +23,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(errorCode.getStatusCode())
                 .body(ApiResponse.builder()
-                        .code(errorCode.getCode())
                         .status_code(errorCode.getStatusCode().value())
                         .message(exception.getMessage() != null ? exception.getMessage() : errorCode.getMessage())
                         .data(null)
@@ -38,7 +37,6 @@ public class GlobalExceptionHandler {
                 .status(errorCode.getStatusCode())
                 .body(ApiResponse
                         .builder()
-                        .code(ErrorCode.BANNED.getCode())
                         .status_code(errorCode.getStatusCode().value())
                         .message(errorCode.getMessage())
                         .timestamp(new Date())
@@ -49,7 +47,6 @@ public class GlobalExceptionHandler {
     ResponseEntity<ApiResponse<Object>> handlingAccessDeniedException(AccessDeniedException exception) {
 
         ApiResponse<Object> response = ApiResponse.builder()
-                .code(1003)
                 .status_code(HttpStatus.FORBIDDEN.value())
                 .message(exception.getMessage())
                 .data(null)
@@ -65,7 +62,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(errorCode.getStatusCode())
                 .body(ApiResponse.builder()
-                        .code(errorCode.getCode())
                         .status_code(errorCode.getStatusCode().value())
                         .message(errorCode.getMessage())
                         .data(null)
@@ -80,7 +76,6 @@ public class GlobalExceptionHandler {
                 .status(errorCode.getStatusCode())
                 .body(ApiResponse
                         .builder()
-                        .code(errorCode.getCode())
                         .status_code(errorCode.getStatusCode().value())
                         .message(errorCode.getMessage())
                         .data(null)
@@ -102,7 +97,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(errorCode.getStatusCode())
                 .body(ApiResponse.builder()
-                        .code(errorCode.getCode())
                         .status_code(errorCode.getStatusCode().value())
                         .message(errorCode.getMessage())
                         .data(null)

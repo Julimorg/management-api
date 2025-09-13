@@ -9,6 +9,7 @@ import com.example.managementapi.Dto.Response.Color.GetColorDetailRes;
 import com.example.managementapi.Dto.Response.Color.GetColorRes;
 import com.example.managementapi.Dto.Response.Color.UpdateColorRes;
 import com.example.managementapi.Service.ColorService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,15 +23,15 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("api/v1/color")
 public class ColorController {
-    @Autowired
-    private ColorService colorService;
+
+    private final ColorService colorService;
 
     @GetMapping("/get-color")
     public ApiResponse<List<GetColorRes>> getColor(){
         return ApiResponse.<List<GetColorRes>>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(colorService.getColor())
@@ -40,7 +41,6 @@ public class ColorController {
     @GetMapping("/detail-color/{colorId}")
     public ApiResponse<GetColorDetailRes> getColorById(@PathVariable String colorId){
         return ApiResponse.<GetColorDetailRes>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(colorService.getColorDetail(colorId))
@@ -65,7 +65,6 @@ public class ColorController {
                 .build();
 
         return ApiResponse.<CreateColorRes>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(colorService.createColor(request))
@@ -88,7 +87,6 @@ public class ColorController {
                 .build();
 
         return ApiResponse.<UpdateColorRes>builder()
-                                                                                                                                                                                                                                                                                                             .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(colorService.updateColor(colorId, request))
@@ -107,7 +105,6 @@ public class ColorController {
     public ApiResponse<String> deleteColor(@PathVariable String colorId) {
         colorService.deleteColor(colorId);
         return ApiResponse.<String>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message("Delete Color Successfully!")
                 .build();

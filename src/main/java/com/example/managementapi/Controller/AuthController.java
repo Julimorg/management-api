@@ -28,7 +28,6 @@ public class AuthController {
     ApiResponse<SignUpUserRes> signUp(@RequestBody @Valid SignUpReq request){
 
         return ApiResponse.<SignUpUserRes>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(authenticationService.signUp(request))
@@ -40,7 +39,6 @@ public class AuthController {
         var result = authenticationService.login(request);
 
         return ApiResponse.<LoginRes>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(result)
@@ -55,7 +53,7 @@ public class AuthController {
 
         authenticationService.logOut(request);
         return ApiResponse.<String>builder()
-                .code(1000)
+
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .message("Log out successfully!")
@@ -69,7 +67,7 @@ public class AuthController {
         var result = authenticationService.refreshToken(request);
 
         return ApiResponse.<RefreshRes>builder()
-                .code(1000)
+
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(result)
@@ -82,7 +80,6 @@ public class AuthController {
         var result = authenticationService.introspect(request);
 
         return ApiResponse.<IntrospectResponse>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(result)

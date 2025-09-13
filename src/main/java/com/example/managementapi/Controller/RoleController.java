@@ -23,7 +23,6 @@ public class RoleController {
     @GetMapping("/get-role")
     public ApiResponse<List<RoleRes>> getRole() {
         return ApiResponse.<List<RoleRes>>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(roleService.getRole())
@@ -33,7 +32,6 @@ public class RoleController {
     @PostMapping("/create-role")
     public ApiResponse<CreateRoleRes> createRole(@RequestBody CreateRoleReq request) {
         return ApiResponse.<CreateRoleRes>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(roleService.createRole(request))
@@ -44,7 +42,6 @@ public class RoleController {
     public ApiResponse<String> deleteRole(@PathVariable String roleName){
         roleService.deleteRole(roleName);
         return ApiResponse.<String>builder()
-                .code(1000)
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .message("Delete role!")

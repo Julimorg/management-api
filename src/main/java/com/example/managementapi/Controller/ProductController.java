@@ -28,7 +28,7 @@ public class ProductController {
     @PostMapping(value = "/create-product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ApiResponse<CreateProductRes> createProduct(@ModelAttribute CreateProductReq request){
         return ApiResponse.<CreateProductRes>builder()
-                .code(1000)
+
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(productService.createProduct(request))
@@ -39,7 +39,7 @@ public class ProductController {
     ApiResponse<Page<GetProductsRes>> getProducts(@PageableDefault(size = 10, sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable){
 
         return ApiResponse.<Page<GetProductsRes>>builder()
-                .code(1000)
+
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(productService.getProducts(pageable))
@@ -49,7 +49,7 @@ public class ProductController {
     @GetMapping("/detail-product/{productId}")
     ApiResponse<ProductRes> getProduct(@PathVariable("productId") String productId){
         return ApiResponse.<ProductRes>builder()
-                .code(1000)
+
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(productService.getProduct(productId))
@@ -60,7 +60,7 @@ public class ProductController {
     @PatchMapping(value = "/update/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ApiResponse<UpdateProductRes> updateProduct(@PathVariable("productId") String productId, @ModelAttribute UpdateProductReq request){
         return ApiResponse.<UpdateProductRes>builder()
-                .code(1000)
+
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(productService.updateProduct(productId, request))
@@ -72,7 +72,7 @@ public class ProductController {
         productService.deleteProduct(productId);
 
         return ApiResponse.<String>builder()
-                .code(1000)
+
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data("Delete product successfully")
@@ -88,7 +88,7 @@ public class ProductController {
         String qrCodeBase64 = QRGenerateUtil.generateQrCode(productJson, 300, 300);
 
         return ApiResponse.<String>builder()
-                .code(1000)
+
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(qrCodeBase64)
@@ -103,7 +103,7 @@ public class ProductController {
             @PageableDefault(size = 10, sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable){
 
         return ApiResponse.<Page<GetProductsRes>>builder()
-                .code(1000)
+
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(productService.searchProducts(keyword, categoryName, supplierName, pageable))

@@ -5,7 +5,9 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,7 +25,7 @@ public class Order {
     private String orderCode;
     private String orderStatus;
 
-    private double orderAmount;
+    private BigDecimal orderAmount;
 
     @CreationTimestamp
     private LocalDateTime updateAt;
@@ -37,7 +39,7 @@ public class Order {
     private User user;
 
     @OneToMany(mappedBy = "order",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<OrderItem> orderItems;
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Payment payment;

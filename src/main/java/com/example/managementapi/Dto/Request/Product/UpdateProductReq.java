@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +21,7 @@ public class UpdateProductReq {
     private String productCode;
     private int productQuantity;
     private double discount;
-    private double productPrice;
+    private BigDecimal productPrice;
 
     private String supplierId;
     private String colorId;
