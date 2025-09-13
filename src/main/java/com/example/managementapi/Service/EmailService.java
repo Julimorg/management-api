@@ -2,6 +2,7 @@ package com.example.managementapi.Service;
 
 
 import com.example.managementapi.Dto.Email.MailBody;
+import com.example.managementapi.Dto.Response.Order.GetOrderResponse;
 import com.example.managementapi.Entity.OrderItem;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -58,6 +59,31 @@ public class EmailService {
         javaMailSender.send(message);
     }
 
+    public void sendOrderNotificationToAdmin(String adminEmail, GetOrderResponse order, String storeName, String orderManagementUrl, String adminName, String processingDeadline) {
+        try {
+
+            Context context = new Context();
+            context.setVariable("adminName", adminName);
+            context.setVariable("order", order);
+            context.setVariable("storeName", storeName);
+            context.setVariable("orderManagementUrl", orderManagementUrl);
+            context.setVariable("processingDeadline", processingDeadline);
+
+
+            String htmlContent = templateEngine.process("SendEmailToAdminToHandleCartForUser", context);
+
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            helper.setTo(email_name);
+            helper.setSubject("Thông Báo Đơn Hàng Mới Cần Xử Lý - " + order.getOrderCode());
+            helper.setText(htmlContent, true);
+
+            javaMailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage());
+        }
+    }
+
     public void sendOrderStatusEmail(String to, String customerName, String orderId, String orderDate,
                                      String orderStatus, List<OrderItem> orderItems, String orderDetails,
                                      String shippingAddress, String estimatedDeliveryDate,
@@ -89,4 +115,5 @@ public class EmailService {
 
         javaMailSender.send(message);
     }
+
 }

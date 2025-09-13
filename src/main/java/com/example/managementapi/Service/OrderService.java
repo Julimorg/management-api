@@ -41,6 +41,7 @@ public class OrderService {
 
     private final EmailService emailService;
 
+
     @Transactional
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF','ROLE_USER')")
     public GetOrderResponse createOrderFromCart(String userId, String cartId){
@@ -50,7 +51,7 @@ public class OrderService {
 
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
-
+        log.info("GET USER EMAIL:   " + user.getEmail());
 
         Order order = Order.builder()
                 .user(user)
@@ -87,41 +88,60 @@ public class OrderService {
         finalOrder.setPayment(payment);
         finalOrder.setOrderItems(orderItems);
 
-        List<OrderItemRes> orderItemResList = order.getOrderItems().stream()
-                .map(or -> OrderItemRes.builder()
-                        .orderItemId(or.getOrderItemId())
-                        .orderId(or.getOrder().getOrderId())
-                        .product(ProductForCartItem.builder()
-                                .productId(or.getProduct().getProductId())
-                                .productName(or.getProduct().getProductName())
-                                .productImage(or.getProduct().getProductImage())
-                                .productVolume(or.getProduct().getProductVolume())
-                                .productUnit(or.getProduct().getProductUnit())
-                                .productCode(or.getProduct().getProductCode())
-                                .productQuantity(or.getQuantity())
-                                .discount(or.getProduct().getDiscount())
-                                .productPrice(or.getProduct().getProductPrice())
-                                .colorName(or.getProduct().getColors().getColorCode())
-                                .categoryName(or.getProduct().getCategory().getCategoryName())
-                                .build())
-                        .createAt(or.getCreateAt())
-                        .updateAt(or.getUpdateAt())
-                        .build())
-                .toList();
+
+        String adminEmail = "kienphongtran2003@gmail.com";
+        String storeName = "Cửa Hàng ABC";
+        String orderManagementUrl = "https://yourstore.com/admin/orders/" + order.getOrderCode();
+        String adminName = "Đội ngũ Admin";
+        String processingDeadline = "24 giờ";
 
 
-        return GetOrderResponse
-                .builder()
+
+        GetOrderResponse orderResponse = GetOrderResponse.builder()
                 .orderId(order.getOrderId())
                 .orderCode(order.getOrderCode())
                 .userId(userId)
                 .status(order.getOrderStatus())
                 .amount(order.getOrderAmount())
-                .orderItems(orderItemResList)
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .userAddress(user.getUserAddress())
+                .orderItems(order.getOrderItems().stream()
+                        .map(or -> OrderItemRes.builder()
+                                .orderItemId(or.getOrderItemId())
+                                .orderId(or.getOrder().getOrderId())
+                                .product(ProductForCartItem.builder()
+                                        .productId(or.getProduct().getProductId())
+                                        .productName(or.getProduct().getProductName())
+                                        .productImage(or.getProduct().getProductImage())
+                                        .productVolume(or.getProduct().getProductVolume())
+                                        .productUnit(or.getProduct().getProductUnit())
+                                        .productCode(or.getProduct().getProductCode())
+                                        .productQuantity(or.getQuantity())
+                                        .discount(or.getProduct().getDiscount())
+                                        .productPrice(or.getProduct().getProductPrice())
+                                        .colorName(or.getProduct().getColors().getColorCode())
+                                        .categoryName(or.getProduct().getCategory().getCategoryName())
+                                        .build())
+                                .createAt(or.getCreateAt())
+                                .updateAt(or.getUpdateAt())
+                                .build())
+                        .toList())
                 .paymentId(payment.getPaymentId())
                 .paymentMethod(payment.getPaymentMethod())
                 .paymentStatus(payment.getPaymentStatus())
+                .createAt(order.getCreateAt())
+                .updateAt(order.getUpdateAt())
                 .build();
+
+        emailService.sendOrderNotificationToAdmin(adminEmail,
+                orderResponse,
+                storeName,
+                orderManagementUrl,
+                adminName,
+                processingDeadline);
+
+        return orderResponse;
 
     }
 

@@ -25,6 +25,9 @@ public class GetOrderResponse {
     private BigDecimal amount;
 
     private String userId;
+    private String email;
+    private String phone;
+    private String userAddress;
     private List<OrderItemRes> orderItems;
     private String paymentId;
     private PaymentMethod paymentMethod;
