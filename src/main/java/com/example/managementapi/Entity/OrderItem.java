@@ -21,7 +21,9 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String orderItemId;
     private int quantity;
-    private BigDecimal price;
+
+    @Column(nullable = false)
+    private BigDecimal price = BigDecimal.ZERO;
 
     @CreationTimestamp
     private LocalDateTime createAt;

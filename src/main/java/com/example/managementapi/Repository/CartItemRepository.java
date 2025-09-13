@@ -1,14 +1,13 @@
 package com.example.managementapi.Repository;
 
 
-import com.example.managementapi.Entity.Cart;
+import com.example.managementapi.Entity.CartItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface CartRepository extends JpaRepository<Cart, String> {
-    Optional<Cart> findByUserId(String userId);
-
+public interface CartItemRepository extends JpaRepository<CartItem, String> {
+    
 }

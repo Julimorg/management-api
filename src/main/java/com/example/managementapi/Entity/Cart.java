@@ -24,7 +24,10 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String cartId;
 
-    private BigDecimal totalPrice;
+    @Column(nullable = false)
+    private BigDecimal totalPrice = BigDecimal.ZERO;
+
+    private int totalQuantity;
 
     @CreationTimestamp
     private LocalDateTime createAt;

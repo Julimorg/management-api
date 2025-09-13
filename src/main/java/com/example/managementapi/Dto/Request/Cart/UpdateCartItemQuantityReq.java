@@ -5,14 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AddItemToCartReq {
-    private String productId;
+public class UpdateCartItemQuantityReq {
     private int quantity;
 }
 
