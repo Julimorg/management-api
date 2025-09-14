@@ -3,6 +3,7 @@ package com.example.managementapi.Dto.Request.Order;
 import com.example.managementapi.Entity.OrderItem;
 import com.example.managementapi.Entity.Payment;
 import com.example.managementapi.Entity.User;
+import com.example.managementapi.Enum.PaymentMethod;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,5 +23,5 @@ public class CreateOrderRequest {
     private String orderCode;
     private String orderStatus;
     private List<GetProductQuantityRequest> orderItems;
-    private String paymentMethod;
+    private PaymentMethod paymentMethod;
 }

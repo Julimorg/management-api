@@ -76,13 +76,13 @@ public class OrderController {
         return ApiResponse.<CreateOrderResponse>builder()
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
-                .data(orderVersionService.createOrder(userId,request))
+                .data(orderService.createOrder(userId,request))
                 .build();
     }
 
     @DeleteMapping("delete/{orderId}")
     public ApiResponse<String> deleteOrder(@PathVariable String orderId){
-        orderVersionService.deleteOrder(orderId);
+        orderService.deleteOrder(orderId);
         return ApiResponse.<String>builder()
                 .status_code(HttpStatus.OK.value())
                 .message("Deleted order ID: " + orderId)

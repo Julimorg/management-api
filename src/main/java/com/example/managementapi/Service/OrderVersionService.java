@@ -1,15 +1,18 @@
 package com.example.managementapi.Service;
 
+import com.example.managementapi.Component.GenerateRandomCode;
 import com.example.managementapi.Dto.Request.Order.CreateOrderRequest;
 import com.example.managementapi.Dto.Request.Order.GetProductQuantityRequest;
 import com.example.managementapi.Dto.Response.Order.CreateOrderResponse;
+import com.example.managementapi.Dto.Response.Order.GetOrderResponse;
 import com.example.managementapi.Entity.*;
 import com.example.managementapi.Enum.ErrorCode;
+import com.example.managementapi.Enum.OrderStatus;
+import com.example.managementapi.Enum.PaymentMethod;
+import com.example.managementapi.Enum.PaymentMethodStatus;
 import com.example.managementapi.Exception.AppException;
 import com.example.managementapi.Mapper.OrderMapper;
-import com.example.managementapi.Repository.OrderRepository;
-import com.example.managementapi.Repository.ProductRepository;
-import com.example.managementapi.Repository.UserRepository;
+import com.example.managementapi.Repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,8 @@ public class OrderVersionService {
     @Autowired
     private OrderRepository orderRepository;
 
+    private OrderItemRepository orderItemRepository;
+
     @Autowired
     private ProductRepository productRepository;
 
@@ -34,56 +39,50 @@ public class OrderVersionService {
     private UserRepository userRepository;
 
     @Autowired
+    private CartRepository cartRepository;
+
+    @Autowired
     private OrderMapper orderMapper;
 
-    public CreateOrderResponse createOrder(String userId, CreateOrderRequest request){
-        Order order = orderMapper.toOrder(request);
-        order.setCreateAt(LocalDateTime.now());
-        List<OrderItem> orderItems = new ArrayList<>();
+    @Autowired
+    private GenerateRandomCode generateRandomCode;
 
-        BigDecimal totalAmount = BigDecimal.ZERO;
+    public GetOrderResponse copyCartToOrder(String userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User does not found"));
+        Cart cart = user.getCart();
 
-        for(GetProductQuantityRequest itemReq : request.getOrderItems()){
-            Product product = productRepository.findById(itemReq.getProductId()).orElseThrow(() -> new RuntimeException("Product does not exist"));
+        Order newOrder = Order.builder()
+                .orderCode(generateRandomCode.generateOrderCode())
+                .orderStatus(OrderStatus.Pending)
+                .createAt(LocalDateTime.now())
+                .orderAmount(cart.getTotalPrice())
+                .user(user)
+                .build();
 
-            if(itemReq.getQuantity() > product.getProductQuantity()){
-                throw new RuntimeException("Product quantity is not enough for this order");
-            }
+        newOrder = orderRepository.save(newOrder);
+        final Order order = newOrder;
 
-            productRepository.save(product);
+        List<OrderItem> orderItems = cart.getCartItems()
+                .stream().map(item -> OrderItem.builder()
+                        .price(item.getProduct().getProductPrice())
+                        .quantity(item.getQuantity())
+                        .product(item.getProduct())
+                        .order(order)
+                        .build()).toList();
 
-            OrderItem orderItem = new OrderItem();
-            orderItem.setProduct(product);
-            orderItem.setQuantity(itemReq.getQuantity());
-            orderItem.setPrice(product.getProductPrice());
-            orderItem.setCreateAt(LocalDateTime.now());
-
-            orderItem.setOrder(order);
-
-            orderItems.add(orderItem);
-
-            BigDecimal totalItem = product.getProductPrice().multiply(BigDecimal.valueOf(itemReq.getQuantity()));
-            totalAmount = totalAmount.add(totalItem);
-        }
-
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User does not exist"));
-        order.setUser(user);
-
-        Payment payment = new Payment();
-        payment.setPaymentMethod(request.getPaymentMethod());
+        Payment payment = Payment.builder()
+                .paymentMethod(PaymentMethod.CRASH)
+                .paymentStatus(String.valueOf(PaymentMethodStatus.Pending))
+                .amount(cart.getTotalPrice())
+                .order(order)
+                .build();
 
         order.setOrderItems(orderItems);
-        order.setOrderAmount(totalAmount);
         order.setPayment(payment);
 
-        Order savedOrder = orderRepository.save(order);
-        CreateOrderResponse response = orderMapper.toCreateOrderResponse(savedOrder);
-        response.setFirstName(savedOrder.getUser().getFirstName());
+        return orderMapper.toGetOrderResponse(order);
 
-        return response;
     }
 
-    public void deleteOrder(String id){
-        orderRepository.deleteById(id);
-    }
+
 }
