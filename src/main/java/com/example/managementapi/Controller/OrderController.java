@@ -13,6 +13,10 @@ import com.example.managementapi.Service.OrderService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,11 +32,13 @@ public class OrderController {
 
 
     @GetMapping("/user-order")
-    public ApiResponse<List<GetUserOrdersRes>> getUserOrder(){
-        return ApiResponse.<List<GetUserOrdersRes>>builder()
+    public ApiResponse<Page<GetUserOrdersRes>> getUserOrder(
+            @PageableDefault(size = 10, sort = "userId"
+                    , direction = Sort.Direction.DESC) Pageable pageable) {
+        return ApiResponse.<Page<GetUserOrdersRes>>builder()
                 .status_code(HttpStatus.OK.value())
-                .message(String.valueOf(HttpStatus.OK.value()))
-                .data(orderService.getUserOrder())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(orderService.getUserOrder(pageable))
                 .timestamp(new Date())
                 .build();
     }

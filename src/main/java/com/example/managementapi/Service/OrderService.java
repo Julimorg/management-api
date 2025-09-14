@@ -5,6 +5,7 @@ import com.example.managementapi.Component.GenerateRandomCode;
 import com.example.managementapi.Dto.Request.Order.UpdateOrderReq;
 import com.example.managementapi.Dto.Response.Cart.CartItemDetailRes;
 import com.example.managementapi.Dto.Response.Order.GetOrderResponse;
+import com.example.managementapi.Dto.Response.Order.GetUserOrdersDetailRes;
 import com.example.managementapi.Dto.Response.Order.GetUserOrdersRes;
 import com.example.managementapi.Dto.Response.Order.OrderItemRes;
 import com.example.managementapi.Dto.Response.Product.ProductForCartItem;
@@ -18,6 +19,8 @@ import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -45,12 +48,19 @@ public class OrderService {
 
     private final OrderMapper orderMapper;
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF','ROLE_USER')")
+    public GetUserOrdersDetailRes getUserOrdersDetail(String userId){
+
+        User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+
+    }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF','ROLE_USER')")
-    public List<GetUserOrdersRes> getUserOrder(){
-       return orderRepository.findAll().stream()
-               .map(user -> orderMapper.toGetUserOrdersRes(user))
-               .toList();
+    public Page<GetUserOrdersRes> getUserOrder(Pageable pageable){
+       return orderRepository.findAll(pageable)
+               .map(user -> orderMapper.toGetUserOrdersRes(user));
     }
 
     @Transactional
