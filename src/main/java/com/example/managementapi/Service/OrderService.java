@@ -3,11 +3,7 @@ package com.example.managementapi.Service;
 
 import com.example.managementapi.Component.GenerateRandomCode;
 import com.example.managementapi.Dto.Request.Order.UpdateOrderReq;
-import com.example.managementapi.Dto.Response.Cart.CartItemDetailRes;
-import com.example.managementapi.Dto.Response.Order.GetOrderResponse;
-import com.example.managementapi.Dto.Response.Order.GetUserOrdersDetailRes;
-import com.example.managementapi.Dto.Response.Order.GetUserOrdersRes;
-import com.example.managementapi.Dto.Response.Order.OrderItemRes;
+import com.example.managementapi.Dto.Response.Order.*;
 import com.example.managementapi.Dto.Response.Product.ProductForCartItem;
 import com.example.managementapi.Entity.*;
 import com.example.managementapi.Enum.OrderStatus;
@@ -24,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -48,20 +43,37 @@ public class OrderService {
 
     private final OrderMapper orderMapper;
 
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Page<GetAllOrdersRes> getAllOrders(Pageable pageable){
+        return orderRepository.findAll(pageable)
+                .map(user -> orderMapper.toGetAllOrdersRes(user));
+    }
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF','ROLE_USER')")
-    public GetUserOrdersDetailRes getUserOrdersDetail(String userId){
+    public Page<GetUserOrdersRes> getUserOrders(String userId, Pageable pageable){
 
         User user = userRepository.findById(userId)
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
+        Page<Order> ordersPage = orderRepository.findByUser(user, pageable);
 
+        return ordersPage.map(orders -> orderMapper.toGetUserOrdersRes(orders));
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF','ROLE_USER')")
-    public Page<GetUserOrdersRes> getUserOrder(Pageable pageable){
-       return orderRepository.findAll(pageable)
-               .map(user -> orderMapper.toGetUserOrdersRes(user));
+    public GetUserOrdersDetailRes getUserOrderDetails(String userId, String orderId){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Order order =  orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        return orderMapper.toGetUserOrdersDetailRes(
+                orderRepository.findByUserAndOrderId(user, orderId)
+                        .orElseThrow(() -> new RuntimeException("Order not found")));
     }
+
+
 
     @Transactional
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF','ROLE_USER')")

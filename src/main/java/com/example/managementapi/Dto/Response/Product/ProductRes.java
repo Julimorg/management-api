@@ -27,7 +27,6 @@ public class ProductRes {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private BigDecimal productPrice;
 
-    //
     private String supplierName;
     private String colorName;
     private String categoryName;

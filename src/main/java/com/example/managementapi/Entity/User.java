@@ -64,6 +64,9 @@ public class User {
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Order> orders = new ArrayList<>();
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private ForgotPassword forgotPassword;
 

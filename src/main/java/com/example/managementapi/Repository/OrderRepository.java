@@ -3,6 +3,9 @@ package com.example.managementapi.Repository;
 
 import com.example.managementapi.Entity.Cart;
 import com.example.managementapi.Entity.Order;
+import com.example.managementapi.Entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,4 +16,7 @@ public interface OrderRepository extends JpaRepository<Order, String> {
 
     Optional<Order> findByUserId(String userId);
 
+    Page<Order> findByUser(User user, Pageable pageable);
+
+    Optional<Order> findByUserAndOrderId(User user, String orderId);
 }
