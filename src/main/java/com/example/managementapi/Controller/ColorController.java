@@ -106,7 +106,7 @@ public class ColorController {
         colorService.deleteColor(colorId);
         return ApiResponse.<String>builder()
                 .status_code(HttpStatus.OK.value())
-                .message("Delete Color Successfully!")
+                .message("Delete Color Approved!")
                 .build();
     }
 

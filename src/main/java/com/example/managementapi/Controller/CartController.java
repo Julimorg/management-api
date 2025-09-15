@@ -23,7 +23,7 @@ public class CartController {
     public ApiResponse<GetCartRes> addProductToCart(@PathVariable String id, @RequestBody AddItemToCartReq req){
         return ApiResponse.<GetCartRes>builder()
                 .status_code(HttpStatus.OK.value())
-                .message("Adding Product Successfully")
+                .message("Adding Product Approved")
                 .data(cartService.addProductToCart(id, req))
                 .build();
     }

@@ -25,6 +25,8 @@ public class Order {
 
     private String orderCode;
 
+    private String shipAddress;
+
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
@@ -33,6 +35,7 @@ public class Order {
 
     @CreationTimestamp
     private LocalDateTime createAt;
+
     @UpdateTimestamp
     private LocalDateTime updateAt;
 

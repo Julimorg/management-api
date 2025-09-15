@@ -1,7 +1,7 @@
 package com.example.managementapi.Controller;
 
-import com.cloudinary.Api;
 import com.example.managementapi.Dto.ApiResponse;
+import com.example.managementapi.Dto.Request.Order.ApproveOrderReq;
 import com.example.managementapi.Dto.Request.Order.UpdateOrderReq;
 import com.example.managementapi.Dto.Response.Order.GetOrderResponse;
 import com.example.managementapi.Dto.Response.Order.GetAllOrdersRes;
@@ -70,19 +70,31 @@ public class OrderController {
                                                           @PathVariable String cartId){
         return ApiResponse.<GetOrderResponse>builder()
                 .status_code(HttpStatus.OK.value())
-                .message("Create Order Successfully!")
+                .message("Create Order Approved!")
                 .data(orderService.createOrderFromCart(userId, cartId))
                 .timestamp(new Date())
                 .build();
     }
+
     @PatchMapping("/update-order/{userId}/{orderId}")
-    public ApiResponse<String> updateCartItem(@PathVariable String userId,
+    public ApiResponse<GetOrderResponse> updateOrderFromUSer(@PathVariable String userId,
                                               @PathVariable String orderId,
-                                              @Valid @RequestBody UpdateOrderReq request) throws MessagingException {
+                                              @Valid @RequestBody UpdateOrderReq request){
+        return ApiResponse.<GetOrderResponse>builder()
+                .status_code(HttpStatus.OK.value())
+                .message("Update Order Approved!")
+                .data(orderService.updateOrderFromUser(userId, orderId, request))
+                .build();
+    }
+
+    @PatchMapping("/approve-order/{userId}/{orderId}")
+    public ApiResponse<String> approveOrder(@PathVariable String userId,
+                                              @PathVariable String orderId,
+                                              @Valid @RequestBody ApproveOrderReq request) throws MessagingException {
         orderService.approveOrder(userId, orderId, request);
         return ApiResponse.<String>builder()
                 .status_code(HttpStatus.OK.value())
-                .message("Update Order Successfully!")
+                .message("Approve Order Approved!")
                 .build();
     }
 //    @GetMapping("/get-cart/{userId}")

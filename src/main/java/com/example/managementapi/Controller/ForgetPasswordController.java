@@ -22,7 +22,7 @@ public class ForgetPasswordController {
 
         return ApiResponse.<String>builder()
                 .status_code(HttpStatus.OK.value())
-                .message("Send Email Successfully!")
+                .message("Send Email Approved!")
                 .build();
     }
 

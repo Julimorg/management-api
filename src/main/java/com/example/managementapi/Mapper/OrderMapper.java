@@ -1,10 +1,7 @@
 package com.example.managementapi.Mapper;
 
 
-import com.example.managementapi.Dto.Response.Order.GetUserOrdersDetailRes;
-import com.example.managementapi.Dto.Response.Order.GetUserOrdersRes;
-import com.example.managementapi.Dto.Response.Order.GetAllOrdersRes;
-import com.example.managementapi.Dto.Response.Order.OrderItemRes;
+import com.example.managementapi.Dto.Response.Order.*;
 import com.example.managementapi.Dto.Response.Product.ProductForCartItem;
 import com.example.managementapi.Entity.Order;
 import com.example.managementapi.Entity.OrderItem;
@@ -16,6 +13,12 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {OrderItemMapper.class})
 public interface OrderMapper {
+
+    GetOrderResponse toGetOrderResponse(Order order);
+    OrderItemRes toOrderItemRes(OrderItem orderItem);
+    ProductForCartItem toProductForCartItem(Product product);
+
+
     @Mapping(source = "orderId", target = "orderId")
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "orderCode", target = "orderCode")
