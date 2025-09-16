@@ -27,6 +27,8 @@ public class Order {
 
     private String shipAddress;
 
+    private int total_quantity;
+
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 

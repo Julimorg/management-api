@@ -4,6 +4,7 @@ package com.example.managementapi.Service;
 import com.example.managementapi.Dto.Email.MailBody;
 import com.example.managementapi.Dto.Response.Order.GetOrderResponse;
 import com.example.managementapi.Entity.OrderItem;
+import com.example.managementapi.Enum.OrderStatus;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -89,36 +90,54 @@ public class EmailService {
         }
     }
 
-    public void sendOrderStatusEmail(String to, String customerName, String orderId, String orderDate,
-                                     String orderStatus, List<OrderItem> orderItems, String orderDetails,
-                                     String shippingAddress, String estimatedDeliveryDate,
-                                     String companyName, String supportEmail, String supportPhone,
-                                     String companyWebsite) throws MessagingException {
+    private void populateContext(Context context, GetOrderResponse orderResponse) {
+        context.setVariable("orderCode", orderResponse.getOrderCode());
+        context.setVariable("createAt", orderResponse.getCreateAt().toString());
+        context.setVariable("status", orderResponse.getStatus().toString());
+        context.setVariable("amount", orderResponse.getAmount());
+        context.setVariable("paymentMethod", orderResponse.getPaymentMethod());
+        context.setVariable("paymentStatus", orderResponse.getPaymentStatus());
+        context.setVariable("email", orderResponse.getEmail());
+        context.setVariable("phone", orderResponse.getPhone());
+        context.setVariable("userAddress", orderResponse.getUserAddress());
+        context.setVariable("shipAddress", orderResponse.getShipAddress());
+        context.setVariable("orderItems", orderResponse.getOrderItems());
+        context.setVariable("completeAt", orderResponse.getCompleteAt() != null ? orderResponse.getCompleteAt().toString() : null);
+        context.setVariable("company_name", "Công Ty ABC");
+        context.setVariable("support_email", "support@abc.com");
+        context.setVariable("support_phone", "0123 456 789");
+        context.setVariable("company_website", "www.abc.com");
+    }
 
+    public void sendOrderApprovedEmail(GetOrderResponse orderResponse) throws MessagingException {
         Context context = new Context();
-        context.setVariable("customer_name", customerName);
-        context.setVariable("order_id", orderId);
-        context.setVariable("order_date", orderDate);
-        context.setVariable("order_status", orderStatus);
-        context.setVariable("order_items", orderItems);
-        context.setVariable("order_details", orderDetails);
-        context.setVariable("shipping_address", shippingAddress);
-        context.setVariable("estimated_delivery_date", estimatedDeliveryDate);
-        context.setVariable("company_name", companyName);
-        context.setVariable("support_email", supportEmail);
-        context.setVariable("support_phone", supportPhone);
-        context.setVariable("company_website", companyWebsite);
+        populateContext(context, orderResponse);
 
-        String emailContent = templateEngine.process("TestForm", context);
+        String emailContent = templateEngine.process("SendEmailOrderSuccessfullyForm", context);
 
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-        helper.setTo(to);
-        helper.setFrom("kienphongtran2003@gmail.com");
-        helper.setSubject("Cập nhật tình trạng đơn hàng #" + orderId);
+        helper.setTo(orderResponse.getEmail());
+        helper.setFrom("your-email@gmail.com");
+        helper.setSubject("Thông báo đơn hàng được phê duyệt #" + orderResponse.getOrderCode());
         helper.setText(emailContent, true);
 
         javaMailSender.send(message);
     }
 
+    public void sendOrderCanceledEmail(GetOrderResponse orderResponse) throws MessagingException {
+        Context context = new Context();
+        populateContext(context, orderResponse);
+
+        String emailContent = templateEngine.process("SendEmailOrderCanceled", context);
+
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        helper.setTo(orderResponse.getEmail());
+        helper.setFrom("your-email@gmail.com");
+        helper.setSubject("Thông báo hủy đơn hàng #" + orderResponse.getOrderCode());
+        helper.setText(emailContent, true);
+
+        javaMailSender.send(message);
+    }
 }

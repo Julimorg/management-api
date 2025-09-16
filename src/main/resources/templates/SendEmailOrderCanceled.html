@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cập nhật tình trạng đơn hàng - Đã phê duyệt</title>
+    <title>Thông báo hủy đơn hàng</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,7 +22,7 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         .header {
-            background-color: #007bff;
+            background-color: #dc3545;
             color: white;
             padding: 20px;
             text-align: center;
@@ -46,7 +46,7 @@
         }
         .order-info h3 {
             margin-top: 0;
-            color: #007bff;
+            color: #dc3545;
         }
         .details-table {
             width: 100%;
@@ -74,6 +74,7 @@
         .status.SHIPPED { background-color: #d4edda; color: #155724; }
         .status.DELIVERED { background-color: #d4edda; color: #155724; }
         .status.APPROVED { background-color: #d4edda; color: #155724; }
+        .status.CANCELED { background-color: #f8d7da; color: #721c24; }
         .footer {
             background-color: #f8f9fa;
             padding: 20px;
@@ -83,7 +84,7 @@
         }
         .btn {
             display: inline-block;
-            background-color: #007bff;
+            background-color: #dc3545;
             color: white;
             padding: 10px 20px;
             text-decoration: none;
@@ -104,12 +105,12 @@
 <body>
 <div class="container">
     <div class="header">
-        <h1>Cập nhật tình trạng đơn hàng - Đã phê duyệt</h1>
+        <h1>Thông báo hủy đơn hàng</h1>
     </div>
     <div class="content">
         <p class="greeting">Kính gửi Quý khách,</p>
 
-        <p>Chúng tôi xin vui mừng thông báo rằng đơn hàng của quý khách đã được <strong>phê duyệt</strong> và sẽ được giao đến địa chỉ: <strong th:text="${shipAddress}">123 Đường ABC, Quận 1, TP. HCM</strong>. Dưới đây là thông tin chi tiết về đơn hàng:</p>
+        <p>Chúng tôi rất tiếc phải thông báo rằng đơn hàng của quý khách đã bị <strong>hủy</strong>. Dưới đây là thông tin chi tiết về đơn hàng:</p>
 
         <div class="order-info">
             <h3>Thông tin đơn hàng</h3>
@@ -125,7 +126,7 @@
                 <tr>
                     <th>Tình trạng hiện tại:</th>
                     <td>
-                        <div class="status APPROVED" th:text="'Đã phê duyệt'">Đã phê duyệt</div>
+                        <div class="status CANCELED" th:text="'Đã hủy'">Đã hủy</div>
                     </td>
                 </tr>
                 <tr>
@@ -157,7 +158,7 @@
         <p th:if="${orderItems == null}">Chi tiết đơn hàng sẽ được hiển thị ở đây.</p>
 
         <div class="order-info">
-            <h3>Thông tin khách hàng44 & giao hàng</h3>
+            <h3>Thông tin khách hàng</h3>
             <table class="details-table">
                 <tr>
                     <th>Email:</th>
@@ -171,20 +172,12 @@
                     <th>Địa chỉ khách hàng:</th>
                     <td th:text="${userAddress}">123 Đường ABC, Quận 1, TP. HCM</td>
                 </tr>
-                <tr>
-                    <th>Địa chỉ giao hàng:</th>
-                    <td th:text="${shipAddress}">123 Đường ABC, Quận 1, TP. HCM</td>
-                </tr>
-                <tr th:if="${completeAt != null}">
-                    <th>Ngày hoàn thành:</th>
-                    <td th:text="${completeAt}">15/09/2025</td>
-                </tr>
             </table>
         </div>
 
-        <p>Nếu quý khách có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi qua email <a th:href="'mailto:support@company.com'" th:text="'support@company.com'">support@company.com</a> hoặc số điện thoại <span th:text="'0123 456 789'">0123 456 789</span>.</p>
+        <p>Nếu quý khách có bất kỳ câu hỏi nào hoặc cần hỗ trợ thêm, vui lòng liên hệ với chúng tôi qua email <a th:href="'mailto:support@company.com'" th:text="'support@company.com'">support@company.com</a> hoặc số điện thoại <span th:text="'0123 456 789'">0123 456 789</span>.</p>
 
-        <a th:href="'#'" class="btn" th:if="${orderId != null}">Theo dõi đơn hàng</a>
+        <a th:href="'#'" class="btn" th:if="${orderId != null}">Xem chi tiết đơn hàng</a>
     </div>
     <div class="footer">
         <p>Trân trọng,<br>

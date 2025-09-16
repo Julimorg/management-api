@@ -53,7 +53,7 @@ public class OrderController {
                 .build();
     }
 
-    @GetMapping("/user-order-detail/{userId}/{orderId}")
+    @GetMapping("/order-detail/{userId}/{orderId}")
     public ApiResponse<GetUserOrdersDetailRes> getUserOrders(
             @PathVariable String userId,
             @PathVariable String orderId) {
@@ -97,24 +97,4 @@ public class OrderController {
                 .message("Approve Order Approved!")
                 .build();
     }
-//    @GetMapping("/get-cart/{userId}")
-//    public ApiResponse<GetCartRes> getCart(@PathVariable String userId){
-//        return ApiResponse.<GetCartRes>builder()
-//                .status_code(HttpStatus.OK.value())
-//                .message(HttpStatus.OK.getReasonPhrase())
-//                .data(cartService.getCart(userId))
-//                .build();
-//    }
-//
-
-//
-//    @DeleteMapping("/delete-item/{cartItemId}")
-//    public ApiResponse<String> deleteItem(@PathVariable String cartItemId){
-//        cartService.deleteCartItem(cartItemId);
-//        return ApiResponse.<String>
-//                builder()
-//                .status_code(HttpStatus.OK.value())
-//                .message("Delete item: " + cartItemId + " successfully! ")
-//                .build();
-//    }
 }
