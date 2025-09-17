@@ -8,6 +8,7 @@ import com.example.managementapi.Dto.Request.Order.UpdateOrderReq;
 import com.example.managementapi.Dto.Response.Cart.CartItemDetailRes;
 import com.example.managementapi.Dto.Response.Order.CreateOrderResponse;
 import com.example.managementapi.Dto.Response.Order.GetOrderResponse;
+import com.example.managementapi.Dto.Response.Order.GetOrdersResponse;
 import com.example.managementapi.Dto.Response.Order.OrderItemRes;
 import com.example.managementapi.Dto.Response.Product.ProductForCartItem;
 import com.example.managementapi.Entity.*;
@@ -20,6 +21,8 @@ import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -210,7 +213,7 @@ public class OrderService {
         order.setUser(user);
 
         Payment payment = new Payment();
-        payment.setPaymentMethod(request.getPaymentMethod());
+        payment.setPaymentMethod(PaymentMethod.CRASH);
 
         order.setOrderItems(orderItems);
         order.setOrderAmount(totalAmount);
@@ -222,6 +225,11 @@ public class OrderService {
 
         return response;
     }
+
+    public Page<GetOrdersResponse> getOrders(Pageable pageable){
+        return orderRepository.findAll(pageable).map(orderMapper::toGetOrdersResponse);
+    }
+
 
     public void deleteOrder(String id){
         orderRepository.deleteById(id);

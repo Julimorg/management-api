@@ -47,42 +47,42 @@ public class OrderVersionService {
     @Autowired
     private GenerateRandomCode generateRandomCode;
 
-    public GetOrderResponse copyCartToOrder(String userId){
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User does not found"));
-        Cart cart = user.getCart();
-
-        Order newOrder = Order.builder()
-                .orderCode(generateRandomCode.generateOrderCode())
-                .orderStatus(OrderStatus.Pending)
-                .createAt(LocalDateTime.now())
-                .orderAmount(cart.getTotalPrice())
-                .user(user)
-                .build();
-
-        newOrder = orderRepository.save(newOrder);
-        final Order order = newOrder;
-
-        List<OrderItem> orderItems = cart.getCartItems()
-                .stream().map(item -> OrderItem.builder()
-                        .price(item.getProduct().getProductPrice())
-                        .quantity(item.getQuantity())
-                        .product(item.getProduct())
-                        .order(order)
-                        .build()).toList();
-
-        Payment payment = Payment.builder()
-                .paymentMethod(PaymentMethod.CRASH)
-                .paymentStatus(String.valueOf(PaymentMethodStatus.Pending))
-                .amount(cart.getTotalPrice())
-                .order(order)
-                .build();
-
-        order.setOrderItems(orderItems);
-        order.setPayment(payment);
-
-        return orderMapper.toGetOrderResponse(order);
-
-    }
+//    public GetOrderResponse copyCartToOrder(String userId){
+//        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User does not found"));
+//        Cart cart = user.getCart();
+//
+//        Order newOrder = Order.builder()
+//                .orderCode(generateRandomCode.generateOrderCode())
+//                .orderStatus(OrderStatus.Pending)
+//                .createAt(LocalDateTime.now())
+//                .orderAmount(cart.getTotalPrice())
+//                .user(user)
+//                .build();
+//
+//        newOrder = orderRepository.save(newOrder);
+//        final Order order = newOrder;
+//
+//        List<OrderItem> orderItems = cart.getCartItems()
+//                .stream().map(item -> OrderItem.builder()
+//                        .price(item.getProduct().getProductPrice())
+//                        .quantity(item.getQuantity())
+//                        .product(item.getProduct())
+//                        .order(order)
+//                        .build()).toList();
+//
+//        Payment payment = Payment.builder()
+//                .paymentMethod(PaymentMethod.CRASH)
+//                .paymentStatus(String.valueOf(PaymentMethodStatus.Pending))
+//                .amount(cart.getTotalPrice())
+//                .order(order)
+//                .build();
+//
+//        order.setOrderItems(orderItems);
+//        order.setPayment(payment);
+//
+//        return orderMapper.toGetOrderResponse(order);
+//
+//    }
 
 
 }

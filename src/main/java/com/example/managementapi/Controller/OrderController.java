@@ -9,12 +9,17 @@ import com.example.managementapi.Dto.Response.Cart.CartItemDetailRes;
 import com.example.managementapi.Dto.Response.Cart.GetCartRes;
 import com.example.managementapi.Dto.Response.Order.CreateOrderResponse;
 import com.example.managementapi.Dto.Response.Order.GetOrderResponse;
+import com.example.managementapi.Dto.Response.Order.GetOrdersResponse;
 import com.example.managementapi.Service.CartService;
 import com.example.managementapi.Service.OrderService;
 import com.example.managementapi.Service.OrderVersionService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -77,6 +82,15 @@ public class OrderController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(orderService.createOrder(userId,request))
+                .build();
+    }
+
+    @GetMapping("/get-orders")
+    public ApiResponse<Page<GetOrdersResponse>> gerOrders(@PageableDefault(size = 10, sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable){
+        return ApiResponse.<Page<GetOrdersResponse>>builder()
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(orderService.getOrders(pageable))
                 .build();
     }
 
