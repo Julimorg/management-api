@@ -18,7 +18,9 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 
 
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -120,5 +122,39 @@ public class EmailService {
 
         javaMailSender.send(message);
     }
+
+    public void sendOrderCreatedByAdminEmail(
+            String to, String customerName,
+            String orderCode, LocalDateTime createAt, String status,
+            BigDecimal amount, List<OrderItem> orderItems,
+            String companyName, String supportEmail, String hotline, String website
+    ) throws MessagingException {
+
+        Context context = new Context();
+        context.setVariable("customerName", customerName);
+        context.setVariable("orderCode", orderCode);
+        context.setVariable("createAt", createAt);
+        context.setVariable("status", status);
+        context.setVariable("amount", amount);
+        context.setVariable("orderItems", orderItems);
+        context.setVariable("companyName", companyName);
+        context.setVariable("supportEmail", supportEmail);
+        context.setVariable("hotline", hotline);
+        context.setVariable("website", website);
+
+        String htmlContent = templateEngine.process("SendMailOrderCreatedByAdminToUser", context);
+
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        helper.setTo(to);
+        helper.setSubject("Xác nhận đơn hàng #" + orderCode);
+        helper.setText(htmlContent, true);
+
+        javaMailSender.send(message);
+    }
+
+
+
 
 }

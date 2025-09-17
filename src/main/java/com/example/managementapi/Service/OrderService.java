@@ -2,16 +2,14 @@ package com.example.managementapi.Service;
 
 
 import com.example.managementapi.Component.GenerateRandomCode;
-import com.example.managementapi.Dto.Request.Order.ApproveOrderReq;
-import com.example.managementapi.Dto.Request.Order.CreateOrderRequest;
-import com.example.managementapi.Dto.Request.Order.GetProductQuantityRequest;
-import com.example.managementapi.Dto.Request.Order.UpdateOrderReq;
+import com.example.managementapi.Dto.Request.Order.*;
 import com.example.managementapi.Dto.Response.Order.*;
 import com.example.managementapi.Dto.Response.Product.ProductForCartItem;
 import com.example.managementapi.Entity.*;
 import com.example.managementapi.Enum.OrderStatus;
 import com.example.managementapi.Enum.PaymentMethod;
 import com.example.managementapi.Enum.PaymentMethodStatus;
+import com.example.managementapi.Mapper.OrderItemMapper;
 import com.example.managementapi.Mapper.OrderMapper;
 import com.example.managementapi.Repository.*;
 import jakarta.mail.MessagingException;
@@ -50,6 +48,8 @@ public class OrderService {
     private final EmailService emailService;
 
     private final OrderMapper orderMapper;
+
+    private final OrderItemMapper orderItemMapper;
 
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -276,12 +276,16 @@ public class OrderService {
         }
     }
 
-    public CreateOrderResponse createOrder(String userId, CreateOrderRequest request){
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF')")
+    public CreateOrderResponse createOrder(String userId, CreateOrderRequest request) throws MessagingException {
         Order order = orderMapper.toOrder(request);
         order.setCreateAt(LocalDateTime.now());
+        order.setOrderStatus(OrderStatus.Pending);
+        order.setOrderCode(orderCodeGenerator.generateOrderCode());
         List<OrderItem> orderItems = new ArrayList<>();
 
         BigDecimal totalAmount = BigDecimal.ZERO;
+        int totalQuantity = 0;
 
         for(GetProductQuantityRequest itemReq : request.getOrderItems()){
             Product product = productRepository.findById(itemReq.getProductId()).orElseThrow(() -> new RuntimeException("Product does not exist"));
@@ -293,6 +297,8 @@ public class OrderService {
             productRepository.save(product);
 
             OrderItem orderItem = new OrderItem();
+
+
             orderItem.setProduct(product);
             orderItem.setQuantity(itemReq.getQuantity());
             orderItem.setPrice(product.getProductPrice());
@@ -304,6 +310,7 @@ public class OrderService {
 
             BigDecimal totalItem = product.getProductPrice().multiply(BigDecimal.valueOf(itemReq.getQuantity()));
             totalAmount = totalAmount.add(totalItem);
+            totalQuantity += itemReq.getQuantity();
         }
 
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User does not exist"));
@@ -312,6 +319,7 @@ public class OrderService {
         Payment payment = new Payment();
         payment.setPaymentMethod(PaymentMethod.CASH);
 
+        order.setTotal_quantity(totalQuantity);
         order.setOrderItems(orderItems);
         order.setOrderAmount(totalAmount);
         order.setPayment(payment);
@@ -320,14 +328,62 @@ public class OrderService {
         CreateOrderResponse response = orderMapper.toCreateOrderResponse(savedOrder);
         response.setFirstName(savedOrder.getUser().getFirstName());
 
+        GetOrderResponse orderResponse = orderMapper.toGetOrderResponse(savedOrder);
+
+        emailService.sendOrderCreatedByAdminEmail(
+                "lhquocbao1703@gmail.com",
+                user.getFirstName(),
+                savedOrder.getOrderCode(),
+                savedOrder.getCreateAt(),
+                savedOrder.getOrderStatus().name(),
+                savedOrder.getOrderAmount(),
+                savedOrder.getOrderItems(),
+                "Tên công ty ABC",
+                "support@abc.com",
+                "0123-456-789",
+                "https://abc.com"
+        );
+
         return response;
     }
 
-    public Page<GetOrdersResponse> getOrders(Pageable pageable){
-        return orderRepository.findAll(pageable).map(orderMapper::toGetOrdersResponse);
+    public UpdateOrderByAdminResponse updateOrderByAdmin(String orderId, UpdateOrderByAdminRequest request) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        orderMapper.updateOrder(order, request);
+
+//        if (request.getOrderItems() != null) {
+//
+//            //Xóa order item hiện tại
+//            if (!order.getOrderItems().isEmpty()) {
+//                orderItemRepository.deleteAll(order.getOrderItems());
+//                order.getOrderItems().clear();
+//            }
+//
+//            for (UpdateOrderItemByAdminRequest dto : request.getOrderItems()) {
+//                OrderItem item = orderItemMapper.toOrderItem(dto);
+//                item.setOrder(order);
+//
+//                Product product = productRepository.findById(dto.getProductId())
+//                        .orElseThrow(() -> new RuntimeException("Product not found"));
+//                item.setProduct(product);
+//                item.setPrice(product.getProductPrice());
+//
+//                order.getOrderItems().add(item);
+//            }
+//
+//            BigDecimal total = order.getOrderItems().stream()
+//                    .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
+//                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+//            order.setOrderAmount(total);
+//        }
+
+        orderRepository.save(order);
+        return orderMapper.toUpdateOrderByAdminResponse(order);
     }
 
-
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF'")
     public void deleteOrder(String id){
         orderRepository.deleteById(id);
     }

@@ -2,13 +2,17 @@ package com.example.managementapi.Mapper;
 
 
 import com.example.managementapi.Dto.Request.Order.CreateOrderRequest;
+import com.example.managementapi.Dto.Request.Order.UpdateOrderByAdminRequest;
+import com.example.managementapi.Dto.Request.Product.UpdateProductReq;
 import com.example.managementapi.Dto.Response.Order.*;
 import com.example.managementapi.Dto.Response.Product.ProductForCartItem;
+import com.example.managementapi.Dto.Response.Product.UpdateProductRes;
 import com.example.managementapi.Entity.Order;
 import com.example.managementapi.Entity.OrderItem;
 import com.example.managementapi.Entity.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
@@ -63,5 +67,16 @@ public interface OrderMapper {
     //Get list
     GetOrdersResponse toGetOrdersResponse(Order orders);
 
+    @Mapping(target = "orderItems", ignore = true)
+    @Mapping(target = "orderAmount", ignore = true)
+    @Mapping(target = "orderStatus", ignore = true)
+    @Mapping(target = "total_quantity", ignore = true)
+    @Mapping(target = "createAt", ignore = true)
+    @Mapping(target = "updateAt", ignore = true)
+    @Mapping(target = "completeAt", ignore = true)
+    @Mapping(target = "payment", ignore = true)
+    void updateOrder(@MappingTarget Order order, UpdateOrderByAdminRequest request);
+
+    UpdateOrderByAdminResponse toUpdateOrderByAdminResponse(Order order);
 
 }

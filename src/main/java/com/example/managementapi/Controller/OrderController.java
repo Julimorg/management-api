@@ -3,8 +3,11 @@ package com.example.managementapi.Controller;
 import com.example.managementapi.Dto.ApiResponse;
 import com.example.managementapi.Dto.Request.Order.ApproveOrderReq;
 import com.example.managementapi.Dto.Request.Order.CreateOrderRequest;
+import com.example.managementapi.Dto.Request.Order.UpdateOrderByAdminRequest;
 import com.example.managementapi.Dto.Request.Order.UpdateOrderReq;
+import com.example.managementapi.Dto.Request.OrderItem.UpdateOrderItemRequest;
 import com.example.managementapi.Dto.Response.Order.*;
+import com.example.managementapi.Service.OrderItemService;
 import com.example.managementapi.Service.OrderService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
@@ -17,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +29,7 @@ public class OrderController {
 
     private final OrderService orderService;
 
+    private final OrderItemService orderItemService;
 
     @GetMapping("/user-order")
     public ApiResponse<Page<GetAllOrdersRes>> getAllOrders(
@@ -97,7 +102,7 @@ public class OrderController {
     }
 
     @PostMapping("/create-order/{userId}")
-    public ApiResponse<CreateOrderResponse> createOrder(@PathVariable String userId, @RequestBody CreateOrderRequest request){
+    public ApiResponse<CreateOrderResponse> createOrder(@PathVariable String userId, @RequestBody CreateOrderRequest request) throws MessagingException {
         return ApiResponse.<CreateOrderResponse>builder()
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
@@ -105,14 +110,34 @@ public class OrderController {
                 .build();
     }
 
-    @GetMapping("/get-orders")
-    public ApiResponse<Page<GetOrdersResponse>> gerOrders(@PageableDefault(size = 10, sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable){
-        return ApiResponse.<Page<GetOrdersResponse>>builder()
+    //Update bởi admin
+    @PatchMapping("/update-order-admin/{orderId}")
+    public ApiResponse<UpdateOrderByAdminResponse> updateOrderByAdmin(
+            @PathVariable String orderId,
+            @Valid @RequestBody UpdateOrderByAdminRequest request) {
+
+        return ApiResponse.<UpdateOrderByAdminResponse>builder()
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
-                .data(orderService.getOrders(pageable))
+                .data(orderService.updateOrderByAdmin(orderId, request))
+                .timestamp(new Date())
                 .build();
     }
+
+    @PatchMapping("/update-order-items-admin/{orderId}")
+    public ApiResponse<List<UpdateOrderItemByAdminResponse>> updateOrderItems(
+            @PathVariable String orderId,
+            @RequestBody UpdateOrderItemRequest request) {
+        List<UpdateOrderItemByAdminResponse> updatedItems = orderItemService.updateOrderItems(orderId, request);
+
+        return ApiResponse.<List<UpdateOrderItemByAdminResponse>>builder()
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(updatedItems)
+                .timestamp(new Date())
+                .build();
+    }
+
 
     @DeleteMapping("delete/{orderId}")
     public ApiResponse<String> deleteOrder(@PathVariable String orderId){
@@ -122,6 +147,8 @@ public class OrderController {
                 .message("Deleted order ID: " + orderId)
                 .build();
     }
+
+
 //    @GetMapping("/get-cart/{userId}")
 //    public ApiResponse<GetCartRes> getCart(@PathVariable String userId){
 //        return ApiResponse.<GetCartRes>builder()
