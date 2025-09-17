@@ -106,12 +106,12 @@ public class OrderController {
         return ApiResponse.<CreateOrderResponse>builder()
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
-                .data(orderService.createOrder(userId,request))
+                .data(orderService.CreateOrderByAdmin(userId,request))
                 .build();
     }
 
     //Update bởi admin
-    @PatchMapping("/update-order-admin/{orderId}")
+    @PatchMapping("/admin/update/{orderId}")
     public ApiResponse<UpdateOrderByAdminResponse> updateOrderByAdmin(
             @PathVariable String orderId,
             @Valid @RequestBody UpdateOrderByAdminRequest request) {
@@ -124,7 +124,7 @@ public class OrderController {
                 .build();
     }
 
-    @PatchMapping("/update-order-items-admin/{orderId}")
+    @PatchMapping("/admin/update-order-item/{orderId}")
     public ApiResponse<List<UpdateOrderItemByAdminResponse>> updateOrderItems(
             @PathVariable String orderId,
             @RequestBody UpdateOrderItemRequest request) {

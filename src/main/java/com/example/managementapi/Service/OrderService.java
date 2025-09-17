@@ -277,7 +277,7 @@ public class OrderService {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF')")
-    public CreateOrderResponse createOrder(String userId, CreateOrderRequest request) throws MessagingException {
+    public CreateOrderResponse CreateOrderByAdmin(String userId, CreateOrderRequest request) throws MessagingException {
         Order order = orderMapper.toOrder(request);
         order.setCreateAt(LocalDateTime.now());
         order.setOrderStatus(OrderStatus.Pending);
@@ -331,7 +331,7 @@ public class OrderService {
         GetOrderResponse orderResponse = orderMapper.toGetOrderResponse(savedOrder);
 
         emailService.sendOrderCreatedByAdminEmail(
-                "lhquocbao1703@gmail.com",
+                user.getEmail(),
                 user.getFirstName(),
                 savedOrder.getOrderCode(),
                 savedOrder.getCreateAt(),
