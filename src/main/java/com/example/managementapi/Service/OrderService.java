@@ -54,6 +54,7 @@ public class OrderService {
     private final String adminName = "Đội ngũ Admin";
 
     private final String processingDeadline = "24 giờ";
+    private final PaymentRepository paymentRepository;
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Page<GetAllOrdersRes> getAllOrders(Pageable pageable){
@@ -201,9 +202,11 @@ public class OrderService {
         userOrder.getPayment().setPaymentMethod(request.getPaymentMethod());
         userOrder.setShipAddress(request.getShipAddress());
 
+        payment.setPaymentStatus(String.valueOf(PaymentMethodStatus.Successfully));
+
+        paymentRepository.save(payment);
+
         orderRepository.save(userOrder);
-
-
 
 
         GetOrderResponse orderResponse = GetOrderResponse.builder()
@@ -320,6 +323,8 @@ public class OrderService {
 
             order.setUpdateAt(LocalDateTime.now());
 
+            order.setCompleteAt(LocalDateTime.now());
+
             orderRepository.save(order);
 
             for (OrderItem orderItem : orderItemsList) {
@@ -335,15 +340,24 @@ public class OrderService {
                 productRepository.save(product);
             }
 
-//            cart.getCartItems().clear();
-//            cartRepository.save(cart);
+            cart.getCartItems().clear();
+            cart.setTotalQuantity(0);
+            cart.setTotalPrice(BigDecimal.ZERO);
+
+            cartRepository.save(cart);
 
             emailService.sendOrderApprovedEmail(orderResponse);
         } else if (request.getOrderStatus() == OrderStatus.Canceled) {
+
             order.setOrderStatus(OrderStatus.Canceled);
             order.setUpdateAt(LocalDateTime.now());
             order.setDeletedAt(LocalDateTime.now());
-            orderRepository.save(order);
+
+            cart.getCartItems().clear();
+            cart.setTotalQuantity(0);
+            cart.setTotalPrice(BigDecimal.ZERO);
+
+            order.setCompleteAt(LocalDateTime.now());
 
             emailService.sendOrderCanceledEmail(orderResponse);
         } else {

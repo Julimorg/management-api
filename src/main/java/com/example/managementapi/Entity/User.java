@@ -60,9 +60,9 @@ public class User {
     )
     private Set<Role> roles;
 
-    @OneToOne
-    @JoinColumn(name = "cart_id")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cart cart;
+
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Order> orders = new ArrayList<>();
