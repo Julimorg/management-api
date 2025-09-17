@@ -1,7 +1,7 @@
 package com.example.managementapi.Enum;
 
 public enum PaymentMethod {
-    CRASH,
+    CASH,
     VN_PAY,
     PAY_PAL
 }

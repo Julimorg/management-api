@@ -17,13 +17,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Orders ")
+@Table(name = "Orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String orderId;
 
     private String orderCode;
+
+    private String shipAddress;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -33,6 +35,7 @@ public class Order {
 
     @CreationTimestamp
     private LocalDateTime createAt;
+
     @UpdateTimestamp
     private LocalDateTime updateAt;
 

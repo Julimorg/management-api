@@ -2,7 +2,6 @@ package com.example.managementapi.Dto.Request.Order;
 
 
 import com.example.managementapi.Enum.OrderStatus;
-import com.example.managementapi.Enum.PaymentMethod;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UpdateOrderReq {
-    @NotNull(message = "Order Payment cannot be blanked!")
-    private PaymentMethod paymentMethod;
-    private String shipAddress;
+public class ApproveOrderReq {
+    @NotNull(message = "Order Status cannot be blanked!")
+    private OrderStatus orderStatus;
 }

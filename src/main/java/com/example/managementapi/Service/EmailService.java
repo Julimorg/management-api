@@ -59,7 +59,12 @@ public class EmailService {
         javaMailSender.send(message);
     }
 
-    public void sendOrderNotificationToAdmin(String adminEmail, GetOrderResponse order, String storeName, String orderManagementUrl, String adminName, String processingDeadline) {
+    public void sendOrderNotificationToAdmin(String adminEmail,
+                                             GetOrderResponse order,
+                                             String storeName,
+                                             String orderManagementUrl,
+                                             String adminName,
+                                             String processingDeadline) {
         try {
 
             Context context = new Context();

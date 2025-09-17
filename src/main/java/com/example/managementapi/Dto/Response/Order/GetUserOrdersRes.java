@@ -7,39 +7,26 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GetOrderResponse {
+public class GetUserOrdersRes {
     private String orderId;
     private String orderCode;
     private OrderStatus status;
     private BigDecimal amount;
-
     private String userId;
+    private String userName;
     private String email;
     private String phone;
     private String userAddress;
-    private String shipAddress;
-    private List<OrderItemRes> orderItems;
-    private String paymentId;
     private PaymentMethod paymentMethod;
-    private String paymentStatus;
 
-    private LocalDateTime createAt;
-
-    private LocalDateTime updateAt;
-
-    private LocalDateTime deletedAt;
-
-    private LocalDateTime completeAt;
-
+    private LocalDate createAt;
+    private LocalDate updateAt;
 }
