@@ -54,6 +54,7 @@ public class OrderService {
     private final String adminName = "Đội ngũ Admin";
 
     private final String processingDeadline = "24 giờ";
+
     private final PaymentRepository paymentRepository;
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -84,8 +85,6 @@ public class OrderService {
                 orderRepository.findByUserAndOrderId(user, orderId)
                         .orElseThrow(() -> new RuntimeException("Order not found")));
     }
-
-
 
     @Transactional
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF','ROLE_USER')")
