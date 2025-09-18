@@ -40,8 +40,6 @@ public class OrderService {
 
     private final GenerateRandomCode orderCodeGenerator;
 
-    private final OrderItemRepository orderItemRepository;
-
     private final PaymentRepository paymentRepository;
 
     private final ProductRepository productRepository;
@@ -49,8 +47,6 @@ public class OrderService {
     private final EmailService emailService;
 
     private final OrderMapper orderMapper;
-
-    private final OrderItemMapper orderItemMapper;
 
     private final String adminEmail = "kienphongtran2003@gmail.com";
 
@@ -61,8 +57,6 @@ public class OrderService {
     private final String adminName = "Đội ngũ Admin";
 
     private final String processingDeadline = "24 giờ";
-
-//    private final PaymentRepository paymentRepository;
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Page<GetAllOrdersRes> getAllOrders(Pageable pageable){
@@ -446,32 +440,6 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
         orderMapper.updateOrder(order, request);
-
-//        if (request.getOrderItems() != null) {
-//
-//            //Xóa order item hiện tại
-//            if (!order.getOrderItems().isEmpty()) {
-//                orderItemRepository.deleteAll(order.getOrderItems());
-//                order.getOrderItems().clear();
-//            }
-//
-//            for (UpdateOrderItemByAdminRequest dto : request.getOrderItems()) {
-//                OrderItem item = orderItemMapper.toOrderItem(dto);
-//                item.setOrder(order);
-//
-//                Product product = productRepository.findById(dto.getProductId())
-//                        .orElseThrow(() -> new RuntimeException("Product not found"));
-//                item.setProduct(product);
-//                item.setPrice(product.getProductPrice());
-//
-//                order.getOrderItems().add(item);
-//            }
-//
-//            BigDecimal total = order.getOrderItems().stream()
-//                    .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
-//                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-//            order.setOrderAmount(total);
-//        }
 
         orderRepository.save(order);
         return orderMapper.toUpdateOrderByAdminResponse(order);
