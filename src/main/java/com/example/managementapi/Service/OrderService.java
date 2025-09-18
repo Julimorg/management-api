@@ -4,6 +4,7 @@ package com.example.managementapi.Service;
 import com.example.managementapi.Component.GenerateRandomCode;
 import com.example.managementapi.Dto.Request.Order.*;
 import com.example.managementapi.Dto.Response.Order.*;
+import com.example.managementapi.Dto.Response.Product.GetProductsRes;
 import com.example.managementapi.Dto.Response.Product.ProductForCartItem;
 import com.example.managementapi.Entity.*;
 import com.example.managementapi.Enum.OrderStatus;
@@ -11,12 +12,15 @@ import com.example.managementapi.Enum.PaymentMethod;
 import com.example.managementapi.Enum.PaymentMethodStatus;
 import com.example.managementapi.Mapper.OrderMapper;
 import com.example.managementapi.Repository.*;
+import com.example.managementapi.Specification.OrderSpecification;
+import com.example.managementapi.Specification.ProductSpecification;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -453,6 +457,7 @@ public class OrderService {
         return response;
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF')")
     public UpdateOrderByAdminResponse updateOrderByAdmin(String orderId, UpdateOrderByAdminRequest request) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
@@ -466,5 +471,12 @@ public class OrderService {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF')")
     public void deleteOrder(String id){
         orderRepository.deleteById(id);
+    }
+
+    public Page<SearchOrdersResponse> searchOrdersByAdmin(String keyword, String orderStatus, Pageable pageable){
+        Specification<Order> specification = OrderSpecification.searchOrder(keyword, orderStatus);
+        Page<Order> orders = orderRepository.findAll(specification, pageable);
+
+        return orders.map(order -> orderMapper.toSearchOrdersResponse(order));
     }
 }

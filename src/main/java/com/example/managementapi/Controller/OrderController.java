@@ -7,6 +7,7 @@ import com.example.managementapi.Dto.Request.Order.UpdateOrderByAdminRequest;
 import com.example.managementapi.Dto.Request.Order.UpdateOrderReq;
 import com.example.managementapi.Dto.Request.OrderItem.UpdateOrderItemRequest;
 import com.example.managementapi.Dto.Response.Order.*;
+import com.example.managementapi.Dto.Response.Product.GetProductsRes;
 import com.example.managementapi.Service.OrderItemService;
 import com.example.managementapi.Service.OrderService;
 import jakarta.mail.MessagingException;
@@ -153,6 +154,20 @@ public class OrderController {
         return ApiResponse.<String>builder()
                 .status_code(HttpStatus.OK.value())
                 .message("Deleted order ID: " + orderId)
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    @GetMapping("/search-order")
+    public ApiResponse<Page<SearchOrdersResponse>> searchOrdersByAdmin(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "orderStatus", required = false) String orderStatus,
+            @PageableDefault(size = 10, sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable){
+
+        return ApiResponse.<Page<SearchOrdersResponse>>builder()
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(orderService.searchOrdersByAdmin(keyword, orderStatus, pageable))
                 .timestamp(LocalDateTime.now())
                 .build();
     }

@@ -60,8 +60,21 @@ public interface OrderMapper {
 
     Order toOrder(CreateOrderRequest request);
     CreateOrderResponse toCreateOrderResponse(Order order);
+
     //Get list
     GetOrdersResponse toGetOrdersResponse(Order orders);
+
+    //Search
+    @Mapping(source = "orderStatus", target = "status")
+    @Mapping(source = "orderAmount", target = "amount")
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "user.email", target = "email")
+    @Mapping(source = "user.phone", target = "phone")
+    @Mapping(source = "user.userAddress", target = "userAddress")
+    @Mapping(source = "payment.paymentMethod", target = "paymentMethod")
+    @Mapping(source = "payment.paymentStatus", target = "paymentStatus")
+    @Mapping(source = "payment.paymentId", target = "paymentId")
+    SearchOrdersResponse toSearchOrdersResponse(Order orders);
 
     @Mapping(target = "orderItems", ignore = true)
     @Mapping(target = "orderAmount", ignore = true)
