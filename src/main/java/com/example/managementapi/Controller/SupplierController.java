@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -36,6 +37,7 @@ public class SupplierController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(supplierService.getSuppliers())
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -44,16 +46,22 @@ public class SupplierController {
         return ApiResponse.<GetSupplierDetailRes>builder()
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
-                .data(supplierService.getSupplierDetailRes(supplierId) )
+                .data(supplierService.getSupplierDetailRes(supplierId))
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
     @GetMapping("/search-supplier")
-    public Page<GetSupplierRes> searchSupplier(
+    public ApiResponse<Page<GetSupplierRes>> searchSupplier(
             @RequestParam(value = "keyword", required = false) String keyword,
             @PageableDefault(size = 10, sort = "supplierName", direction = Sort.Direction.ASC) Pageable pageable
     ){
-        return supplierService.searchSupplier(keyword, pageable);
+        return ApiResponse.<Page<GetSupplierRes>>builder()
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(supplierService.searchSupplier(keyword, pageable))
+                .timestamp(LocalDateTime.now())
+                .build();
     }
 
 
@@ -66,6 +74,7 @@ public class SupplierController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(supplierService.createSupplier(request))
+                .timestamp(LocalDateTime.now())
                 .build();
     }
     @PatchMapping(value = "/update-supplier/{supplierId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -76,6 +85,7 @@ public class SupplierController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(supplierService.updateSupplier(supplierId, request))
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -85,6 +95,7 @@ public class SupplierController {
         return ApiResponse.<String>builder()
                 .status_code(HttpStatus.OK.value())
                 .message("Deleted Supplier Sucessfully!")
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 

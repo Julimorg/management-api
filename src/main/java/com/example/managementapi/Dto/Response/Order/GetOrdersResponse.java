@@ -26,7 +26,7 @@ public class GetOrdersResponse {
     private String email;
     private String phone;
     private String userAddress;
-    private List<OrderItemRes> orderItems;
+    private List<CreateOrderItemRes> orderItems;
     private String paymentId;
     private PaymentMethod paymentMethod;
     private String paymentStatus;

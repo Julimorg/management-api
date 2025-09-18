@@ -13,14 +13,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OrderItemRes {
+public class CreateOrderItemRes {
     private String orderItemId;
+
     private String orderId;
+
     private int quantity;
+
     private ProductForCartItem product;
 
     private LocalDateTime createAt;
-    private LocalDateTime updateAt;
-
 
 }

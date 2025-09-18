@@ -29,6 +29,9 @@ public class Cart {
 
     private int totalQuantity;
 
+    private String createBy;
+    private String updateBy;
+
     @CreationTimestamp
     private LocalDateTime createAt;
     @UpdateTimestamp

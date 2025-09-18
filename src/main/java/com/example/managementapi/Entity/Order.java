@@ -27,7 +27,16 @@ public class Order {
 
     private String shipAddress;
 
+    private String createBy;
+
+    private String updateBy;
+
+    private String approvedBy;
+
+    private String canceledBy;
+
     private int total_quantity;
+
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;

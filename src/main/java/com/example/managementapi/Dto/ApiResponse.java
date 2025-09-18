@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -16,5 +17,5 @@ public class ApiResponse<T> {
     private int status_code;
     private String message;
     private T data;
-    private Date timestamp = new Date();
+    private LocalDateTime timestamp;
 }

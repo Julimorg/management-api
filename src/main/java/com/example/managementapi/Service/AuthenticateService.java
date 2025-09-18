@@ -67,6 +67,7 @@ public class AuthenticateService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         var status =  user.getStatus();
+
         if (Objects.equals(String.valueOf(status), "INACTIVE")){
             throw new AppException(ErrorCode.BANNED);
         }
@@ -86,15 +87,12 @@ public class AuthenticateService {
                 .token(token)
                 .authenticated(true)
                 .build();
-
     }
 
     public SignUpUserRes signUp(SignUpReq request){
 
         if(userRepository.existsByUserName(request.getUserName()))
             throw  new AppException((ErrorCode.USER_EXISTED));
-
-
 
         //? Sử dụng Mapper
         User user = userMapper.toUser(request);

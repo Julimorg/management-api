@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.nio.file.AccessDeniedException;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @ControllerAdvice
@@ -26,6 +27,7 @@ public class GlobalExceptionHandler {
                         .status_code(errorCode.getStatusCode().value())
                         .message(exception.getMessage() != null ? exception.getMessage() : errorCode.getMessage())
                         .data(null)
+                        .timestamp(LocalDateTime.now())
                         .build());
     }
 
@@ -39,7 +41,7 @@ public class GlobalExceptionHandler {
                         .builder()
                         .status_code(errorCode.getStatusCode().value())
                         .message(errorCode.getMessage())
-                        .timestamp(new Date())
+                        .timestamp(LocalDateTime.now())
                         .build());
     }
 
@@ -50,7 +52,7 @@ public class GlobalExceptionHandler {
                 .status_code(HttpStatus.FORBIDDEN.value())
                 .message(exception.getMessage())
                 .data(null)
-                .timestamp(new Date())
+                .timestamp(LocalDateTime.now())
                 .build();
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
@@ -65,6 +67,7 @@ public class GlobalExceptionHandler {
                         .status_code(errorCode.getStatusCode().value())
                         .message(errorCode.getMessage())
                         .data(null)
+                        .timestamp(LocalDateTime.now())
                         .build());
     }
 
@@ -79,6 +82,7 @@ public class GlobalExceptionHandler {
                         .status_code(errorCode.getStatusCode().value())
                         .message(errorCode.getMessage())
                         .data(null)
+                        .timestamp(LocalDateTime.now())
                         .build());
     }
 
@@ -100,6 +104,7 @@ public class GlobalExceptionHandler {
                         .status_code(errorCode.getStatusCode().value())
                         .message(errorCode.getMessage())
                         .data(null)
+                        .timestamp(LocalDateTime.now())
                         .build());
     }
 }

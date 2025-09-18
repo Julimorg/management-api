@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -35,6 +36,7 @@ public class ColorController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(colorService.getColor())
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -44,6 +46,7 @@ public class ColorController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(colorService.getColorDetail(colorId))
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -68,6 +71,7 @@ public class ColorController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(colorService.createColor(request))
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -90,6 +94,7 @@ public class ColorController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(colorService.updateColor(colorId, request))
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -107,6 +112,7 @@ public class ColorController {
         return ApiResponse.<String>builder()
                 .status_code(HttpStatus.OK.value())
                 .message("Delete Color Approved!")
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 

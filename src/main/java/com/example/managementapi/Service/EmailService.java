@@ -2,9 +2,9 @@ package com.example.managementapi.Service;
 
 
 import com.example.managementapi.Dto.Email.MailBody;
-import com.example.managementapi.Dto.Response.Order.GetOrderResponse;
+import com.example.managementapi.Dto.Response.Order.ApproveOrderUserRes;
+import com.example.managementapi.Dto.Response.Order.GetOrderUserRes;
 import com.example.managementapi.Entity.OrderItem;
-import com.example.managementapi.Enum.OrderStatus;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +63,7 @@ public class EmailService {
     }
 
     public void sendOrderNotificationToAdmin(String adminEmail,
-                                             GetOrderResponse order,
+                                             GetOrderUserRes order,
                                              String storeName,
                                              String orderManagementUrl,
                                              String adminName,
@@ -92,7 +92,7 @@ public class EmailService {
         }
     }
 
-    private void populateContext(Context context, GetOrderResponse orderResponse) {
+    private void populateContext(Context context, GetOrderUserRes orderResponse) {
         context.setVariable("orderCode", orderResponse.getOrderCode());
         context.setVariable("createAt", orderResponse.getCreateAt().toString());
         context.setVariable("status", orderResponse.getStatus().toString());
@@ -111,7 +111,7 @@ public class EmailService {
         context.setVariable("company_website", "www.abc.com");
     }
 
-    public void sendOrderApprovedEmail(GetOrderResponse orderResponse) throws MessagingException {
+    public void sendOrderApprovedEmail(GetOrderUserRes orderResponse) throws MessagingException {
         Context context = new Context();
         populateContext(context, orderResponse);
 
@@ -127,7 +127,7 @@ public class EmailService {
         javaMailSender.send(message);
     }
 
-    public void sendOrderCanceledEmail(GetOrderResponse orderResponse) throws MessagingException {
+    public void sendOrderCanceledEmail(GetOrderUserRes orderResponse) throws MessagingException {
         Context context = new Context();
         populateContext(context, orderResponse);
 

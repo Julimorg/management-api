@@ -1,6 +1,7 @@
 package com.example.managementapi.Entity;
 
 import com.example.managementapi.Enum.PaymentMethod;
+import com.example.managementapi.Enum.PaymentMethodStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -25,7 +26,9 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
-    private String paymentStatus;
+    @Enumerated(EnumType.STRING)
+    private PaymentMethodStatus paymentStatus;
+
     private String responseCode;
     private String transactionStatus;
     private String transactionId;

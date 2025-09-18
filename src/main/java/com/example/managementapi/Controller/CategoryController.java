@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -32,6 +33,7 @@ public class CategoryController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(categoryService.createCategory(request))
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -41,6 +43,7 @@ public class CategoryController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(categoryService.updateCategory(categoryId, request))
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -51,6 +54,7 @@ public class CategoryController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(categoryService.getCategories(pageable))
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -60,6 +64,7 @@ public class CategoryController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(categoryService.getCategory(categoryId))
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -71,6 +76,7 @@ public class CategoryController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data("Delete category successfully")
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 

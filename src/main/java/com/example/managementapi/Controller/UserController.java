@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -36,6 +37,7 @@ public class UserController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(userService.getUser())
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -54,11 +56,16 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public Page<SearchByUserRes> searchUserByUser(
+    public ApiResponse<Page<SearchByUserRes>> searchUserByUser(
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "dob", required = false) String userDob,
             @PageableDefault(size = 10, sort = "createAt", direction = Sort.Direction.ASC) Pageable pageable){
-        return userService.searchUserByUser(userDob, keyword, pageable);
+        return ApiResponse.<Page<SearchByUserRes>>builder()
+                .status_code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(userService.searchUserByUser(userDob, keyword, pageable))
+                .timestamp(LocalDateTime.now())
+                .build();
     }
 
     @PostMapping(value = "/create-staff", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -67,6 +74,8 @@ public class UserController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(userService.createStaff(request))
+                .timestamp(LocalDateTime.now())
+
                 .build();
     }
 
@@ -77,6 +86,8 @@ public class UserController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(userService.updateProfileById(userId, request))
+                .timestamp(LocalDateTime.now())
+
                 .build();
     }
 
@@ -86,6 +97,8 @@ public class UserController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(userService.updateUserByAdmin(userId, request))
+                .timestamp(LocalDateTime.now())
+
                 .build();
     }
 
@@ -97,6 +110,8 @@ public class UserController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data("User has been deleted")
+                .timestamp(LocalDateTime.now())
+
                 .build();
     }
 

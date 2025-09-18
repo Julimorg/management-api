@@ -19,6 +19,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class OrderController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(orderService.getAllOrders(pageable))
-                .timestamp(new Date())
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -52,7 +53,7 @@ public class OrderController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(orderService.getUserOrders(userId, pageable))
-                .timestamp(new Date())
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -64,29 +65,31 @@ public class OrderController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(orderService.getUserOrderDetails(userId,orderId))
-                .timestamp(new Date())
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
     @PostMapping("/from-cart/{userId}/{cartId}")
-    public ApiResponse<GetOrderResponse> addProductToCart(@PathVariable String userId,
+    public ApiResponse<CreateOrderFromCartRes> addProductToCart(@PathVariable String userId,
                                                           @PathVariable String cartId){
-        return ApiResponse.<GetOrderResponse>builder()
+        return ApiResponse.<CreateOrderFromCartRes>builder()
                 .status_code(HttpStatus.OK.value())
                 .message("Create Order Approved!")
                 .data(orderService.createOrderFromCart(userId, cartId))
-                .timestamp(new Date())
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
     @PatchMapping("/update-order/{userId}/{orderId}")
-    public ApiResponse<GetOrderResponse> updateOrderFromUSer(@PathVariable String userId,
-                                              @PathVariable String orderId,
-                                              @Valid @RequestBody UpdateOrderReq request){
-        return ApiResponse.<GetOrderResponse>builder()
+    public ApiResponse<GetOrderUserRes> updateOrderFromUSer(@PathVariable String userId,
+                                                            @PathVariable String orderId,
+                                                            @Valid @RequestBody UpdateOrderReq request){
+        return ApiResponse.<GetOrderUserRes>builder()
                 .status_code(HttpStatus.OK.value())
                 .message("Update Order Approved!")
                 .data(orderService.updateOrderFromUser(userId, orderId, request))
+                .timestamp(LocalDateTime.now())
+
                 .build();
     }
 
@@ -98,6 +101,8 @@ public class OrderController {
         return ApiResponse.<String>builder()
                 .status_code(HttpStatus.OK.value())
                 .message("Approve Order Approved!")
+                .timestamp(LocalDateTime.now())
+
                 .build();
     }
 
@@ -107,6 +112,8 @@ public class OrderController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(orderService.CreateOrderByAdmin(userId,request))
+                .timestamp(LocalDateTime.now())
+
                 .build();
     }
 
@@ -120,7 +127,7 @@ public class OrderController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(orderService.updateOrderByAdmin(orderId, request))
-                .timestamp(new Date())
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -134,7 +141,8 @@ public class OrderController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(updatedItems)
-                .timestamp(new Date())
+                .timestamp(LocalDateTime.now())
+
                 .build();
     }
 
@@ -145,28 +153,8 @@ public class OrderController {
         return ApiResponse.<String>builder()
                 .status_code(HttpStatus.OK.value())
                 .message("Deleted order ID: " + orderId)
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
-
-//    @GetMapping("/get-cart/{userId}")
-//    public ApiResponse<GetCartRes> getCart(@PathVariable String userId){
-//        return ApiResponse.<GetCartRes>builder()
-//                .status_code(HttpStatus.OK.value())
-//                .message(HttpStatus.OK.getReasonPhrase())
-//                .data(cartService.getCart(userId))
-//                .build();
-//    }
-//
-
-//
-//    @DeleteMapping("/delete-item/{cartItemId}")
-//    public ApiResponse<String> deleteItem(@PathVariable String cartItemId){
-//        cartService.deleteCartItem(cartItemId);
-//        return ApiResponse.<String>
-//                builder()
-//                .status_code(HttpStatus.OK.value())
-//                .message("Delete item: " + cartItemId + " successfully! ")
-//                .build();
-//    }
 }

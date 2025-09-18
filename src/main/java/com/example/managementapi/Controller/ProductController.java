@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -32,6 +33,7 @@ public class ProductController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(productService.createProduct(request))
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -43,6 +45,7 @@ public class ProductController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(productService.getProducts(pageable))
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -53,6 +56,7 @@ public class ProductController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(productService.getProduct(productId))
+                .timestamp(LocalDateTime.now())
                 .build();
 
     }
@@ -64,6 +68,7 @@ public class ProductController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(productService.updateProduct(productId, request))
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -76,6 +81,7 @@ public class ProductController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data("Delete product successfully")
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -92,6 +98,7 @@ public class ProductController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(qrCodeBase64)
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -107,6 +114,7 @@ public class ProductController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(productService.searchProducts(keyword, categoryName, supplierName, pageable))
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 }

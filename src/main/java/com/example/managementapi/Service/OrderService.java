@@ -9,7 +9,6 @@ import com.example.managementapi.Entity.*;
 import com.example.managementapi.Enum.OrderStatus;
 import com.example.managementapi.Enum.PaymentMethod;
 import com.example.managementapi.Enum.PaymentMethodStatus;
-import com.example.managementapi.Mapper.OrderItemMapper;
 import com.example.managementapi.Mapper.OrderMapper;
 import com.example.managementapi.Repository.*;
 import jakarta.mail.MessagingException;
@@ -25,7 +24,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -89,7 +87,7 @@ public class OrderService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF','ROLE_USER')")
-    public GetOrderResponse createOrderFromCart(String userId, String cartId){
+    public CreateOrderFromCartRes createOrderFromCart(String userId, String cartId){
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -116,6 +114,7 @@ public class OrderService {
                 .orderCode(orderCodeGenerator.generateOrderCode())
                 .shipAddress(user.getUserAddress())
                 .orderStatus(OrderStatus.Pending)
+                .createBy(user.getUserName())
                 .orderAmount(cart.getTotalPrice())
                 .build();
 
@@ -125,21 +124,24 @@ public class OrderService {
                         .product(cartItem.getProduct())
                         .quantity(cartItem.getQuantity())
                         .price(cartItem.getProduct().getProductPrice())
+                        .createAt(cartItem.getCreateAt())
                         .build())
                 .toList();
 
         Payment payment = Payment.builder()
                 .paymentMethod(PaymentMethod.CASH)
                 .amount(cart.getTotalPrice())
-                .paymentStatus(PaymentMethodStatus.Pending.name())
+                .paymentStatus(PaymentMethodStatus.Pending)
                 .order(order)
                 .build();
 
         order.setOrderItems(orderItems);
+
         order.setPayment(payment);
+
         orderRepository.save(order);
 
-        GetOrderResponse orderResponse = GetOrderResponse.builder()
+        CreateOrderFromCartRes createOrderFromCartResponse = CreateOrderFromCartRes.builder()
                 .orderId(order.getOrderId())
                 .orderCode(order.getOrderCode())
                 .userId(userId)
@@ -149,7 +151,7 @@ public class OrderService {
                 .phone(user.getPhone())
                 .userAddress(user.getUserAddress())
                 .orderItems(order.getOrderItems().stream()
-                        .map(or -> OrderItemRes.builder()
+                        .map(or -> CreateOrderItemRes.builder()
                                 .orderItemId(or.getOrderItemId())
                                 .orderId(or.getOrder().getOrderId())
                                 .quantity(or.getQuantity())
@@ -167,24 +169,20 @@ public class OrderService {
                                         .categoryName(or.getProduct().getCategory().getCategoryName())
                                         .build())
                                 .createAt(or.getCreateAt())
-                                .updateAt(or.getUpdateAt())
                                 .build())
                         .toList())
-                .paymentId(payment.getPaymentId())
                 .paymentMethod(payment.getPaymentMethod())
                 .paymentStatus(payment.getPaymentStatus())
                 .createAt(order.getCreateAt())
-                .updateAt(order.getUpdateAt())
                 .build();
 
-
-        return orderResponse;
+        return createOrderFromCartResponse;
 
     }
 
     @Transactional
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN','ROLE_STAFF')")
-    public GetOrderResponse updateOrderFromUser(String userId, String orderId, UpdateOrderReq request){
+    public GetOrderUserRes updateOrderFromUser(String userId, String orderId, UpdateOrderReq request){
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -199,16 +197,22 @@ public class OrderService {
         Payment payment = userOrder.getPayment();
 
         userOrder.getPayment().setPaymentMethod(request.getPaymentMethod());
+
         userOrder.setShipAddress(request.getShipAddress());
 
-        payment.setPaymentStatus(String.valueOf(PaymentMethodStatus.Successfully));
+        userOrder.setUpdateBy(user.getUserName());
+
+        userOrder.setUpdateAt(LocalDateTime.now());
+
+
+        payment.setPaymentStatus(PaymentMethodStatus.Successfully);
 
         paymentRepository.save(payment);
 
         orderRepository.save(userOrder);
 
 
-        GetOrderResponse orderResponse = GetOrderResponse.builder()
+        GetOrderUserRes updateOrderFromUser = GetOrderUserRes.builder()
                 .orderId(userOrder.getOrderId())
                 .orderCode(userOrder.getOrderCode())
                 .userId(userId)
@@ -219,7 +223,7 @@ public class OrderService {
                 .userAddress(user.getUserAddress())
                 .shipAddress(userOrder.getShipAddress())
                 .orderItems(userOrder.getOrderItems().stream()
-                        .map(or -> OrderItemRes.builder()
+                        .map(or -> CreateOrderItemRes.builder()
                                 .orderItemId(or.getOrderItemId())
                                 .orderId(or.getOrder().getOrderId())
                                 .quantity(or.getQuantity())
@@ -237,10 +241,8 @@ public class OrderService {
                                         .categoryName(or.getProduct().getCategory().getCategoryName())
                                         .build())
                                 .createAt(or.getCreateAt())
-                                .updateAt(or.getUpdateAt())
                                 .build())
                         .toList())
-                .paymentId(payment.getPaymentId())
                 .paymentMethod(payment.getPaymentMethod())
                 .paymentStatus(payment.getPaymentStatus())
                 .createAt(userOrder.getCreateAt())
@@ -248,14 +250,14 @@ public class OrderService {
                 .build();
 
         emailService.sendOrderNotificationToAdmin(adminEmail,
-                orderResponse,
+                updateOrderFromUser,
                 storeName,
                 orderManagementUrl,
                 adminName,
                 processingDeadline);
 
 
-        return orderResponse;
+        return updateOrderFromUser;
 
     }
 
@@ -275,7 +277,7 @@ public class OrderService {
         Cart cart = user.getCart();
 
 
-        GetOrderResponse orderResponse = GetOrderResponse.builder()
+        GetOrderUserRes orderResponse = GetOrderUserRes.builder()
                 .orderId(order.getOrderId())
                 .orderCode(order.getOrderCode())
                 .status(order.getOrderStatus())
@@ -286,7 +288,7 @@ public class OrderService {
                 .userAddress(user.getUserAddress())
                 .shipAddress(order.getShipAddress())
                 .orderItems(orderItemsList.stream()
-                        .map(item -> OrderItemRes.builder()
+                        .map(item -> CreateOrderItemRes.builder()
                                 .orderItemId(item.getOrderItemId())
                                 .orderId(item.getOrder().getOrderId())
                                 .quantity(item.getQuantity())
@@ -304,10 +306,8 @@ public class OrderService {
                                         .categoryName(item.getProduct().getCategory().getCategoryName())
                                         .build())
                                 .createAt(item.getCreateAt())
-                                .updateAt(item.getUpdateAt())
                                 .build())
-                        .collect(Collectors.toList()))
-                .paymentId(order.getPayment().getPaymentId())
+                        .toList())
                 .paymentMethod(order.getPayment().getPaymentMethod())
                 .paymentStatus(order.getPayment().getPaymentStatus())
                 .createAt(order.getCreateAt())
@@ -320,7 +320,9 @@ public class OrderService {
 
             order.setOrderStatus(OrderStatus.Approved);
 
-            order.setUpdateAt(LocalDateTime.now());
+            order.setApprovedBy(user.getUserName());
+
+            order.setApprovedBy(user.getUserName());
 
             order.setCompleteAt(LocalDateTime.now());
 
@@ -346,14 +348,21 @@ public class OrderService {
             cartRepository.save(cart);
 
             emailService.sendOrderApprovedEmail(orderResponse);
+
         } else if (request.getOrderStatus() == OrderStatus.Canceled) {
 
             order.setOrderStatus(OrderStatus.Canceled);
+
+            order.setCanceledBy(user.getUserName());
+
             order.setUpdateAt(LocalDateTime.now());
+
             order.setDeletedAt(LocalDateTime.now());
 
             cart.getCartItems().clear();
+
             cart.setTotalQuantity(0);
+
             cart.setTotalPrice(BigDecimal.ZERO);
 
             order.setCompleteAt(LocalDateTime.now());
@@ -366,10 +375,20 @@ public class OrderService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF')")
     public CreateOrderResponse CreateOrderByAdmin(String userId, CreateOrderRequest request) throws MessagingException {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         Order order = orderMapper.toOrder(request);
+
         order.setCreateAt(LocalDateTime.now());
+
         order.setOrderStatus(OrderStatus.Pending);
+
         order.setOrderCode(orderCodeGenerator.generateOrderCode());
+
+        order.setCreateBy(user.getUserName());
+
         List<OrderItem> orderItems = new ArrayList<>();
 
         BigDecimal totalAmount = BigDecimal.ZERO;
@@ -401,7 +420,6 @@ public class OrderService {
             totalQuantity += itemReq.getQuantity();
         }
 
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User does not exist"));
         order.setUser(user);
 
         Payment payment = new Payment();
@@ -416,7 +434,7 @@ public class OrderService {
         CreateOrderResponse response = orderMapper.toCreateOrderResponse(savedOrder);
         response.setFirstName(savedOrder.getUser().getFirstName());
 
-        GetOrderResponse orderResponse = orderMapper.toGetOrderResponse(savedOrder);
+        GetOrderUserRes orderResponse = orderMapper.toGetOrderResponse(savedOrder);
 
         emailService.sendOrderCreatedByAdminEmail(
                 user.getEmail(),

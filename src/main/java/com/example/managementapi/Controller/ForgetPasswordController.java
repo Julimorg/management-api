@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("api/v1/reset-pass")
 @RequiredArgsConstructor
@@ -23,6 +25,7 @@ public class ForgetPasswordController {
         return ApiResponse.<String>builder()
                 .status_code(HttpStatus.OK.value())
                 .message("Send Email Approved!")
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -35,6 +38,7 @@ public class ForgetPasswordController {
                 .<String>builder()
                 .status_code(HttpStatus.OK.value())
                 .message("OTP verified!")
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -47,6 +51,7 @@ public class ForgetPasswordController {
                 .<String>builder()
                 .status_code(HttpStatus.OK.value())
                 .message("Update password successfully!")
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 }

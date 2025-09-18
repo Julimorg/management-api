@@ -3,10 +3,8 @@ package com.example.managementapi.Mapper;
 
 import com.example.managementapi.Dto.Request.Order.CreateOrderRequest;
 import com.example.managementapi.Dto.Request.Order.UpdateOrderByAdminRequest;
-import com.example.managementapi.Dto.Request.Product.UpdateProductReq;
 import com.example.managementapi.Dto.Response.Order.*;
 import com.example.managementapi.Dto.Response.Product.ProductForCartItem;
-import com.example.managementapi.Dto.Response.Product.UpdateProductRes;
 import com.example.managementapi.Entity.Order;
 import com.example.managementapi.Entity.OrderItem;
 import com.example.managementapi.Entity.Product;
@@ -14,13 +12,11 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import java.util.List;
-
 @Mapper(componentModel = "spring", uses = {OrderItemMapper.class})
 public interface OrderMapper {
 
-    GetOrderResponse toGetOrderResponse(Order order);
-    OrderItemRes toOrderItemRes(OrderItem orderItem);
+    GetOrderUserRes toGetOrderResponse(Order order);
+    CreateOrderItemRes toOrderItemRes(OrderItem orderItem);
     ProductForCartItem toProductForCartItem(Product product);
 
 

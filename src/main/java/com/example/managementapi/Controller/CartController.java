@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/cart")
@@ -25,6 +27,7 @@ public class CartController {
                 .status_code(HttpStatus.OK.value())
                 .message("Adding Product Approved")
                 .data(cartService.addProductToCart(id, req))
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -34,6 +37,7 @@ public class CartController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(cartService.getCart(userId))
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -44,6 +48,7 @@ public class CartController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(cartService.updateCartItem(cartItemId, request))
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -54,6 +59,7 @@ public class CartController {
                 builder()
                 .status_code(HttpStatus.OK.value())
                 .message("Delete item: " + cartItemId + " successfully! ")
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 }

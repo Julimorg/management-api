@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("api/v1/auth")
@@ -29,8 +30,9 @@ public class AuthController {
 
         return ApiResponse.<SignUpUserRes>builder()
                 .status_code(HttpStatus.OK.value())
-                .message(HttpStatus.OK.getReasonPhrase())
+                .message("Welcome to our new client!")
                 .data(authenticationService.signUp(request))
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -40,23 +42,21 @@ public class AuthController {
 
         return ApiResponse.<LoginRes>builder()
                 .status_code(HttpStatus.OK.value())
-                .message(HttpStatus.OK.getReasonPhrase())
+                .message("Login Successfully!")
                 .data(result)
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
-
-//    @PreAuthorize("")
     @PostMapping("/log-out")
     ApiResponse<String> logout(@RequestBody LogOutReq request)
             throws ParseException, JOSEException {
 
         authenticationService.logOut(request);
         return ApiResponse.<String>builder()
-
                 .status_code(HttpStatus.OK.value())
-                .message(HttpStatus.OK.getReasonPhrase())
                 .message("Log out successfully!")
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -67,10 +67,10 @@ public class AuthController {
         var result = authenticationService.refreshToken(request);
 
         return ApiResponse.<RefreshRes>builder()
-
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(result)
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -83,6 +83,7 @@ public class AuthController {
                 .status_code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(result)
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 
