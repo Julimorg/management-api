@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 public class OrderItemRes {
     private String orderItemId;
     private String orderId;
+    private int quantity;
     private ProductForCartItem product;
 
     private LocalDateTime createAt;

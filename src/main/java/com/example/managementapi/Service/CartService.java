@@ -101,6 +101,7 @@ public class CartService {
                     .updateAt(LocalDateTime.now())
                     .build();
             log.info("Tạo Cart thành công");
+            user.setCart(newCart);
             return cartRepository.save(newCart);
         });
 

@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -51,6 +52,17 @@ public class OrderService {
 
     private final OrderItemMapper orderItemMapper;
 
+    private final String adminEmail = "kienphongtran2003@gmail.com";
+
+    private final String storeName = "Cửa Hàng ABC";
+
+    private final String orderManagementUrl = "https://yourstore.com/admin/orders/";
+
+    private final String adminName = "Đội ngũ Admin";
+
+    private final String processingDeadline = "24 giờ";
+
+//    private final PaymentRepository paymentRepository;
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Page<GetAllOrdersRes> getAllOrders(Pageable pageable){
@@ -80,8 +92,6 @@ public class OrderService {
                 orderRepository.findByUserAndOrderId(user, orderId)
                         .orElseThrow(() -> new RuntimeException("Order not found")));
     }
-
-
 
     @Transactional
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF','ROLE_USER')")
@@ -148,6 +158,7 @@ public class OrderService {
                         .map(or -> OrderItemRes.builder()
                                 .orderItemId(or.getOrderItemId())
                                 .orderId(or.getOrder().getOrderId())
+                                .quantity(or.getQuantity())
                                 .product(ProductForCartItem.builder()
                                         .productId(or.getProduct().getProductId())
                                         .productName(or.getProduct().getProductName())
@@ -196,13 +207,11 @@ public class OrderService {
         userOrder.getPayment().setPaymentMethod(request.getPaymentMethod());
         userOrder.setShipAddress(request.getShipAddress());
 
-        orderRepository.save(userOrder);
+        payment.setPaymentStatus(String.valueOf(PaymentMethodStatus.Successfully));
 
-        String adminEmail = "kienphongtran2003@gmail.com";
-        String storeName = "Cửa Hàng ABC";
-        String orderManagementUrl = "https://yourstore.com/admin/orders/" + userOrder.getOrderCode();
-        String adminName = "Đội ngũ Admin";
-        String processingDeadline = "24 giờ";
+        paymentRepository.save(payment);
+
+        orderRepository.save(userOrder);
 
 
         GetOrderResponse orderResponse = GetOrderResponse.builder()
@@ -219,6 +228,7 @@ public class OrderService {
                         .map(or -> OrderItemRes.builder()
                                 .orderItemId(or.getOrderItemId())
                                 .orderId(or.getOrder().getOrderId())
+                                .quantity(or.getQuantity())
                                 .product(ProductForCartItem.builder()
                                         .productId(or.getProduct().getProductId())
                                         .productName(or.getProduct().getProductName())
@@ -265,14 +275,98 @@ public class OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
+
         List<OrderItem> orderItemsList = order.getOrderItems();
 
+        Cart cart = user.getCart();
+
+
+        GetOrderResponse orderResponse = GetOrderResponse.builder()
+                .orderId(order.getOrderId())
+                .orderCode(order.getOrderCode())
+                .status(order.getOrderStatus())
+                .amount(order.getOrderAmount())
+                .userId(user.getId())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .userAddress(user.getUserAddress())
+                .shipAddress(order.getShipAddress())
+                .orderItems(orderItemsList.stream()
+                        .map(item -> OrderItemRes.builder()
+                                .orderItemId(item.getOrderItemId())
+                                .orderId(item.getOrder().getOrderId())
+                                .quantity(item.getQuantity())
+                                .product(ProductForCartItem.builder()
+                                        .productId(item.getProduct().getProductId())
+                                        .productName(item.getProduct().getProductName())
+                                        .productImage(item.getProduct().getProductImage())
+                                        .productVolume(item.getProduct().getProductVolume())
+                                        .productUnit(item.getProduct().getProductUnit())
+                                        .productCode(item.getProduct().getProductCode())
+                                        .productQuantity(item.getProduct().getProductQuantity())
+                                        .discount(item.getProduct().getDiscount())
+                                        .productPrice(item.getProduct().getProductPrice())
+                                        .colorName(item.getProduct().getColors().getColorName())
+                                        .categoryName(item.getProduct().getCategory().getCategoryName())
+                                        .build())
+                                .createAt(item.getCreateAt())
+                                .updateAt(item.getUpdateAt())
+                                .build())
+                        .collect(Collectors.toList()))
+                .paymentId(order.getPayment().getPaymentId())
+                .paymentMethod(order.getPayment().getPaymentMethod())
+                .paymentStatus(order.getPayment().getPaymentStatus())
+                .createAt(order.getCreateAt())
+                .updateAt(order.getUpdateAt())
+                .completeAt(order.getCompleteAt())
+                .build();
+
+
         if(request.getOrderStatus() == OrderStatus.Approved){
-            emailService.sendOrderStatusEmail(
-                    "lhquocbao1703@gmail.com", "Nguyễn Văn A", "ORDER123", "12/09/2025",
-                    String.valueOf(request.getOrderStatus()), orderItemsList, null, "123 Đường ABC", "15/09/2025",
-                    "Công Ty ABC", "support@abc.com", "0123456789", "www.abc.com"
-            );
+
+            order.setOrderStatus(OrderStatus.Approved);
+
+            order.setUpdateAt(LocalDateTime.now());
+
+            order.setCompleteAt(LocalDateTime.now());
+
+            orderRepository.save(order);
+
+            for (OrderItem orderItem : orderItemsList) {
+                Product product = orderItem.getProduct();
+                if (product == null) {
+                    throw new RuntimeException("Product not found for order item");
+                }
+                int newQuantity = product.getProductQuantity() - orderItem.getQuantity();
+                if (newQuantity < 0) {
+                    throw new RuntimeException("Insufficient product quantity for " + product.getProductName());
+                }
+                product.setProductQuantity(newQuantity);
+                productRepository.save(product);
+            }
+
+            cart.getCartItems().clear();
+            cart.setTotalQuantity(0);
+            cart.setTotalPrice(BigDecimal.ZERO);
+
+            cartRepository.save(cart);
+
+            emailService.sendOrderApprovedEmail(orderResponse);
+        } else if (request.getOrderStatus() == OrderStatus.Canceled) {
+
+            order.setOrderStatus(OrderStatus.Canceled);
+            order.setUpdateAt(LocalDateTime.now());
+            order.setDeletedAt(LocalDateTime.now());
+
+            cart.getCartItems().clear();
+            cart.setTotalQuantity(0);
+            cart.setTotalPrice(BigDecimal.ZERO);
+
+            order.setCompleteAt(LocalDateTime.now());
+
+            emailService.sendOrderCanceledEmail(orderResponse);
+        } else {
+            throw new RuntimeException("Unsupported order status: " + request.getOrderStatus());
         }
     }
 
@@ -383,7 +477,7 @@ public class OrderService {
         return orderMapper.toUpdateOrderByAdminResponse(order);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF'")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STAFF')")
     public void deleteOrder(String id){
         orderRepository.deleteById(id);
     }
