@@ -5,12 +5,14 @@ import com.example.managementapi.Dto.Email.MailBody;
 import com.example.managementapi.Dto.Response.Order.ApproveOrderUserRes;
 import com.example.managementapi.Dto.Response.Order.GetOrderUserRes;
 import com.example.managementapi.Entity.OrderItem;
+import com.example.managementapi.Entity.Product;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.scheduling.annotation.Async;
 import org.thymeleaf.context.Context;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -45,6 +47,7 @@ public class EmailService {
     }
 
     //? Function dùng để send mail otp
+    @Async
     public void sendOtpEmail(MailBody mailBody, int otp) throws Exception {
         String htmlContent = loadTemplate("sendEmailForm.html");
         htmlContent = htmlContent.replace("{{otp}}", String.valueOf(otp));
@@ -62,6 +65,7 @@ public class EmailService {
         javaMailSender.send(message);
     }
 
+    @Async
     public void sendOrderNotificationToAdmin(String adminEmail,
                                              GetOrderUserRes order,
                                              String storeName,
@@ -92,7 +96,8 @@ public class EmailService {
         }
     }
 
-    private void populateContext(Context context, GetOrderUserRes orderResponse) {
+    @Async
+    public void populateContext(Context context, GetOrderUserRes orderResponse) {
         context.setVariable("orderCode", orderResponse.getOrderCode());
         context.setVariable("createAt", orderResponse.getCreateAt().toString());
         context.setVariable("status", orderResponse.getStatus().toString());
@@ -111,6 +116,7 @@ public class EmailService {
         context.setVariable("company_website", "www.abc.com");
     }
 
+    @Async
     public void sendOrderApprovedEmail(GetOrderUserRes orderResponse) throws MessagingException {
         Context context = new Context();
         populateContext(context, orderResponse);
@@ -127,6 +133,7 @@ public class EmailService {
         javaMailSender.send(message);
     }
 
+    @Async
     public void sendOrderCanceledEmail(GetOrderUserRes orderResponse) throws MessagingException {
         Context context = new Context();
         populateContext(context, orderResponse);
@@ -143,6 +150,7 @@ public class EmailService {
         javaMailSender.send(message);
     }
 
+    @Async
     public void sendOrderCreatedByAdminEmail(
             String to, String customerName,
             String orderCode, LocalDateTime createAt, String status,
@@ -174,7 +182,24 @@ public class EmailService {
         javaMailSender.send(message);
     }
 
+    @Async
+    public void sendLowStockEmail(String to, Product product) throws MessagingException {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
+        Context context = new Context();
+        context.setVariable("product", product);
+        context.setVariable("message", "Vui lòng kiểm tra và bổ sung hàng hóa ngay lập tức.");
+
+        String htmlContent = templateEngine.process("SendEmailProductChecker", context);
+
+        helper.setTo(to);
+        helper.setSubject("Cảnh Báo: Sản Phẩm " + product.getProductName() + " Sắp Hết Hàng");
+        helper.setText(htmlContent, true);
+        helper.setFrom("your-email@gmail.com");
+
+        javaMailSender.send(mimeMessage);
+    }
 
 
 }

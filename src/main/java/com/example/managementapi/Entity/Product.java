@@ -41,8 +41,10 @@ public class Product {
     private int productQuantity;
 
     private double discount;
+
     private BigDecimal productPrice;
 
+    private LocalDateTime lastNotified;
 
     @CreationTimestamp
     private LocalDateTime createAt;

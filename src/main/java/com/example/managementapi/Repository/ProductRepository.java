@@ -9,9 +9,13 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String>, JpaSpecificationExecutor<Product> {
     boolean existsByProductName(String productName);
+
+    List<Product> findByProductQuantityLessThan(int quantity);
 
     //List<Product> searchProduct(String product);
 //    @Query("SELECT p.productId AS productId, p.productName AS productName " +

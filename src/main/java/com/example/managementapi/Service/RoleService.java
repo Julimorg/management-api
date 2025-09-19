@@ -21,13 +21,10 @@ import java.util.List;
 @Slf4j
 public class RoleService {
 
-    @Autowired
     private final RoleMapper roleMapper;
 
-    @Autowired
     private final PermissionRepository permissionRepository;
 
-    @Autowired
     private final RoleRepository roleRespository;
 
     public CreateRoleRes createRole(CreateRoleReq request){
