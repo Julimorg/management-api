@@ -162,7 +162,7 @@ public class OrderController {
     public ApiResponse<Page<SearchOrdersResponse>> searchOrdersByAdmin(
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "orderStatus", required = false) String orderStatus,
-            @PageableDefault(size = 10, sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable){
+            @PageableDefault(size = 10, sort = "orderAmount", direction = Sort.Direction.DESC) Pageable pageable){
 
         return ApiResponse.<Page<SearchOrdersResponse>>builder()
                 .status_code(HttpStatus.OK.value())
