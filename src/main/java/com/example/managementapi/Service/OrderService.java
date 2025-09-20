@@ -464,6 +464,11 @@ public class OrderService {
 
         orderMapper.updateOrder(order, request);
 
+        if(order.getOrderItems().isEmpty()){
+            orderRepository.delete(order);
+            throw new IllegalStateException("Order" + orderId + "deleted");
+        }
+
         orderRepository.save(order);
         return orderMapper.toUpdateOrderByAdminResponse(order);
     }
