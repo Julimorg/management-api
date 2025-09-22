@@ -1,5 +1,8 @@
 package com.example.managementapi.Configuration;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Getter;
+import lombok.experimental.NonFinal;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.Mac;
@@ -10,14 +13,35 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
-import org.springframework.stereotype.Component;
-
 @Component
-public class VnPayConfig {
+public class VNPAYConfig {
+
+    @NonFinal
+    @Getter
+    @Value("${vnp.secretkey}")
+    private static String SECRET_KEY;
+
+    @NonFinal
+    @Getter
+    @Value("${vnp.tmncode}")
+    private static String TMN_CODE;
+
+    @NonFinal
+    @Getter
+    @Value("${spring.vnp.version}")
+    private static String VERSION;
+
+    @NonFinal
+    @Getter
+    @Value("${spring.vnp.command}")
+    private static String COMMAND;
+
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_Returnurl = "/vnpay-payment";
-    public static String vnp_TmnCode = "";
-    public static String vnp_HashSecret = "";
+    public static String vnp_Returnurl = "http://localhost:8080/vnpay-payment";
+    public static String vnp_TmnCode = TMN_CODE;
+    public static String vnp_HashSecret = SECRET_KEY;
+    public static String vnp_Version = "2.1.0";
+    public static String vnp_Command = "pay";
     public static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
     public static String md5(String message) {
