@@ -30,20 +30,30 @@ public class Payment {
     private PaymentMethodStatus paymentStatus;
 
     private String responseCode;
+
     private String transactionStatus;
+
     private String transactionId;
+
     private String bankCode;
+
     private String bankTransactionNo;
+
     private String cardType;
+
     private String cardNumber;
+
     private String txnType;
+
     private String orderInfo;
+
     private String secureHash;
 
     @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal amount = BigDecimal.ZERO;
 
     private LocalDateTime payDate;
+
     @CreationTimestamp
     private LocalDateTime createAt;
     @UpdateTimestamp

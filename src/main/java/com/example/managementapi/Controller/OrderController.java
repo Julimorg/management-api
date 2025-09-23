@@ -11,6 +11,7 @@ import com.example.managementapi.Dto.Response.Product.GetProductsRes;
 import com.example.managementapi.Service.OrderItemService;
 import com.example.managementapi.Service.OrderService;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -84,13 +86,14 @@ public class OrderController {
     @PatchMapping("/update-order/{userId}/{orderId}")
     public ApiResponse<GetOrderUserRes> updateOrderFromUSer(@PathVariable String userId,
                                                             @PathVariable String orderId,
-                                                            @Valid @RequestBody UpdateOrderReq request){
+                                                            @Valid @RequestBody UpdateOrderReq request,
+                                                            HttpServletRequest servletRequest)
+            throws UnsupportedEncodingException {
         return ApiResponse.<GetOrderUserRes>builder()
                 .status_code(HttpStatus.OK.value())
                 .message("Update Order Approved!")
-                .data(orderService.updateOrderFromUser(userId, orderId, request))
+                .data(orderService.updateOrderFromUser(userId, orderId, request, servletRequest))
                 .timestamp(LocalDateTime.now())
-
                 .build();
     }
 

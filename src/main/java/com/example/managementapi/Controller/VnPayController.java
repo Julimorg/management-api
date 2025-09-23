@@ -21,11 +21,24 @@ import java.io.UnsupportedEncodingException;
 public class VnPayController {
     private final VnPayService vnPayService;
 
-    @GetMapping("/submitOrder")
-    public ResponseEntity<?> submidOrder() throws UnsupportedEncodingException {
-//        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        return vnPayService.createOrder();
+//    @GetMapping("/submitOrder")
+//    public ResponseEntity<?> submidOrder() throws UnsupportedEncodingException {
+////        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+//        return vnPayService.createOrder();
+//
+//    }
 
+    @GetMapping("/vnpay-return")
+    public ResponseEntity<?> paymentReturn(HttpServletRequest request) {
+        int result = vnPayService.orderReturn(request);
+        switch (result) {
+            case 1:
+                return ResponseEntity.ok("Thanh toán thành công!");
+            case 0:
+                return ResponseEntity.ok("Thanh toán thất bại!");
+            default:
+                return ResponseEntity.badRequest().body("Sai chữ ký, nghi ngờ giả mạo!");
+        }
     }
 
 //    @GetMapping("/vnpay-payment")

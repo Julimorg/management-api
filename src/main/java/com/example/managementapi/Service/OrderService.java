@@ -4,7 +4,6 @@ package com.example.managementapi.Service;
 import com.example.managementapi.Component.GenerateRandomCode;
 import com.example.managementapi.Dto.Request.Order.*;
 import com.example.managementapi.Dto.Response.Order.*;
-import com.example.managementapi.Dto.Response.Product.GetProductsRes;
 import com.example.managementapi.Dto.Response.Product.ProductForCartItem;
 import com.example.managementapi.Entity.*;
 import com.example.managementapi.Enum.OrderStatus;
@@ -13,8 +12,8 @@ import com.example.managementapi.Enum.PaymentMethodStatus;
 import com.example.managementapi.Mapper.OrderMapper;
 import com.example.managementapi.Repository.*;
 import com.example.managementapi.Specification.OrderSpecification;
-import com.example.managementapi.Specification.ProductSpecification;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +23,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -49,6 +49,8 @@ public class OrderService {
     private final EmailService emailService;
 
     private final OrderMapper orderMapper;
+
+    private final VnPayService vnPayService;
 
     private final String adminEmail = "kienphongtran2003@gmail.com";
 
@@ -186,7 +188,10 @@ public class OrderService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN','ROLE_STAFF')")
-    public GetOrderUserRes updateOrderFromUser(String userId, String orderId, UpdateOrderReq request){
+    public GetOrderUserRes updateOrderFromUser(String userId,
+                                               String orderId,
+                                               UpdateOrderReq request,
+                                               HttpServletRequest httpRequest) throws UnsupportedEncodingException {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -200,21 +205,42 @@ public class OrderService {
 
         Payment payment = userOrder.getPayment();
 
-        userOrder.getPayment().setPaymentMethod(request.getPaymentMethod());
+        String paymentUrl = null;
+        if (request.getPaymentMethod() == PaymentMethod.CASH)
+        {
 
-        userOrder.setShipAddress(request.getShipAddress());
+            userOrder.setShipAddress(request.getShipAddress());
 
-        userOrder.setUpdateBy(user.getUserName());
+            userOrder.setUpdateBy(user.getUserName());
 
-        userOrder.setUpdateAt(LocalDateTime.now());
+            userOrder.setUpdateAt(LocalDateTime.now());
 
+            payment.setPaymentStatus(PaymentMethodStatus.Paid);
 
-        payment.setPaymentStatus(PaymentMethodStatus.Successfully);
+            paymentRepository.save(payment);
 
-        paymentRepository.save(payment);
+            orderRepository.save(userOrder);
+        }
 
-        orderRepository.save(userOrder);
+        if(request.getPaymentMethod() == PaymentMethod.VN_PAY)
+        {
+            userOrder.getPayment().setPaymentMethod(request.getPaymentMethod());
 
+            userOrder.setShipAddress(request.getShipAddress());
+
+            userOrder.setUpdateBy(user.getUserName());
+
+            userOrder.setUpdateAt(LocalDateTime.now());
+
+            paymentUrl = vnPayService.createOrder(httpRequest, orderId, request);
+
+            payment.setPaymentStatus(PaymentMethodStatus.Paid);
+
+            paymentRepository.save(payment);
+
+            orderRepository.save(userOrder);
+
+        }
 
         GetOrderUserRes updateOrderFromUser = GetOrderUserRes.builder()
                 .orderId(userOrder.getOrderId())
@@ -249,6 +275,7 @@ public class OrderService {
                         .toList())
                 .paymentMethod(payment.getPaymentMethod())
                 .paymentStatus(payment.getPaymentStatus())
+                .paymentUrl(paymentUrl)
                 .createAt(userOrder.getCreateAt())
                 .updateAt(userOrder.getUpdateAt())
                 .build();

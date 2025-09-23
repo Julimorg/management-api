@@ -42,6 +42,8 @@ public class GetOrderUserRes {
 
     private PaymentMethodStatus paymentStatus;
 
+    private String paymentUrl;
+
     private LocalDateTime createAt;
 
     private LocalDateTime updateAt;
@@ -49,6 +51,7 @@ public class GetOrderUserRes {
     private LocalDateTime deleteAt;
 
     private LocalDateTime completeAt;
+
 
 
 }

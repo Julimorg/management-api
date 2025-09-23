@@ -2,19 +2,21 @@ package com.example.managementapi.Service;
 
 
 import com.example.managementapi.Configuration.VNPAYConfig;
+import com.example.managementapi.Dto.Request.Order.UpdateOrderReq;
 import com.example.managementapi.Dto.Response.VnPay.PaymentRes;
-import jakarta.servlet.ServletException;
+import com.example.managementapi.Entity.Order;
+import com.example.managementapi.Entity.Payment;
+import com.example.managementapi.Enum.PaymentMethodStatus;
+import com.example.managementapi.Repository.OrderRepository;
+import com.example.managementapi.Repository.PaymentRepository;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -26,15 +28,26 @@ import java.util.*;
 @RequiredArgsConstructor
 public class VnPayService {
 
-    public ResponseEntity<?> createOrder() throws UnsupportedEncodingException {
+    private final OrderRepository orderRepository;
+    private final PaymentRepository paymentRepository;
+
+    public String createOrder(HttpServletRequest request, String orderId, UpdateOrderReq orderReq) throws UnsupportedEncodingException {
 
 //        String vnp_OrderInfo = req.getParameter("vnp_OrderInfo");
 //        String orderType = req.getParameter("ordertype");
 //        String vnp_IpAddr = VNPAYConfig.getIpAddress(req);
 //        int amount = Integer.parseInt(req.getParameter("amount")) * 100;
 
-        long amount = 10000;
 
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        Payment payment = order.getPayment();
+
+        BigDecimal amount = order.getOrderAmount();
+        BigDecimal vnpAmount = amount.multiply(BigDecimal.valueOf(100));
+
+        String vnp_IpAddr = VNPAYConfig.getIpAddress(request);
         String vnp_TxnRef = VNPAYConfig.getRandomNumber(8);
         String vnp_TmnCode = VNPAYConfig.vnp_TmnCode;
         String vnp_Version = VNPAYConfig.vnp_Version;
@@ -45,10 +58,15 @@ public class VnPayService {
         vnp_Params.put("vnp_Version", vnp_Version);
         vnp_Params.put("vnp_Command", vnp_Command);
         vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
-        vnp_Params.put("vnp_Amount", String.valueOf(amount*100));
+        vnp_Params.put("vnp_Amount", vnpAmount.toBigInteger().toString());
         vnp_Params.put("vnp_CurrCode", "VND");
         vnp_Params.put("vnp_BankCode", "NCB");
         vnp_Params.put("vnp_Locale", "vn");
+        vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
+        vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang " + orderId);
+        vnp_Params.put("vnp_OrderType", "other");
+        vnp_Params.put("vnp_ReturnUrl", VNPAYConfig.vnp_Returnurl);
+        vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
 //        String bank_code = req.getParameter("bankcode");
 
@@ -57,12 +75,6 @@ public class VnPayService {
 //        }
 
 
-        vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-
-        vnp_Params.put("vnp_OrderInfo", "Thanh Toan don hang" + vnp_TxnRef);
-
-        vnp_Params.put("vnp_OrderType", "other");
-
 //        String locate = req.getParameter("language");
 //        if (locate != null && !locate.isEmpty()) {
 //            vnp_Params.put("vnp_Locale", locate);
@@ -70,9 +82,6 @@ public class VnPayService {
 //            vnp_Params.put("vnp_Locale", "vn");
 //        }
 
-        vnp_Params.put("vnp_ReturnUrl", VNPAYConfig.vnp_Returnurl);
-
-        vnp_Params.put("vnp_IpAddr", "192.168.1.9");
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -136,7 +145,7 @@ public class VnPayService {
         String queryUrl = query.toString();
         String vnp_SecureHash = VNPAYConfig.hmacSHA512(VNPAYConfig.vnp_HashSecret, hashData.toString());
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
-        String paymentUrl = VNPAYConfig.vnp_PayUrl + "?" + queryUrl;
+        return  VNPAYConfig.vnp_PayUrl + "?" + queryUrl;
 //
 //        com.google.gson.JsonObject job = new JsonObject();
 //        job.addProperty("code", "00");
@@ -145,12 +154,7 @@ public class VnPayService {
 //        Gson gson = new Gson();
 //        resp.getWriter().write(gson.toJson(job));
 
-        PaymentRes paymentDto = new PaymentRes();
-        paymentDto.setStatus("Ok!");
-        paymentDto.setMessage("success!");
-        paymentDto.setUrl(paymentUrl);
 
-        return ResponseEntity.status(HttpStatus.OK).body(paymentDto);
     }
 
     public int orderReturn(HttpServletRequest request){

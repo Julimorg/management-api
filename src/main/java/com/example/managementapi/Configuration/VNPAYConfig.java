@@ -16,6 +16,11 @@ import java.util.*;
 @Component
 public class VNPAYConfig {
 
+    /*
+    ! KHÔNG ĐƯỢC EDIT - XÓA  HAY CONFIG BẤT KÌ ĐOẠN CODE NÀO TRONG ĐÂY
+    ! VÌ ĐÂY LÀ NHỮNG METHOD - ATTRIBUTES ĐÃ ĐƯỢC CONFIG DEFAULT SẴN
+    ! */
+
     @NonFinal
     @Getter
     @Value("${vnp.secretkey}")
@@ -44,6 +49,7 @@ public class VNPAYConfig {
     public static String vnp_Command = "pay";
     public static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
+    //? Sử dụng thuật toán Md5 để mã hóa message
     public static String md5(String message) {
         String digest = null;
         try {
@@ -62,6 +68,7 @@ public class VNPAYConfig {
         return digest;
     }
 
+    //? Sử dụng thuật toán Sha256 để mã hóa message
     public static String Sha256(String message) {
         String digest = null;
         try {
@@ -80,7 +87,16 @@ public class VNPAYConfig {
         return digest;
     }
 
-    //Util for VNPAY
+    //? Method Quan trọng dùng để tạo Signature ( SecureHash ) khi gọi sang VnPay
+
+    /*
+    * Quy Trình của Method
+    * Lấy tất cả key trong fields (map chứa các tham số gửi VNPay).
+    * Sort (sắp xếp theo alphabet) danh sách key.
+    * Ghép lại thành 1 chuỗi dạng key1=value1&key2=value2....
+    * Dùng hmacSHA512 để tạo chữ ký bảo mật với vnp_HashSecret.
+    * */
+
     public static String hashAllFields(Map fields) {
         List fieldNames = new ArrayList(fields.keySet());
         Collections.sort(fieldNames);
@@ -101,6 +117,7 @@ public class VNPAYConfig {
         return hmacSHA512(vnp_HashSecret,sb.toString());
     }
 
+    //? Method tạo Signature bằng thuật toán HMAC-SHA512.
     public static String hmacSHA512(final String key, final String data) {
         try {
 
@@ -124,6 +141,7 @@ public class VNPAYConfig {
         }
     }
 
+    //? Lấy IpAddress của Client khi request
     public static String getIpAddress(HttpServletRequest request) {
         String ipAdress;
         try {
@@ -137,6 +155,7 @@ public class VNPAYConfig {
         return ipAdress;
     }
 
+    //? Tạo random transacion khi request
     public static String getRandomNumber(int len) {
         Random rnd = new Random();
         String chars = "0123456789";
