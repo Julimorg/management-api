@@ -3,17 +3,13 @@ package com.example.managementapi.Service;
 
 import com.example.managementapi.Configuration.VNPAYConfig;
 import com.example.managementapi.Dto.Request.Order.UpdateOrderReq;
-import com.example.managementapi.Dto.Response.VnPay.PaymentRes;
 import com.example.managementapi.Entity.Order;
 import com.example.managementapi.Entity.Payment;
-import com.example.managementapi.Enum.PaymentMethodStatus;
 import com.example.managementapi.Repository.OrderRepository;
 import com.example.managementapi.Repository.PaymentRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -29,14 +25,9 @@ import java.util.*;
 public class VnPayService {
 
     private final OrderRepository orderRepository;
-    private final PaymentRepository paymentRepository;
 
-    public String createOrder(HttpServletRequest request, String orderId, UpdateOrderReq orderReq) throws UnsupportedEncodingException {
 
-//        String vnp_OrderInfo = req.getParameter("vnp_OrderInfo");
-//        String orderType = req.getParameter("ordertype");
-//        String vnp_IpAddr = VNPAYConfig.getIpAddress(req);
-//        int amount = Integer.parseInt(req.getParameter("amount")) * 100;
+    public String createOrder(HttpServletRequest request, String orderId) throws UnsupportedEncodingException {
 
 
         Order order = orderRepository.findById(orderId)
@@ -118,6 +109,7 @@ public class VnPayService {
 //        vnp_Params.put("vnp_Inv_Company", req.getParameter("txt_inv_company"));
 //        vnp_Params.put("vnp_Inv_Taxcode", req.getParameter("txt_inv_taxcode"));
 //        vnp_Params.put("vnp_Inv_Type", req.getParameter("cbo_inv_type"));
+
         //Build data to hash and querystring
         List fieldNames = new ArrayList(vnp_Params.keySet());
         Collections.sort(fieldNames);

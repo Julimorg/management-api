@@ -42,7 +42,7 @@ public class VNPAYConfig {
     private static String COMMAND;
 
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_Returnurl = "http://localhost:8080/vnpay-payment";
+    public static String vnp_Returnurl = "http://localhost:8080/api/v1/vn-pay/vnpay-return";
     public static String vnp_TmnCode = TMN_CODE;
     public static String vnp_HashSecret = SECRET_KEY;
     public static String vnp_Version = "2.1.0";

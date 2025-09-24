@@ -57,7 +57,7 @@ public class SecurityConfiguration {
         httpSecurity.authorizeHttpRequests(request ->
                 request.requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
                         .requestMatchers(PUBLIC_SWAGGER).permitAll()
-                        .requestMatchers(PUBLIC_VNPAY).permitAll()
+                        .requestMatchers(HttpMethod.GET,PUBLIC_VNPAY).permitAll()
                         .anyRequest().authenticated());
 
         httpSecurity.exceptionHandling(ex -> ex

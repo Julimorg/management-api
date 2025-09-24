@@ -232,7 +232,7 @@ public class OrderService {
 
             userOrder.setUpdateAt(LocalDateTime.now());
 
-            paymentUrl = vnPayService.createOrder(httpRequest, orderId, request);
+            paymentUrl = vnPayService.createOrder(httpRequest, orderId);
 
             payment.setPaymentStatus(PaymentMethodStatus.Paid);
 
