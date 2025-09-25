@@ -43,8 +43,8 @@ public class VNPAYConfig {
 
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
     public static String vnp_Returnurl = "http://localhost:8080/api/v1/vn-pay/vnpay-return";
-    public static String vnp_TmnCode = TMN_CODE;
-    public static String vnp_HashSecret = SECRET_KEY;
+    public static String vnp_TmnCode = "OA83P8FJ";
+    public static String vnp_HashSecret = "YIZ2A00IFOEXME2O5RI75LP1GR0T4SX0";
     public static String vnp_Version = "2.1.0";
     public static String vnp_Command = "pay";
     public static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";

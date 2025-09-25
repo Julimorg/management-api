@@ -8,9 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.time.LocalDateTime;
 
-@Controller
+@RestController
 @RequestMapping("api/v1/vn-pay")
 @RequiredArgsConstructor
 public class VnPayController {
@@ -20,27 +22,24 @@ public class VnPayController {
     @GetMapping("/vnpay-return")
     public ApiResponse<String> paymentReturn(HttpServletRequest request) {
         int result = vnPayService.orderReturn(request);
-        switch (result) {
-            case 1:
-                return ApiResponse.<String>builder()
-                        .status_code(HttpStatus.OK.value())
-                        .message("Payment Successfully!")
-                        .timestamp(LocalDateTime.now())
-                        .build();
-            case 0:
-                return ApiResponse.<String>builder()
-                        .status_code(HttpStatus.OK.value())
-                        .message("Payment failed!")
-                        .timestamp(LocalDateTime.now())
-                        .build();
-            default:
-                return ApiResponse.<String>
-                                builder()
-                        .status_code(HttpStatus.OK.value())
-                        .message("Wrong signature! Fake!")
-                        .timestamp(LocalDateTime.now())
-                        .build();
-        }
+        return switch (result) {
+            case 1 -> ApiResponse.<String>builder()
+                    .status_code(HttpStatus.OK.value())
+                    .message("Payment Successfully!")
+                    .timestamp(LocalDateTime.now())
+                    .build();
+            case 0 -> ApiResponse.<String>builder()
+                    .status_code(HttpStatus.OK.value())
+                    .message("Payment failed!")
+                    .timestamp(LocalDateTime.now())
+                    .build();
+            default -> ApiResponse.<String>
+                            builder()
+                    .status_code(HttpStatus.OK.value())
+                    .message("Wrong signature! Fake!")
+                    .timestamp(LocalDateTime.now())
+                    .build();
+        };
     }
  }
 

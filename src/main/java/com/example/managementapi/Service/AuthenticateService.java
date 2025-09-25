@@ -10,6 +10,7 @@ import com.example.managementapi.Entity.Role;
 import com.example.managementapi.Entity.User;
 import com.example.managementapi.Enum.ErrorCode;
 import com.example.managementapi.Enum.Status;
+import com.example.managementapi.Enum.TokenType;
 import com.example.managementapi.Exception.AppException;
 import com.example.managementapi.Mapper.UserMapper;
 import com.example.managementapi.Repository.InvalidatedTokenRepository;
@@ -79,12 +80,15 @@ public class AuthenticateService {
         if(!authenticate)
             throw  new AppException(ErrorCode.UNAUTHENTICATED);
 
-        var token = generateToken(user);
+        var accessToken = generateToken(user, EXPIRY_DATE, String.valueOf(TokenType.ACCESS_TOKEN));
+
+        var refreshToken = generateToken(user, REFRESH_DURATION, String.valueOf(TokenType.REFRESH_TOKEN));
 
         return LoginRes.builder()
                 .id(user.getId())
                 .userName(user.getUserName())
-                .token(token)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .authenticated(true)
                 .build();
     }
@@ -139,7 +143,7 @@ public class AuthenticateService {
     }
     public RefreshRes refreshToken(RefreshReq request )
             throws ParseException, JOSEException {
-        var signedJWT = verifyToken(request.getToken(), true);
+        var signedJWT = verifyToken(request.getRefreshToken(), true);
 
         var jit = signedJWT.getJWTClaimsSet().getJWTID();
 
@@ -158,10 +162,10 @@ public class AuthenticateService {
         var user = userRepository.findByUserName(username).orElseThrow(() ->
                 new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        var token = generateToken(user);
+        var token = generateToken(user, EXPIRY_DATE, String.valueOf(TokenType.ACCESS_TOKEN));
 
         return RefreshRes.builder()
-                .token(token)
+                .accessToken(token)
                 .authenticated(true)
                 .build();
     }
@@ -189,7 +193,7 @@ public class AuthenticateService {
     //? Tạo Token
     //?  JWT tuân thủ theo 3 param của chính nó
     //?         -- HEADER -- PAYLOAD -- SIGNATURE --
-    private String generateToken(User user){
+    private String generateToken(User user, long expiryInSeconds, String tokenType){
 
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
@@ -198,10 +202,11 @@ public class AuthenticateService {
                 .issuer("kienphongtran2003@gmail.com")
                 .issueTime(new Date())
                 .expirationTime(new Date(
-                        Instant.now().plus(EXPIRY_DATE, ChronoUnit.SECONDS ).toEpochMilli()
+                        Instant.now().plus(expiryInSeconds, ChronoUnit.SECONDS ).toEpochMilli()
                 )) // --> Hạn của Token
                 .jwtID(UUID.randomUUID().toString())
                 .claim("scope", buildScope(user))
+                .claim("token_type", tokenType)
                 .build();
 
 

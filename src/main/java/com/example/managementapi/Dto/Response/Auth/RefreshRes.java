@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class RefreshRes {
-    private String token;
+    private String accessToken;
     private boolean authenticated;
 }

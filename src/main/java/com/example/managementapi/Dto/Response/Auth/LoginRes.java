@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class LoginRes {
     private String id;
-    private String token;
     private String userName;
+    private String accessToken;
+    private String refreshToken;
     boolean authenticated;
 }
